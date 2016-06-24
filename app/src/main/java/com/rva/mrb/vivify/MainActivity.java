@@ -4,14 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
 import com.bignerdranch.expandablerecyclerview.Adapter.ExpandableRecyclerAdapter;
+import com.rva.mrb.vivify.Model.Alarm;
+import com.rva.mrb.vivify.Model.AlarmInfo;
+import com.rva.mrb.vivify.View.Adapter.AlarmAdapter;
 
 import java.util.Arrays;
 import java.util.List;
