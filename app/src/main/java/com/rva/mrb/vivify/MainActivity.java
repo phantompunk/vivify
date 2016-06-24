@@ -19,6 +19,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.RealmList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,8 +40,10 @@ public class MainActivity extends AppCompatActivity {
 
         AlarmInfo bird = new AlarmInfo("6:30");
         AlarmInfo owl = new AlarmInfo("10:30");
-        Alarm early = new Alarm("EarlyBird", Arrays.asList(bird));
-        Alarm midnight = new Alarm("MidnightOwl", Arrays.asList(owl));
+        RealmList<AlarmInfo> a = new RealmList<>(bird);
+        RealmList<AlarmInfo> b = new RealmList<>(owl);
+        Alarm early = new Alarm("EarlyBird", a);
+        Alarm midnight = new Alarm("MidnightOwl", b);
         final List<Alarm> alarms = Arrays.asList(early, midnight);
 
         mAdapter = new AlarmAdapter(this, alarms);

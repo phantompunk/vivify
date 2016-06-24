@@ -4,29 +4,36 @@ import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
 
 import java.util.List;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by rigo on 6/23/16.
  */
 public class Alarm extends RealmObject implements ParentListItem{
 
+    @PrimaryKey
     private int id;
     private String mName;
     private boolean mAlarmSet;
     private boolean mStandardTime;
     private String mTime;
     private String mRepeat;
-    private List<AlarmInfo> mAlarmInfo;
+    private RealmList<AlarmInfo> mAlarmInfo;
 
-    public Alarm(String name, List<AlarmInfo> info) {
+    public Alarm() {
+
+    }
+
+    public Alarm(String name, RealmList<AlarmInfo> info) {
         mName = name;
         mAlarmInfo = info;
     }
 
     public String getName() { return mName; }
 
-    public List<?> getChildItemList() { return mAlarmInfo; }
+    public RealmList<AlarmInfo> getChildItemList() { return mAlarmInfo; }
 
     public int getId() {
         return id;
