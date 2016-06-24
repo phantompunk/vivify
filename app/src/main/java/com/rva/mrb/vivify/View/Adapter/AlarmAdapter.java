@@ -17,10 +17,16 @@ import com.rva.mrb.vivify.R;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import io.realm.RealmChangeListener;
+
 /**
  * Created by rigo on 6/23/16.
  */
-public class AlarmAdapter extends ExpandableRecyclerAdapter<AlarmAdapter.AlarmHolder, AlarmAdapter.AlarmInfoHolder> {
+public class AlarmAdapter extends
+ExpandableRecyclerAdapter<AlarmAdapter.AlarmHolder, AlarmAdapter.AlarmInfoHolder>
+implements RealmChangeListener {
 
     private LayoutInflater mInflator;
 
@@ -48,13 +54,18 @@ public class AlarmAdapter extends ExpandableRecyclerAdapter<AlarmAdapter.AlarmHo
         alarmInfoHolder.bind(alarmInfo);
     }
 
+    @Override
+    public void onChange(Object element) {
+        notifyDataSetChanged();
+    }
+
     public class AlarmHolder extends ParentViewHolder {
 
-        private TextView mAlarmTV;
+        @BindView(R.id.alarm_tv) TextView mAlarmTV;
 
         public AlarmHolder(View view) {
             super(view);
-            mAlarmTV = (TextView) view.findViewById(R.id.alarm_tv);
+            ButterKnife.bind(this, view);
         }
 
         public void bind(Alarm alarm) { mAlarmTV.setText(alarm.getName()); }
@@ -63,11 +74,11 @@ public class AlarmAdapter extends ExpandableRecyclerAdapter<AlarmAdapter.AlarmHo
 
     public class AlarmInfoHolder extends ChildViewHolder {
 
-        private TextView mAlarmInfoTV;
+        @BindView(R.id.alarm_info_tv) TextView mAlarmInfoTV;
 
         public AlarmInfoHolder(View view) {
             super(view);
-            mAlarmInfoTV = (TextView) view.findViewById(R.id.alarm_info_tv);
+            ButterKnife.bind(this, view);
         }
 
         public void bind(AlarmInfo info) {

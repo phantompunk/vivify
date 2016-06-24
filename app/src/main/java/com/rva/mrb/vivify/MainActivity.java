@@ -17,8 +17,12 @@ import com.rva.mrb.vivify.View.Adapter.AlarmAdapter;
 import java.util.Arrays;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity {
 
+    @BindView(R.id.recyclerview) RecyclerView mRecyclerView;
     private AlarmAdapter mAdapter;
 
     public static Intent newIntent(Context context) {
@@ -29,18 +33,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         AlarmInfo bird = new AlarmInfo("6:30");
         AlarmInfo owl = new AlarmInfo("10:30");
-
         Alarm early = new Alarm("EarlyBird", Arrays.asList(bird));
         Alarm midnight = new Alarm("MidnightOwl", Arrays.asList(owl));
-
         final List<Alarm> alarms = Arrays.asList(early, midnight);
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mAdapter = new AlarmAdapter(this, alarms);
         mAdapter.setExpandCollapseListener(new ExpandableRecyclerAdapter.ExpandCollapseListener() {
 
@@ -55,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        recyclerView.setAdapter(mAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     protected void onSaveInstanceState(Bundle outState) {
