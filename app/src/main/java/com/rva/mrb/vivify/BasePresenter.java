@@ -1,7 +1,7 @@
 package com.rva.mrb.vivify;
 
 /**
- * Created by rigo on 6/25/16.
+ * Created by Bao on 6/24/16.
  */
 public interface BasePresenter<T> {
     void setView(T view);

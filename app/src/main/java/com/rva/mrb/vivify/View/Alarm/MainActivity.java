@@ -53,7 +53,7 @@ public class MainActivity extends BaseActivity {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         AlarmInfo bird = new AlarmInfo(alarmPresenter.getMessage());
-        AlarmInfo owl = new AlarmInfo("10:30");
+        AlarmInfo owl = new AlarmInfo(alarmPresenter.getRSMessage());
         RealmList<AlarmInfo> a = new RealmList<>(bird);
         RealmList<AlarmInfo> b = new RealmList<>(owl);
         Alarm early = new Alarm("EarlyBird", a);
