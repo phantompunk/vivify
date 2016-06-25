@@ -1,4 +1,4 @@
-package com.rva.mrb.vivify.View.Adapter.Alarms;
+package com.rva.mrb.vivify.View.Alarm;
 
 import com.rva.mrb.vivify.Model.Alarm;
 

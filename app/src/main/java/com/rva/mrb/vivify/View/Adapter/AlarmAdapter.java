@@ -20,6 +20,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 
 /**
  * Created by rigo on 6/23/16.
@@ -28,6 +29,7 @@ public class AlarmAdapter extends
 ExpandableRecyclerAdapter<AlarmAdapter.AlarmHolder, AlarmAdapter.AlarmInfoHolder>
 implements RealmChangeListener {
 
+    private RealmResults<Alarm> mAlarms;
     private LayoutInflater mInflator;
 
     public AlarmAdapter(Context context, @NonNull List<? extends ParentListItem> parentListItem) {
@@ -52,6 +54,12 @@ implements RealmChangeListener {
     public void onBindChildViewHolder(AlarmInfoHolder alarmInfoHolder, int position, Object childListItem) {
         AlarmInfo alarmInfo = (AlarmInfo) childListItem;
         alarmInfoHolder.bind(alarmInfo);
+    }
+
+    public void setAlarms(final RealmResults<Alarm> alarms) {
+        mAlarms = alarms;
+        mAlarms.addChangeListener(this);
+//        notifyChildItemChanged();
     }
 
     @Override
@@ -84,5 +92,9 @@ implements RealmChangeListener {
         public void bind(AlarmInfo info) {
             mAlarmInfoTV.setText(info.getTime());
         }
+    }
+
+    public interface OnAlarmClickListener {
+        void onBookClick(int id);
     }
 }

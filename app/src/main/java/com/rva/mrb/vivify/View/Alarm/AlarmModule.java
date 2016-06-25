@@ -16,7 +16,7 @@ public class AlarmModule {
     public AlarmModule(MainActivity activity){ this.activity = activity; };
 
     @Provides
-    AlarmPresenterImpl providesAlarmPresenterImpl(RealmService realmService){
+    AlarmsPresenter providesAlarmPresenterImpl(RealmService realmService){
         return new AlarmPresenterImpl(realmService);
     };
 

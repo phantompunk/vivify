@@ -1,4 +1,4 @@
-package com.rva.mrb.vivify.View.Adapter.Alarms;
+package com.rva.mrb.vivify.View.Alarm;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -76,11 +76,6 @@ public class AlarmsActivity extends AppCompatActivity {
 
         mRecyclerView.setAdapter(mAlarmAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
-
-    public void onStart() {
-        super.onStart();
-        mAlarmsPresenter.setView(this);
     }
 
 }

@@ -25,14 +25,22 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements AlarmsView, AlarmAdapter.OnAlarmClickListener{
+    @Override
+    public void onBookClick(int id) {
+
+    }
 
     @BindView(R.id.recyclerview) RecyclerView mRecyclerView;
     private AlarmAdapter mAdapter;
+    private AlarmAdapter.OnAlarmClickListener mAlarmListner;
+
+    private List<Alarm> alarms;
 
     @Inject
-    AlarmPresenterImpl alarmPresenter;
+    AlarmsPresenter alarmPresenter;
 
     public static Intent newIntent(Context context) {
         return new Intent(context, MainActivity.class);
@@ -58,8 +66,22 @@ public class MainActivity extends BaseActivity {
         RealmList<AlarmInfo> b = new RealmList<>(owl);
         Alarm early = new Alarm("EarlyBird", a);
         Alarm midnight = new Alarm("MidnightOwl", b);
-        final List<Alarm> alarms = Arrays.asList(early, midnight);
+        alarms = Arrays.asList(early, midnight);
+        initializeAlarmsList(alarms);
 
+    }
+
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mAdapter.onSaveInstanceState(outState);
+    }
+
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mAdapter.onRestoreInstanceState(savedInstanceState);
+    }
+
+    public void initializeAlarmsList(final List<Alarm> alarms) {
         mAdapter = new AlarmAdapter(this, alarms);
         mAdapter.setExpandCollapseListener(new ExpandableRecyclerAdapter.ExpandCollapseListener() {
 
@@ -78,13 +100,19 @@ public class MainActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mAdapter.onSaveInstanceState(outState);
+    @Override
+    public void onStart() {
+        super.onStart();
+        alarmPresenter.setView(this);
     }
 
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mAdapter.onRestoreInstanceState(savedInstanceState);
+    public void showAlarms(final RealmResults<Alarm> alarms) {
+        mAdapter.setAlarms(alarms);
     }
+
+    public void onStop() {
+        super.onStop();
+        alarmPresenter.clearView();
+    }
+
 }

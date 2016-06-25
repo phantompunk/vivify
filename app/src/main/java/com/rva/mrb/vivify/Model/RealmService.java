@@ -14,10 +14,19 @@ public class RealmService {
         mRealm = realm;
     }
 
+    public RealmResults<Alarm> getAllAlarms() {
+        return mRealm.where(Alarm.class).findAll();
+    }
+
+    public Alarm getAlarm(final int alarmId) {
+        return mRealm.where(Alarm.class).equalTo("id", alarmId).findFirst();
+    }
+
     public String getMessage(){
         return "From realmService!!";
     }
-    public void closeRealm() { mRealm.close(); }
 
-
+    public void closeRealm() {
+        mRealm.close();
+    }
 }
