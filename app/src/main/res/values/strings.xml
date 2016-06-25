@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Vivify</string>
+    <string name="title_activity_alarms">AlarmsActivity</string>
 </resources>
