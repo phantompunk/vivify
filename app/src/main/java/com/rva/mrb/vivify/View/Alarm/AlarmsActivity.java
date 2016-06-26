@@ -20,6 +20,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.realm.RealmList;
 
 public class AlarmsActivity extends AppCompatActivity {
@@ -49,14 +50,6 @@ public class AlarmsActivity extends AppCompatActivity {
 
         initializeAlarmsList(alarms);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
 
     public void initializeAlarmsList(final List<Alarm> alarms) {
@@ -77,5 +70,8 @@ public class AlarmsActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAlarmAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
+
+    @OnClick(R.id.fab)
+    public void onAddNewAlarmClick(){mAlarmsPresenter.onAddNewAlarm();}
 
 }

@@ -22,11 +22,31 @@ public class RealmService {
         return mRealm.where(Alarm.class).equalTo("id", alarmId).findFirst();
     }
 
+    public void addAlarmAsync(final String time, final boolean isSet, final boolean isStandardTime, final String repeat) {
+        mRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(final Realm realm) {
+                Alarm alarm = realm.createObject(Alarm.class);
+                alarm.setId(mRealm.where(Alarm.class).findAll().size());
+                alarm.setmTime(time);
+                alarm.setmAlarmSet(isSet);
+                alarm.setmStandardTime(isStandardTime);
+                alarm.setmRepeat(repeat);
+            }
+        });
+    }
     public String getMessage(){
         return "From realmService!!";
     }
 
     public void closeRealm() {
         mRealm.close();
+    }
+
+
+
+    public interface OnTransactionCallback {
+        void onRealmSuccess();
+        void onRealmError(final Exception e);
     }
 }

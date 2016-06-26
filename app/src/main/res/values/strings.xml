@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Vivify</string>
     <string name="title_activity_alarms">AlarmsActivity</string>
+    <string name="repeat">Repeat</string>
+    <string name="time">Time</string>
+    <string name="standard_time">Standard Time</string>
+    <string name="isSet">On/Off</string>
+    <string name="add_alarm">Add Alarm</string>
 </resources>

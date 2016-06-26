@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.bignerdranch.expandablerecyclerview.Adapter.ExpandableRecyclerAdapter;
 import com.rva.mrb.vivify.AlarmApplication;
@@ -16,6 +17,7 @@ import com.rva.mrb.vivify.Model.Alarm;
 import com.rva.mrb.vivify.Model.AlarmInfo;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.Adapter.AlarmAdapter;
+import com.rva.mrb.vivify.View.AddNewAlarm.NewAlarmActivity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +26,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
@@ -57,8 +60,6 @@ public class MainActivity extends BaseActivity implements AlarmsView, AlarmAdapt
                         .build();
         alarmComponent.inject(this);
         ButterKnife.bind(this);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         AlarmInfo bird = new AlarmInfo(alarmPresenter.getMessage());
         AlarmInfo owl = new AlarmInfo(alarmPresenter.getRSMessage());
@@ -110,6 +111,19 @@ public class MainActivity extends BaseActivity implements AlarmsView, AlarmAdapt
         mAdapter.setAlarms(alarms);
     }
 
+    @Override
+    public void showAddNewAlarmView() {
+        startActivity(new Intent(this, NewAlarmActivity.class));
+    }
+
+    @OnClick(R.id.fab)
+    public void onAddNewAlarmClick(){
+        Log.d("MyApp", "Fab Click");
+        alarmPresenter.onAddNewAlarm();}
+
+    public void closeRealm(){
+        alarmPresenter.closeRealm();
+    }
     public void onStop() {
         super.onStop();
         alarmPresenter.clearView();

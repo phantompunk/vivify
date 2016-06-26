@@ -22,12 +22,12 @@ public class ApplicationModule {
         mApp = app;
     }
 
-    @Provides @Singleton
+    @Provides
     Realm provideRealm() {
         return Realm.getDefaultInstance();
     }
 
-    @Provides @Singleton
+    @Provides
     RealmService provideRealmService(final Realm realm) { return new RealmService(realm); }
 
 }

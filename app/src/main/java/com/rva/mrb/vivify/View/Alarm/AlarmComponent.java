@@ -11,7 +11,7 @@ import dagger.Component;
  * Created by Bao on 6/24/16.
  */
 
-@Singleton
+
 @Component(modules = {ApplicationModule.class, AlarmModule.class}, dependencies = ApplicationComponent.class)
 public interface AlarmComponent {
     void inject(MainActivity mainActivity);

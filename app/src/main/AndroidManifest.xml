@@ -20,6 +20,11 @@
             android:name=".View.Alarm.AlarmsActivity"
             android:label="@string/title_activity_alarms"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".View.AddNewAlarm.NewAlarmActivity"
+            android:label="NewAlarmActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

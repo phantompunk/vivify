@@ -31,11 +31,12 @@ public class AlarmPresenterImpl implements AlarmsPresenter {
 
     @Override
     public void onAddNewAlarm() {
-
+        mAlarmsView.showAddNewAlarmView();
     }
 
     @Override
     public void setView(AlarmsView view) {
+        mAlarmsView = view;
         if(!alarmsWereShown) {
             mAlarmsView.showAlarms(mRealmService.getAllAlarms());
             alarmsWereShown = true;

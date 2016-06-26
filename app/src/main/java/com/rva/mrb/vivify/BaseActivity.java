@@ -9,7 +9,7 @@ import javax.inject.Inject;
 /**
  * Created by Bao on 6/24/16.
  */
-public class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,4 +20,10 @@ public class BaseActivity extends AppCompatActivity {
         return ((AlarmApplication)getApplication()).getComponent();
     }
 
+    protected void onDestroy(){
+        closeRealm();
+        super.onDestroy();
+    }
+
+    protected abstract void closeRealm();
 }

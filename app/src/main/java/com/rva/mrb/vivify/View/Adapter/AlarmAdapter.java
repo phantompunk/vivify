@@ -59,7 +59,7 @@ implements RealmChangeListener {
     public void setAlarms(final RealmResults<Alarm> alarms) {
         mAlarms = alarms;
         mAlarms.addChangeListener(this);
-//        notifyChildItemChanged();
+        notifyDataSetChanged();
     }
 
     @Override

@@ -10,6 +10,7 @@ import io.realm.RealmResults;
 public interface AlarmsView {
 
     void showAlarms(RealmResults<Alarm> alarms);
+    void showAddNewAlarmView();
 
     class EmptyAlarmsList implements AlarmsView {
 
@@ -17,5 +18,8 @@ public interface AlarmsView {
         public void showAlarms(RealmResults<Alarm> alarms) {
 
         }
+
+        @Override
+        public void showAddNewAlarmView(){}
     }
 }
