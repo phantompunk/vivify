@@ -1,5 +1,7 @@
 package com.rva.mrb.vivify.Model;
 
+import android.util.Log;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -23,15 +25,27 @@ public class RealmService {
     }
 
     public void addAlarmAsync(final String time, final boolean isSet, final boolean isStandardTime, final String repeat) {
-        mRealm.executeTransaction(new Realm.Transaction() {
+        mRealm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(final Realm realm) {
                 Alarm alarm = realm.createObject(Alarm.class);
-                alarm.setId(mRealm.where(Alarm.class).findAll().size());
+                alarm.setId(realm.where(Alarm.class).findAll().size());
                 alarm.setmTime(time);
                 alarm.setmAlarmSet(isSet);
                 alarm.setmStandardTime(isStandardTime);
                 alarm.setmRepeat(repeat);
+            }
+        }, new Realm.Transaction.OnSuccess() {
+
+            @Override
+            public void onSuccess() {
+                Log.d("successful", "Successful transaction!");
+            }
+        }, new Realm.Transaction.OnError(){
+
+            @Override
+            public void onError(Throwable error) {
+                Log.d("error", error.getMessage());
             }
         });
     }

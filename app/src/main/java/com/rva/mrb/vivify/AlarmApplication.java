@@ -31,6 +31,8 @@ public class AlarmApplication extends Application {
     }
 
     public ApplicationComponent getComponent() {
-        return mComponent;
+        return DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule(this))
+                .build();
     }
 }
