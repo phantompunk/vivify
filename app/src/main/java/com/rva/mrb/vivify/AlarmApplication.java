@@ -1,17 +1,15 @@
 package com.rva.mrb.vivify;
 
 import android.app.Application;
-import android.support.annotation.NonNull;
+
+import com.facebook.stetho.Stetho;
+import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
-/**
- * Created by Bao on 6/24/16.
- */
 public class AlarmApplication extends Application {
     private ApplicationComponent mComponent;
-
 
     @Override
     public void onCreate() {
@@ -21,6 +19,7 @@ public class AlarmApplication extends Application {
                 .build();
 
         initRealmConfiguration();
+        initStethoBrowser();
     }
 
     private void initRealmConfiguration() {
@@ -34,5 +33,13 @@ public class AlarmApplication extends Application {
         return DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this))
                 .build();
+    }
+
+    public void initStethoBrowser() {
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
+                        .build());
     }
 }
