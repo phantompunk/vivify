@@ -1,6 +1,9 @@
 package com.rva.mrb.vivify.View.Alarm;
 
+import com.rva.mrb.vivify.Model.Alarm;
 import com.rva.mrb.vivify.Model.RealmService;
+
+import io.realm.RealmList;
 
 /**
  * Created by Bao on 6/24/16.
@@ -18,6 +21,14 @@ public class AlarmPresenterImpl implements AlarmsPresenter {
 
     public String getRSMessage(){
         return mRealmService.getMessage();
+    }
+
+    @Override
+    public RealmList<Alarm> getAllAlarms() {
+        RealmList<Alarm> alarms = new RealmList<Alarm>();
+        for (Alarm alarm : mRealmService.getAllAlarms())
+            alarms.add(alarm);
+        return alarms;
     }
 
     public String getMessage(){

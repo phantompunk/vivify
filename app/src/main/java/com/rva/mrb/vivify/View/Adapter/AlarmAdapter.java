@@ -76,7 +76,7 @@ implements RealmChangeListener {
             ButterKnife.bind(this, view);
         }
 
-        public void bind(Alarm alarm) { mAlarmTV.setText(alarm.getName()); }
+        public void bind(Alarm alarm) { mAlarmTV.setText(alarm.getmTime()); }
 
     }
 

@@ -8,9 +8,6 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-/**
- * Created by rigo on 6/23/16.
- */
 public class Alarm extends RealmObject implements ParentListItem{
 
     @PrimaryKey
@@ -29,6 +26,10 @@ public class Alarm extends RealmObject implements ParentListItem{
     public Alarm(String name, RealmList<AlarmInfo> info) {
         mName = name;
         mAlarmInfo = info;
+    }
+
+    public RealmList<AlarmInfo> getmAlarmInfo() {
+        return mAlarmInfo;
     }
 
     public String getName() { return mName; }

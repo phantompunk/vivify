@@ -3,11 +3,9 @@ package com.rva.mrb.vivify.Model;
 import android.util.Log;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
-/**
- * Created by Bao on 6/24/16.
- */
 public class RealmService {
 
     private final Realm mRealm;
@@ -34,6 +32,9 @@ public class RealmService {
                 alarm.setmAlarmSet(isSet);
                 alarm.setmStandardTime(isStandardTime);
                 alarm.setmRepeat(repeat);
+                AlarmInfo x = new AlarmInfo(repeat);
+                alarm.getmAlarmInfo().add(x);
+
             }
         }, new Realm.Transaction.OnSuccess() {
 
@@ -49,6 +50,7 @@ public class RealmService {
             }
         });
     }
+
     public String getMessage(){
         return "From realmService!!";
     }
@@ -56,8 +58,6 @@ public class RealmService {
     public void closeRealm() {
         mRealm.close();
     }
-
-
 
     public interface OnTransactionCallback {
         void onRealmSuccess();

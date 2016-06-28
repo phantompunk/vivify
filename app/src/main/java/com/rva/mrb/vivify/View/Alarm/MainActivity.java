@@ -1,7 +1,10 @@
 package com.rva.mrb.vivify.View.Alarm;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
@@ -27,6 +30,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
@@ -61,14 +65,15 @@ public class MainActivity extends BaseActivity implements AlarmsView, AlarmAdapt
         alarmComponent.inject(this);
         ButterKnife.bind(this);
 
-        AlarmInfo bird = new AlarmInfo(alarmPresenter.getMessage());
-        AlarmInfo owl = new AlarmInfo(alarmPresenter.getRSMessage());
-        RealmList<AlarmInfo> a = new RealmList<>(bird);
-        RealmList<AlarmInfo> b = new RealmList<>(owl);
-        Alarm early = new Alarm("EarlyBird", a);
-        Alarm midnight = new Alarm("MidnightOwl", b);
-        alarms = Arrays.asList(early, midnight);
-        initializeAlarmsList(alarms);
+//        AlarmInfo bird = new AlarmInfo(alarmPresenter.getMessage());
+//        AlarmInfo owl = new AlarmInfo(alarmPresenter.getRSMessage());
+//        RealmList<AlarmInfo> a = new RealmList<>(bird);
+//        RealmList<AlarmInfo> b = new RealmList<>(owl);
+//        Alarm early = new Alarm("Wake up in 15s", a);
+//        Alarm midnight = new Alarm("MidnightOwl", b);
+//        alarms = Arrays.asList(early, midnight);
+//        alarmPresenter.addAlarm(early);
+        initializeAlarmsList(alarmPresenter.getAllAlarms());
 
     }
 
@@ -120,6 +125,7 @@ public class MainActivity extends BaseActivity implements AlarmsView, AlarmAdapt
     public void onAddNewAlarmClick(){
         Log.d("MyApp", "Fab Click");
         alarmPresenter.onAddNewAlarm();}
+
 
     public void closeRealm(){
         alarmPresenter.closeRealm();
