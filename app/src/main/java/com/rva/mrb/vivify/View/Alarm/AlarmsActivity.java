@@ -48,28 +48,28 @@ public class AlarmsActivity extends AppCompatActivity {
         Alarm midnight = new Alarm("MidnightOwl", b);
         alarms = Arrays.asList(early, midnight);
 
-        initializeAlarmsList(alarms);
+//        initializeAlarmsList(alarms);
 
     }
 
-    public void initializeAlarmsList(final List<Alarm> alarms) {
-        mAlarmAdapter = new AlarmAdapter(this, alarms);
-        mAlarmAdapter.setExpandCollapseListener(new ExpandableRecyclerAdapter.ExpandCollapseListener() {
-
-            @Override
-            public void onListItemExpanded(int position) {
-                Alarm expandedAlarm = alarms.get(position);
-            }
-
-            @Override
-            public void onListItemCollapsed(int position) {
-                Alarm collaspedAlarm = alarms.get(position);
-            }
-        });
-
-        mRecyclerView.setAdapter(mAlarmAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
+//    public void initializeAlarmsList(final List<Alarm> alarms) {
+//        mAlarmAdapter = new AlarmAdapter(this, alarms);
+//        mAlarmAdapter.setExpandCollapseListener(new ExpandableRecyclerAdapter.ExpandCollapseListener() {
+//
+//            @Override
+//            public void onListItemExpanded(int position) {
+//                Alarm expandedAlarm = alarms.get(position);
+//            }
+//
+//            @Override
+//            public void onListItemCollapsed(int position) {
+//                Alarm collaspedAlarm = alarms.get(position);
+//            }
+//        });
+//
+//        mRecyclerView.setAdapter(mAlarmAdapter);
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+//    }
 
     @OnClick(R.id.fab)
     public void onAddNewAlarmClick(){mAlarmsPresenter.onAddNewAlarm();}

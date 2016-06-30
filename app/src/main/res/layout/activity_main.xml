@@ -7,10 +7,13 @@
     android:fitsSystemWindows="true"
     tools:context="com.rva.mrb.vivify.View.Alarm.MainActivity">
 
-    <android.support.v7.widget.RecyclerView
+    <co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:rrvIsRefreshable="true"
+        app:rrvEmptyLayoutId="@layout/empyt_view"
+        app:rrvLayoutType="LinearLayout" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

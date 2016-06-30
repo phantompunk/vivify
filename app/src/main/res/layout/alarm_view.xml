@@ -11,8 +11,13 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textSize="16sp"
-        android:textStyle="bold"/>
-    <CheckBox
+        android:textStyle="bold"
+        android:textColor="@android:color/black"/>
+
+    <Switch
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:id="@+id/switch1"
+        android:layout_weight="1" />
+
 </LinearLayout>
