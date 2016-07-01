@@ -4,6 +4,7 @@ import com.rva.mrb.vivify.Model.Alarm;
 import com.rva.mrb.vivify.Model.RealmService;
 
 import io.realm.RealmList;
+import io.realm.RealmResults;
 
 /**
  * Created by Bao on 6/24/16.
@@ -24,11 +25,11 @@ public class AlarmPresenterImpl implements AlarmsPresenter {
     }
 
     @Override
-    public RealmList<Alarm> getAllAlarms() {
-        RealmList<Alarm> alarms = new RealmList<Alarm>();
-        for (Alarm alarm : mRealmService.getAllAlarms())
-            alarms.add(alarm);
-        return alarms;
+    public RealmResults<Alarm> getAllAlarms() {
+//        RealmList<Alarm> alarms = new RealmList<Alarm>();
+//        for (Alarm alarm : mRealmService.getAllAlarms())
+//            alarms.add(alarm);
+        return mRealmService.getAllAlarms();
     }
 
     public String getMessage(){

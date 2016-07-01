@@ -28,12 +28,10 @@ public class RealmService {
             public void execute(final Realm realm) {
                 Alarm alarm = realm.createObject(Alarm.class);
                 alarm.setId(realm.where(Alarm.class).findAll().size());
-                alarm.setmTime(time);
-                alarm.setmAlarmSet(isSet);
+                alarm.setmWakeTime(time);
+                alarm.setmIsSet(isSet);
                 alarm.setmStandardTime(isStandardTime);
                 alarm.setmRepeat(repeat);
-                AlarmInfo x = new AlarmInfo(repeat);
-                alarm.getmAlarmInfo().add(x);
 
             }
         }, new Realm.Transaction.OnSuccess() {
