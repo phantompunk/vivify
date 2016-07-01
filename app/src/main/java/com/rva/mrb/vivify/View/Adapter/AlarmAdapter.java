@@ -1,6 +1,8 @@
 package com.rva.mrb.vivify.View.Adapter;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -33,12 +35,18 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
     public void onBindRealmViewHolder(AlarmAdapter.ViewHolder viewHolder, int position) {
         final Alarm alarm = realmResults.get(position);
         viewHolder.timeTv.setText(alarm.getmWakeTime());
+        viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("CardView", "Click Success");
+            }
+        });
     }
 
     public class ViewHolder extends RealmViewHolder {
 
-        @BindView(R.id.alarm_tv)
-        TextView timeTv;
+        @BindView(R.id.alarm_tv) TextView timeTv;
+        @BindView(R.id.card_alarms) CardView cardView;
 
         public ViewHolder(View itemView) {
             super(itemView);
