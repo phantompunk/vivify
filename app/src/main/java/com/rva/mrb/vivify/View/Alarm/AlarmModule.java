@@ -12,8 +12,8 @@ import dagger.Provides;
 @Module
 public class AlarmModule {
 
-    private final MainActivity activity;
-    public AlarmModule(MainActivity activity){ this.activity = activity; };
+    private final AlarmActivity activity;
+    public AlarmModule(AlarmActivity activity){ this.activity = activity; };
 
     @Provides
     AlarmsPresenter providesAlarmPresenterImpl(RealmService realmService){

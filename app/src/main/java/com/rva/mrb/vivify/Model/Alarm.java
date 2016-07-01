@@ -8,33 +8,19 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class Alarm extends RealmObject implements ParentListItem{
+public class Alarm extends RealmObject {
 
     @PrimaryKey
     private int id;
-    private String mName;
-    private boolean mAlarmSet;
+    private String mAlarmName;
+    private boolean mIsSet;
     private boolean mStandardTime;
-    private String mTime;
+    private String mWakeTime;
     private String mRepeat;
-    private RealmList<AlarmInfo> mAlarmInfo;
 
     public Alarm() {
 
     }
-
-    public Alarm(String name, RealmList<AlarmInfo> info) {
-        mName = name;
-        mAlarmInfo = info;
-    }
-
-    public RealmList<AlarmInfo> getmAlarmInfo() {
-        return mAlarmInfo;
-    }
-
-    public String getName() { return mName; }
-
-    public RealmList<AlarmInfo> getChildItemList() { return mAlarmInfo; }
 
     public int getId() {
         return id;
@@ -44,20 +30,20 @@ public class Alarm extends RealmObject implements ParentListItem{
         this.id = id;
     }
 
-    public String getmName() {
-        return mName;
+    public String getmAlarmName() {
+        return mAlarmName;
     }
 
-    public void setmName(String mName) {
-        this.mName = mName;
+    public void setmAlarmName(String mAlarmName) {
+        this.mAlarmName = mAlarmName;
     }
 
-    public boolean ismAlarmSet() {
-        return mAlarmSet;
+    public boolean ismIsSet() {
+        return mIsSet;
     }
 
-    public void setmAlarmSet(boolean mAlarmSet) {
-        this.mAlarmSet = mAlarmSet;
+    public void setmIsSet(boolean mIsSet) {
+        this.mIsSet = mIsSet;
     }
 
     public boolean ismStandardTime() {
@@ -68,12 +54,12 @@ public class Alarm extends RealmObject implements ParentListItem{
         this.mStandardTime = mStandardTime;
     }
 
-    public String getmTime() {
-        return mTime;
+    public String getmWakeTime() {
+        return mWakeTime;
     }
 
-    public void setmTime(String mTime) {
-        this.mTime = mTime;
+    public void setmWakeTime(String mWakeTime) {
+        this.mWakeTime = mWakeTime;
     }
 
     public String getmRepeat() {
@@ -83,7 +69,4 @@ public class Alarm extends RealmObject implements ParentListItem{
     public void setmRepeat(String mRepeat) {
         this.mRepeat = mRepeat;
     }
-
-    @Override
-    public boolean isInitiallyExpanded() { return false; }
 }

@@ -3,7 +3,6 @@ package com.rva.mrb.vivify.View.Alarm;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.util.Log;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
@@ -21,7 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.RealmResults;
 
-public class MainActivity extends BaseActivity implements AlarmsView {
+public class AlarmActivity extends BaseActivity implements AlarmsView {
 
     @BindView(R.id.recyclerview) RealmRecyclerView mRecyclerView;
     private AlarmAdapter mAdapter;
@@ -32,7 +31,7 @@ public class MainActivity extends BaseActivity implements AlarmsView {
     AlarmsPresenter alarmPresenter;
 
     public static Intent newIntent(Context context) {
-        return new Intent(context, MainActivity.class);
+        return new Intent(context, AlarmActivity.class);
     }
 
     @Override
