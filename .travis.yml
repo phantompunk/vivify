@@ -1,16 +1,12 @@
 language: android
-jdk: oraclejdk7
-script: ./gradlew clean build
-
+jdk: oraclejdk8
 android:
   components:
     - tools
     - platform-tools
     - build-tools-23.0.3
     - android-23
-before_script:
-    - wget http://services.gradle.org/distributions/gradle-2.10-bin.zip
-    - unzip gradle-2.10-bin.zip
-    - export GRADLE_HOME=$PWD/gradle-2.10
-    - export PATH=$GRADLE_HOME/bin:$PATH
-sudo: false
+    - extra-android-support
+    - extra-android-m2repository
+    - extra-google-m2repository
+
