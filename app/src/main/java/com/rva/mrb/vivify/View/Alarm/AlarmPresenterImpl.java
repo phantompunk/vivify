@@ -36,14 +36,18 @@ public class AlarmPresenterImpl implements AlarmsPresenter {
         return "SUCESSFULL!!!";
     }
 
-    @Override
-    public void onAlarmClick(int id) {
-
-    }
+//    @Override
+//    public void onAlarmClick(int id) {
+//
+//    }
 
     @Override
     public void onAddNewAlarm() {
         mAlarmsView.showAddNewAlarmView();
+    }
+
+    public void onSearch() {
+        mAlarmsView.showSearchView();
     }
 
     @Override

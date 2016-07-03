@@ -1,6 +1,7 @@
 package com.rva.mrb.vivify.View.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
@@ -9,7 +10,10 @@ import android.widget.TextView;
 
 import com.rva.mrb.vivify.Model.Alarm;
 import com.rva.mrb.vivify.R;
+import com.rva.mrb.vivify.View.AddNewAlarm.NewAlarmActivity;
 
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +43,10 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
             @Override
             public void onClick(View view) {
                 Log.d("CardView", "Click Success");
+//                Context context = view.getContext();
+//                Intent intent = new Intent(context, NewAlarmActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                context.startActivity(intent);
             }
         });
     }

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.rva.mrb.vivify">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".AlarmApplication"
         android:allowBackup="true"
@@ -12,15 +14,27 @@
         <activity android:name=".View.Alarm.AlarmActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="android.intent.action.VIEW" />
+            <!--</intent-filter>-->
+            <!--<intent-filter>-->
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <!--<data-->
+                    <!--android:host="callback"-->
+                    <!--android:scheme="yourcustomprotocol" />-->
             </intent-filter>
         </activity>
         <activity
+            android:name="com.spotify.sdk.android.authentication.LoginActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <activity
             android:name=".View.AddNewAlarm.NewAlarmActivity"
             android:label="NewAlarmActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".View.Search.SearchActivity"
+            android:label="SearchActivity"></activity>
     </application>
 
 </manifest>
