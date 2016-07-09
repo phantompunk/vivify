@@ -7,6 +7,9 @@ import android.util.Log;
 import com.rva.mrb.vivify.AlarmApplication;
 import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
+import com.rva.mrb.vivify.Model.SpotifyClient;
+import com.rva.mrb.vivify.Model.SpotifyService;
+import com.rva.mrb.vivify.Model.User;
 import com.rva.mrb.vivify.R;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
@@ -22,12 +25,18 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SearchActivity extends BaseActivity implements SearchView,
         ConnectionStateCallback, PlayerNotificationCallback {
 
     @Inject
     SearchPresenter searchPresenter;
+
+    @Inject
+    SpotifyService spotifyService;
 
     // Spotify
     private static final String CLIENT_ID = "c07baf896d3a4b4b99c09fa61592eb1d";
@@ -85,20 +94,45 @@ public class SearchActivity extends BaseActivity implements SearchView,
     @OnClick(R.id.fab3)
     public void onSearchClick(){
         Log.d("MyApp", "Fab Click");
-//        alarmPresenter.onSearch();
-        mPlayer = Spotify.getPlayer(playerConfig, this, new Player.InitializationObserver() {
+        spotifyService.getUser("rmoran92").enqueue(new Callback<User>() {
             @Override
-            public void onInitialized(Player player) {
-                mPlayer.addConnectionStateCallback(SearchActivity.this);
-                mPlayer.addPlayerNotificationCallback(SearchActivity.this);
-                mPlayer.play("spotify:track:53XV0VrMvBcMBUWv5xSERU");
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful()) {
+                    User user = response.body();
+                    Log.d("SpotifyService", "Successful: " + response.isSuccessful());
+                    Log.d("SpotifyService", "Code:" + response.code());
+                    Log.d("SpotifyService", "Message:" + response.message());
+                    Log.d("SpotifyService", "Body:" + response.body());
+                    Log.d("SpotifyService", "Username:" + user.getDisplayName());
+                    Log.d("SpotifyService", "UserId:" + user.getId());
+                }
+                else {
+                    Log.d("SpotifyService", "Successful: " + response.isSuccessful());
+                    Log.d("SpotifyService", "Code:" + response.code());
+                    Log.d("SpotifyService", "Message:" + response.message());
+                    Log.d("SpotifyService", "Body:" + response.body());
+                }
             }
 
             @Override
-            public void onError(Throwable throwable) {
-                Log.e("MainActivity", "Could not initialize player: " + throwable.getMessage());
+            public void onFailure(Call<User> call, Throwable t) {
+
             }
         });
+//        alarmPresenter.onSearch();
+//        mPlayer = Spotify.getPlayer(playerConfig, this, new Player.InitializationObserver() {
+//            @Override
+//            public void onInitialized(Player player) {
+//                mPlayer.addConnectionStateCallback(SearchActivity.this);
+//                mPlayer.addPlayerNotificationCallback(SearchActivity.this);
+//                mPlayer.play("spotify:track:53XV0VrMvBcMBUWv5xSERU");
+//            }
+//
+//            @Override
+//            public void onError(Throwable throwable) {
+//                Log.e("MainActivity", "Could not initialize player: " + throwable.getMessage());
+//            }
+//        });
     }
 
     @Override

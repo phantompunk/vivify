@@ -13,6 +13,7 @@ import com.rva.mrb.vivify.Model.Alarm;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.Adapter.AlarmAdapter;
 import com.rva.mrb.vivify.View.AddNewAlarm.NewAlarmActivity;
+import com.rva.mrb.vivify.View.Search.SearchActivity;
 
 import javax.inject.Inject;
 import butterknife.BindView;
@@ -73,11 +74,21 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
         startActivity(new Intent(this, NewAlarmActivity.class));
     }
 
+    @Override
+    public void showSearchView() {
+        startActivity(new Intent(this, SearchActivity.class));
+    }
+
     @OnClick(R.id.fab)
     public void onAddNewAlarmClick(){
         Log.d("MyApp", "Fab Click");
         alarmPresenter.onAddNewAlarm();}
 
+    @OnClick(R.id.fab2)
+    public void onSearchClick(){
+        Log.d("MyApp", "Fab Click");
+        alarmPresenter.onSearch();
+    }
 
     public void closeRealm(){
         alarmPresenter.closeRealm();

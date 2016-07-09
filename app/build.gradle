@@ -54,6 +54,7 @@ dependencies {
 
     // Handles wrapping Java around a restful API service
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
 
     // Annotate fields to view ids
     compile 'com.jakewharton:butterknife:8.1.0'

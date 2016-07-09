@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.rva.mrb.vivify.Model.Alarm;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.AddNewAlarm.NewAlarmActivity;
+import com.rva.mrb.vivify.View.Alarm.AlarmsPresenter;
 
 
 import javax.inject.Inject;
@@ -22,6 +23,9 @@ import io.realm.RealmResults;
 import io.realm.RealmViewHolder;
 
 public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdapter.ViewHolder> {
+
+    @Inject
+    AlarmsPresenter alarmsPresenter;
 
     public AlarmAdapter(Context context, RealmResults<Alarm> realmResults,
             boolean automaticUpdate, boolean animateResults) {
@@ -43,6 +47,7 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
             @Override
             public void onClick(View view) {
                 Log.d("CardView", "Click Success");
+                alarmsPresenter.onSearch();
 //                Context context = view.getContext();
 //                Intent intent = new Intent(context, NewAlarmActivity.class);
 //                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

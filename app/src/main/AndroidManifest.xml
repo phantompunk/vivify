@@ -33,8 +33,11 @@
             android:name=".View.AddNewAlarm.NewAlarmActivity"
             android:label="NewAlarmActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".View.Search.SearchActivity"
-            android:label="SearchActivity"></activity>
+        <activity
+            android:name=".View.Search.SearchActivity"
+            android:label="SearchActivity">
+
+        </activity>
     </application>
 
 </manifest>
