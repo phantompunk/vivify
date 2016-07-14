@@ -47,7 +47,8 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
             @Override
             public void onClick(View view) {
                 Log.d("CardView", "Click Success");
-                alarmsPresenter.onSearch();
+//                Log.d("CardView", alarmsPresenter.getMessage());
+//                alarmsPresenter.onSearch();
 //                Context context = view.getContext();
 //                Intent intent = new Intent(context, NewAlarmActivity.class);
 //                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

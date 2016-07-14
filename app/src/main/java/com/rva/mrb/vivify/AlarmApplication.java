@@ -3,6 +3,8 @@ package com.rva.mrb.vivify;
 import android.app.Application;
 
 import com.facebook.stetho.Stetho;
+//import com.rva.mrb.vivify.View.Search.DaggerSearchComponent;
+import com.rva.mrb.vivify.View.Search.SearchComponent;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import io.realm.Realm;
@@ -10,6 +12,7 @@ import io.realm.RealmConfiguration;
 
 public class AlarmApplication extends Application {
     private ApplicationComponent mComponent;
+    private SearchComponent mSearchComponent;
 
     @Override
     public void onCreate() {
@@ -19,7 +22,14 @@ public class AlarmApplication extends Application {
                 .build();
 
         initRealmConfiguration();
+        initSpotifyClient();
         initStethoBrowser();
+    }
+
+    private void initSpotifyClient() {
+//        mSearchComponent = DaggerSearchComponent.builder()
+//                .applicationModule(new ApplicationModule(this))
+//                .searchModule(new )
     }
 
     private void initRealmConfiguration() {

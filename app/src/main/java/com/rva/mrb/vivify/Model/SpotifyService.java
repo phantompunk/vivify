@@ -49,6 +49,12 @@ public interface SpotifyService {
      * Tracks
      ***********/
 
+    @GET("browse/featured-playlists")
+    Call<Playlist> getFeaturedPlaylists();
+    /***********
+     * Tracks
+     ***********/
+
     @GET("/tracks/{id}")
     void getTrack(@Path("id") String trackId);
 
