@@ -7,26 +7,17 @@
     android:fitsSystemWindows="true"
     tools:context=".View.Alarm.AlarmActivity">
 
-    <co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView
-        android:id="@+id/recyclerview"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/search_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:rrvIsRefreshable="true"
-        app:rrvEmptyLayoutId="@layout/empyt_view"
-        app:rrvLayoutType="LinearLayout" />
+        android:layout_height="match_parent" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/fab3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"        android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_lock_idle_alarm" />
+        android:src="@android:drawable/ic_media_play" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"        android:layout_gravity="bottom|left"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_menu_search" />
 
 </android.support.design.widget.CoordinatorLayout>

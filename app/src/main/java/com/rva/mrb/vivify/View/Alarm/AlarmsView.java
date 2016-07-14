@@ -11,6 +11,7 @@ public interface AlarmsView {
 
     void showAlarms(RealmResults<Alarm> alarms);
     void showAddNewAlarmView();
+    void showSearchView();
 
     class EmptyAlarmsList implements AlarmsView {
 
@@ -21,5 +22,10 @@ public interface AlarmsView {
 
         @Override
         public void showAddNewAlarmView(){}
+
+        @Override
+        public void showSearchView() {
+
+        }
     }
 }

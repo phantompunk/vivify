@@ -10,9 +10,12 @@ import io.realm.RealmResults;
  * Created by rigo on 6/25/16.
  */
 public interface AlarmsPresenter extends BasePresenter<AlarmsView> {
-    void onAlarmClick(int id);
     void onAddNewAlarm();
-    String getMessage();
-    String getRSMessage();
+    void onSearch();
     RealmResults<Alarm> getAllAlarms();
+
+//    void onAlarmClick(int id);
+//    String getMessage();
+//    String getRSMessage();
+
 }
