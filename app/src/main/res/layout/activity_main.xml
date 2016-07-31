@@ -11,22 +11,18 @@
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="8dp"
         app:rrvIsRefreshable="true"
         app:rrvEmptyLayoutId="@layout/empyt_view"
         app:rrvLayoutType="LinearLayout" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/new_alarm_fab"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"        android:layout_gravity="bottom|end"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_lock_idle_alarm" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"        android:layout_gravity="bottom|left"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_menu_search" />
+        android:elevation="10dp"
+        android:src="@android:drawable/ic_input_add" />
 
 </android.support.design.widget.CoordinatorLayout>

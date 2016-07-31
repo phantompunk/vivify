@@ -10,9 +10,11 @@ import android.widget.TextView;
 
 import com.rva.mrb.vivify.Model.Alarm;
 import com.rva.mrb.vivify.R;
-import com.rva.mrb.vivify.View.AddNewAlarm.NewAlarmActivity;
+import com.rva.mrb.vivify.View.AddNewAlarm.AlarmDetailActivity;
 import com.rva.mrb.vivify.View.Alarm.AlarmsPresenter;
 
+
+import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
@@ -40,31 +42,45 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
     }
 
     @Override
-    public void onBindRealmViewHolder(AlarmAdapter.ViewHolder viewHolder, int position) {
+    public void onBindRealmViewHolder(AlarmAdapter.ViewHolder viewHolder, final int position) {
         final Alarm alarm = realmResults.get(position);
         viewHolder.timeTv.setText(alarm.getmWakeTime());
+        viewHolder.nameTv.setText(alarm.getmAlarmName());
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("CardView", "Click Success");
-//                Log.d("CardView", alarmsPresenter.getMessage());
-//                alarmsPresenter.onSearch();
-//                Context context = view.getContext();
-//                Intent intent = new Intent(context, NewAlarmActivity.class);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                context.startActivity(intent);
+                Log.d("CardViewOnClick", position+"");
+                Intent intent = new Intent(view.getContext(), AlarmDetailActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("NewAlarm", false);
+                intent.putExtra("Position", position);
+                view.getContext().startActivity(intent);
             }
         });
+//        notifyItemChanged(position);
     }
 
     public class ViewHolder extends RealmViewHolder {
 
         @BindView(R.id.alarm_tv) TextView timeTv;
         @BindView(R.id.card_alarms) CardView cardView;
+        @BindView(R.id.alarm_nametv) TextView nameTv;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Log.d("CardViewOnClick", (getAdapterPosition()+1)+"");
+//                    Intent intent = new Intent(view.getContext(), AlarmDetailActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    intent.putExtra("NewAlarm", false);
+//                    intent.putExtra("Position", getAdapterPosition()+1);
+//                    view.getContext().startActivity(intent);
+//                }
+//            });
         }
     }
 }

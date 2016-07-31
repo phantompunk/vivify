@@ -12,7 +12,7 @@ import com.rva.mrb.vivify.BaseActivity;
 import com.rva.mrb.vivify.Model.Alarm;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.Adapter.AlarmAdapter;
-import com.rva.mrb.vivify.View.AddNewAlarm.NewAlarmActivity;
+import com.rva.mrb.vivify.View.AddNewAlarm.AlarmDetailActivity;
 import com.rva.mrb.vivify.View.Search.SearchActivity;
 
 import javax.inject.Inject;
@@ -25,8 +25,6 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
 
     @BindView(R.id.recyclerview) RealmRecyclerView mRecyclerView;
     private AlarmAdapter mAdapter;
-//    private AlarmAdapter.OnAlarmClickListener mAlarmListner;
-
 
     @Inject
     AlarmsPresenter alarmPresenter;
@@ -49,7 +47,6 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
 
         mAdapter = new AlarmAdapter(getApplicationContext(), alarmPresenter.getAllAlarms(),true, true);
         mRecyclerView.setAdapter(mAdapter);
-
     }
 
     protected void onSaveInstanceState(Bundle outState) {
@@ -66,12 +63,18 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
         alarmPresenter.setView(this);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAdapter.notifyDataSetChanged();
+    }
+
     public void showAlarms(final RealmResults<Alarm> alarms) {
     }
 
     @Override
     public void showAddNewAlarmView() {
-        startActivity(new Intent(this, NewAlarmActivity.class));
+        startActivity(new Intent(this, AlarmDetailActivity.class));
     }
 
     @Override
@@ -79,20 +82,21 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
         startActivity(new Intent(this, SearchActivity.class));
     }
 
-    @OnClick(R.id.fab)
+    @OnClick(R.id.new_alarm_fab)
     public void onAddNewAlarmClick(){
         Log.d("MyApp", "Fab Click");
         alarmPresenter.onAddNewAlarm();}
 
-    @OnClick(R.id.fab2)
-    public void onSearchClick(){
-        Log.d("MyApp", "Fab Click");
-        alarmPresenter.onSearch();
-    }
+//    @OnClick(R.id.fab2)
+//    public void onSearchClick(){
+//        Log.d("MyApp", "Fab Click");
+//        alarmPresenter.onSearch();
+//    }
 
     public void closeRealm(){
         alarmPresenter.closeRealm();
     }
+
     public void onStop() {
         super.onStop();
         alarmPresenter.clearView();

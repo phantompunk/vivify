@@ -7,4 +7,11 @@
     <string name="isSet">On/Off</string>
     <string name="add_alarm">Add Alarm</string>
     <string name="search">Search</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="delete_alarm">Delete</string>
+    <string name="save_alarm">Save</string>
+    <string name="name">Alarm name</string>
 </resources>

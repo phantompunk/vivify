@@ -9,10 +9,10 @@ import dagger.Provides;
  * Created by Bao on 6/25/16.
  */
 @Module
-public class NewAlarmModule {
+public class AlarmDetailModule {
 
     @Provides
-    NewAlarmPresenter providesNewAlarmPresenterImpl(RealmService realmService){
-        return new NewAlarmPresenterImpl(realmService);
+    AlarmDetailPresenter providesNewAlarmPresenterImpl(RealmService realmService){
+        return new AlarmDetailPresenterImpl(realmService);
     }
 }

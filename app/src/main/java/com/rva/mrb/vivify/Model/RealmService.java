@@ -22,12 +22,61 @@ public class RealmService {
         return mRealm.where(Alarm.class).equalTo("id", alarmId).findFirst();
     }
 
-    public void addAlarmAsync(final String time, final boolean isSet, final boolean isStandardTime, final String repeat) {
+    public void saveAlarm(final int alarmId, final String name, final String time, final boolean isSet, final boolean isStandardTime, final String repeat) {
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Alarm editAlarm = realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
+                editAlarm.setmAlarmName(name);
+                editAlarm.setId(alarmId);
+                editAlarm.setmWakeTime(time);
+                editAlarm.setmIsSet(isSet);
+                editAlarm.setmStandardTime(isStandardTime);
+                editAlarm.setmRepeat(repeat);
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Log.d("EditAlarm", "Success");
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                Log.d("EditAlarm", "failed: " + error.getMessage());
+            }
+        });
+    }
+    public void deleteAlarm(final int alarmId) {
+        final Realm realm = Realm.getDefaultInstance();
+//        Log.d("Realm", realm.toString());
+        final RealmResults<Alarm> results = realm.where(Alarm.class).equalTo("id", alarmId).findAll();
+//        Log.d("realm", results.get(0).getmWakeTime());
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.where(Alarm.class).equalTo("id", alarmId).findAll().deleteAllFromRealm();
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Log.d("Successful", "Alarm deleted");
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                Log.d("Error", error.getMessage());
+            }
+        });
+    }
+
+    public void addAlarmAsync(final String name, final String time, final boolean isSet, final boolean isStandardTime, final String repeat) {
         mRealm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(final Realm realm) {
                 Alarm alarm = realm.createObject(Alarm.class);
                 alarm.setId(realm.where(Alarm.class).findAll().size());
+                alarm.setmAlarmName(name);
                 alarm.setmWakeTime(time);
                 alarm.setmIsSet(isSet);
                 alarm.setmStandardTime(isStandardTime);
