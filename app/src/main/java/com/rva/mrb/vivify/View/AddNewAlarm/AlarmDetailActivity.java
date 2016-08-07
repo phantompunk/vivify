@@ -23,29 +23,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * Created by Bao on 6/25/16.
- */
 public class AlarmDetailActivity extends BaseActivity implements AlarmDetailView {
 
-    @BindView(R.id.layout_container)
-    LinearLayout mLayoutContainer;
-    @BindView(R.id.edit_name)
-    EditText editname;
-    @BindView(R.id.edit_time)
-    EditText mEditTime;
-    @BindView(R.id.edit_repeat)
-    EditText mEditRepeat;
-    @BindView(R.id.isSet)
-    CheckBox mIsSet;
-    @BindView(R.id.standard_time)
-    CheckBox mStandardTime;
-    @BindView(R.id.button_add)
-    Button addbt;
-    @BindView(R.id.button_delete)
-    Button deletebt;
-    @BindView(R.id.button_save)
-    Button savebt;
+//    @BindView(R.id.layout_container)
+//    LinearLayout mLayoutContainer;
+    @BindView(R.id.edit_name) EditText editname;
+    @BindView(R.id.edit_time) EditText mEditTime;
+    @BindView(R.id.edit_repeat) EditText mEditRepeat;
+    @BindView(R.id.isSet) CheckBox mIsSet;
+    @BindView(R.id.standard_time) CheckBox mStandardTime;
+    @BindView(R.id.button_add) Button addbt;
+    @BindView(R.id.button_delete) Button deletebt;
+    @BindView(R.id.button_save) Button savebt;
 
     @Inject
     AlarmDetailPresenter alarmDetailPresenter;
@@ -62,7 +51,6 @@ public class AlarmDetailActivity extends BaseActivity implements AlarmDetailView
         alarmDetailComponent.inject(this);
         ButterKnife.bind(this);
         isNewAlarm();
-
     }
 
     private void isNewAlarm() {
@@ -112,6 +100,7 @@ public class AlarmDetailActivity extends BaseActivity implements AlarmDetailView
                 mStandardTime.isChecked(),
                 mEditRepeat.getText().toString()
                 );
+        finish();
     }
 
     @OnClick(R.id.button_delete)
@@ -119,6 +108,7 @@ public class AlarmDetailActivity extends BaseActivity implements AlarmDetailView
         Bundle bundle = getIntent().getExtras();
         if (bundle.getInt("Position") >= 0)
         alarmDetailPresenter.onDeleteAlarm(bundle.getInt("Position")+1);
+        finish();
     }
 
     @OnClick(R.id.button_save)
@@ -133,6 +123,7 @@ public class AlarmDetailActivity extends BaseActivity implements AlarmDetailView
                     mEditRepeat.getText().toString()
             );
         }
+        finish();
     }
 
     /**
@@ -147,7 +138,7 @@ public class AlarmDetailActivity extends BaseActivity implements AlarmDetailView
             @Override
             public void onTimeSet(TimePicker timePicker, int hour, int minute) {
                 String hrStr = String.valueOf(hour);
-                String minStr = (hour < 10) ? "0" + String.valueOf(minute) : String.valueOf(minute);
+                String minStr = (minute < 10) ? "0" + String.valueOf(minute) : String.valueOf(minute);
                 mEditTime.setText(hrStr + ":" + minStr);
             }
         }, hour, minute, false);

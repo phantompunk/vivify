@@ -5,10 +5,6 @@ import com.rva.mrb.vivify.ApplicationModule;
 
 import dagger.Component;
 
-/**
- * Created by Bao on 6/25/16.
- */
-
 @Component(modules = {ApplicationModule.class, AlarmDetailModule.class}, dependencies = {ApplicationComponent.class})
 public interface AlarmDetailComponent {
 

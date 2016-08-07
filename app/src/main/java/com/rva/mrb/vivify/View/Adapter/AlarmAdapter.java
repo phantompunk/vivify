@@ -6,6 +6,7 @@ import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.rva.mrb.vivify.Model.Alarm;
@@ -46,6 +47,7 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
         final Alarm alarm = realmResults.get(position);
         viewHolder.timeTv.setText(alarm.getmWakeTime());
         viewHolder.nameTv.setText(alarm.getmAlarmName());
+        viewHolder.isSet.setChecked(alarm.ismIsSet());
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,6 +67,7 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
         @BindView(R.id.alarm_tv) TextView timeTv;
         @BindView(R.id.card_alarms) CardView cardView;
         @BindView(R.id.alarm_nametv) TextView nameTv;
+        @BindView(R.id.alarm_is_set) Switch isSet;
 
         public ViewHolder(View itemView) {
             super(itemView);

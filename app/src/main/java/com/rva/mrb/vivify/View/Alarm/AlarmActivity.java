@@ -15,6 +15,9 @@ import com.rva.mrb.vivify.View.Adapter.AlarmAdapter;
 import com.rva.mrb.vivify.View.AddNewAlarm.AlarmDetailActivity;
 import com.rva.mrb.vivify.View.Search.SearchActivity;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +50,8 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
 
         mAdapter = new AlarmAdapter(getApplicationContext(), alarmPresenter.getAllAlarms(),true, true);
         mRecyclerView.setAdapter(mAdapter);
+
+
     }
 
     protected void onSaveInstanceState(Bundle outState) {
@@ -84,14 +89,16 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
 
     @OnClick(R.id.new_alarm_fab)
     public void onAddNewAlarmClick(){
+        Date time = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR, 6);
+        cal.set(Calendar.MINUTE, 45);
+        Log.d("Date", time.getTime()+"");
+        Log.d("Cal", cal.getTimeInMillis()+"");
+        Log.d("Cal", "Set for 6:45 " + cal.getTime());
         Log.d("MyApp", "Fab Click");
-        alarmPresenter.onAddNewAlarm();}
-
-//    @OnClick(R.id.fab2)
-//    public void onSearchClick(){
-//        Log.d("MyApp", "Fab Click");
-//        alarmPresenter.onSearch();
-//    }
+        alarmPresenter.onAddNewAlarm();
+    }
 
     public void closeRealm(){
         alarmPresenter.closeRealm();
@@ -101,5 +108,4 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
         super.onStop();
         alarmPresenter.clearView();
     }
-
 }

@@ -14,4 +14,6 @@
     <string name="delete_alarm">Delete</string>
     <string name="save_alarm">Save</string>
     <string name="name">Alarm name</string>
+    <string name="title_activity_alert">AlertActivity</string>
+    <string name="dismiss">dismiss</string>
 </resources>

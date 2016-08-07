@@ -6,9 +6,6 @@ import com.rva.mrb.vivify.Model.RealmService;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
-/**
- * Created by Bao on 6/24/16.
- */
 public class AlarmPresenterImpl implements AlarmsPresenter {
 
     private final RealmService mRealmService;

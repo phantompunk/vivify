@@ -2,6 +2,8 @@ package com.rva.mrb.vivify.Model;
 
 import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import io.realm.RealmList;
@@ -17,7 +19,7 @@ public class Alarm extends RealmObject {
     private boolean mStandardTime;
     private String mWakeTime;
     private String mRepeat;
-
+    private Date time;
     public Alarm() {
 
     }
@@ -68,5 +70,13 @@ public class Alarm extends RealmObject {
 
     public void setmRepeat(String mRepeat) {
         this.mRepeat = mRepeat;
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
     }
 }

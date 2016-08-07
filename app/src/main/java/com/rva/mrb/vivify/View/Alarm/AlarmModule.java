@@ -5,10 +5,6 @@ import com.rva.mrb.vivify.Model.RealmService;
 import dagger.Module;
 import dagger.Provides;
 
-/**
- * Created by Bao on 6/24/16.
- * Dagger Module that provides an AlarmPresenter.
- */
 @Module
 public class AlarmModule {
 

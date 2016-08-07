@@ -15,9 +15,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by rigo on 7/5/16.
- */
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
 
     private Playlist playlists;
@@ -50,6 +47,4 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             ButterKnife.bind(this, itemView);
         }
     }
-
-
 }

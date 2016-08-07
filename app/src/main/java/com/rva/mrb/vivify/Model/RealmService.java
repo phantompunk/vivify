@@ -47,6 +47,7 @@ public class RealmService {
             }
         });
     }
+
     public void deleteAlarm(final int alarmId) {
         final Realm realm = Realm.getDefaultInstance();
 //        Log.d("Realm", realm.toString());

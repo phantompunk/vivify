@@ -35,7 +35,7 @@
     <Switch
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/switch1"
+        android:id="@+id/alarm_is_set"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"/>
 

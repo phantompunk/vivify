@@ -3,9 +3,6 @@ package com.rva.mrb.vivify.View.AddNewAlarm;
 import com.rva.mrb.vivify.Model.Alarm;
 import com.rva.mrb.vivify.Model.RealmService;
 
-/**
- * Created by Bao on 6/25/16.
- */
 public class AlarmDetailPresenterImpl implements AlarmDetailPresenter, RealmService.OnTransactionCallback {
 
     private final RealmService mRealmService;
