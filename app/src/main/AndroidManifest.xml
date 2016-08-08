@@ -3,6 +3,7 @@
     package="com.rva.mrb.vivify">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".AlarmApplication"
@@ -40,6 +41,10 @@
             android:name=".View.Alert.AlertActivity"
             android:label="@string/title_activity_alert"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <receiver android:name=".View.Alert.AlertReciever"/>
+        <service android:name=".View.Alert.AlarmService"
+            android:enabled="true">
+        </service>
     </application>
 
 </manifest>

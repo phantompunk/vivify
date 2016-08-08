@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="8dp"
-        app:rrvIsRefreshable="true"
+        app:rrvIsRefreshable="false"
         app:rrvEmptyLayoutId="@layout/empyt_view"
         app:rrvLayoutType="LinearLayout" />
 
