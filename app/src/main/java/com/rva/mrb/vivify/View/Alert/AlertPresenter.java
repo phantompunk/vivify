@@ -1,7 +1,6 @@
 package com.rva.mrb.vivify.View.Alert;
 
-/**
- * Created by rigo on 8/6/16.
- */
-public interface AlertPresenter {
+import com.rva.mrb.vivify.BasePresenter;
+
+public interface AlertPresenter extends BasePresenter<AlertView> {
 }

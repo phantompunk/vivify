@@ -1,7 +1,10 @@
 package com.rva.mrb.vivify.View.Alarm;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +16,8 @@ import com.rva.mrb.vivify.Model.Alarm;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.Adapter.AlarmAdapter;
 import com.rva.mrb.vivify.View.AddNewAlarm.AlarmDetailActivity;
+import com.rva.mrb.vivify.View.Alert.AlertActivity;
+import com.rva.mrb.vivify.View.Alert.AlertReciever;
 import com.rva.mrb.vivify.View.Search.SearchActivity;
 
 import java.util.Calendar;
@@ -29,8 +34,10 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
     @BindView(R.id.recyclerview) RealmRecyclerView mRecyclerView;
     private AlarmAdapter mAdapter;
 
-    @Inject
-    AlarmsPresenter alarmPresenter;
+    @Inject AlarmsPresenter alarmPresenter;
+
+    private AlarmManager alarmManager;
+    private PendingIntent alarmIntent;
 
     public static Intent newIntent(Context context) {
         return new Intent(context, AlarmActivity.class);
@@ -51,7 +58,17 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
         mAdapter = new AlarmAdapter(getApplicationContext(), alarmPresenter.getAllAlarms(),true, true);
         mRecyclerView.setAdapter(mAdapter);
 
+        alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(AlarmActivity.this, AlertReciever.class);
+        alarmIntent = PendingIntent.getBroadcast(AlarmActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        cal.set(Calendar.HOUR_OF_DAY, 5);
+        cal.set(Calendar.MINUTE, 34);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()
+                + 60*100, 1000*60*20, alarmIntent);
     }
 
     protected void onSaveInstanceState(Bundle outState) {
