@@ -16,6 +16,7 @@ import com.rva.mrb.vivify.Model.Alarm;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.Adapter.AlarmAdapter;
 import com.rva.mrb.vivify.View.AddNewAlarm.AlarmDetailActivity;
+import com.rva.mrb.vivify.View.AlarmSetupManager;
 import com.rva.mrb.vivify.View.Alert.AlertActivity;
 import com.rva.mrb.vivify.View.Alert.AlertReciever;
 import com.rva.mrb.vivify.View.Search.SearchActivity;
@@ -59,7 +60,7 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
         mRecyclerView.setAdapter(mAdapter);
 
         alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(AlarmActivity.this, AlertReciever.class);
+        Intent intent = new Intent(AlarmActivity.this, AlarmSetupManager.class);
         alarmIntent = PendingIntent.getBroadcast(AlarmActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar cal = Calendar.getInstance();
@@ -68,7 +69,7 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
         cal.set(Calendar.MINUTE, 34);
 
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()
-                + 60*100, 1000*60*20, alarmIntent);
+                + 60*100, 1000*60*2, alarmIntent);
     }
 
     protected void onSaveInstanceState(Bundle outState) {
@@ -106,14 +107,14 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
 
     @OnClick(R.id.new_alarm_fab)
     public void onAddNewAlarmClick(){
-        Date time = new Date();
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR, 6);
-        cal.set(Calendar.MINUTE, 45);
-        Log.d("Date", time.getTime()+"");
-        Log.d("Cal", cal.getTimeInMillis()+"");
-        Log.d("Cal", "Set for 6:45 " + cal.getTime());
-        Log.d("MyApp", "Fab Click");
+//        Date time = new Date();
+//        Calendar cal = Calendar.getInstance();
+//        cal.set(Calendar.HOUR, 6);
+//        cal.set(Calendar.MINUTE, 45);
+//        Log.d("Date", time.getTime()+"");
+//        Log.d("Cal", cal.getTimeInMillis()+"");
+//        Log.d("Cal", "Set for 6:45 " + cal.getTime());
+//        Log.d("MyApp", "Fab Click");
         alarmPresenter.onAddNewAlarm();
     }
 

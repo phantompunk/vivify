@@ -37,6 +37,7 @@ public class AlarmDetailPresenterImpl implements AlarmDetailPresenter, RealmServ
     @Override
     public void onAddClick(String name,String time, boolean isSet, boolean isStandardTime, String repeat) {
         mRealmService.addAlarmAsync(name, time, isSet, isStandardTime, repeat);
+        // call static alarmsetupmanager
     }
 
     @Override

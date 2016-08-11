@@ -34,6 +34,9 @@ public class AlertActivity extends BaseActivity {
 
     }
 
+//    @Override
+//    protected void onResume() {}
+
     @Override
     protected void closeRealm() {
 
