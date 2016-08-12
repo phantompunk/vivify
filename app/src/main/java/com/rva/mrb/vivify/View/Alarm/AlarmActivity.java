@@ -56,17 +56,17 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
         mAdapter = new AlarmAdapter(getApplicationContext(), alarmPresenter.getAllAlarms(),true, true);
         mRecyclerView.setAdapter(mAdapter);
 
-        alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(AlarmActivity.this, WakeReceiver.class);
-        alarmIntent = PendingIntent.getBroadcast(AlarmActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+//        Intent intent = new Intent(AlarmActivity.this, WakeReceiver.class);
+//        alarmIntent = PendingIntent.getBroadcast(AlarmActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(System.currentTimeMillis());
-        cal.set(Calendar.HOUR_OF_DAY, 5);
-        cal.set(Calendar.MINUTE, 34);
-
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()
-                + 60*100, 1000*60*2, alarmIntent);
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTimeInMillis(System.currentTimeMillis());
+//        cal.set(Calendar.HOUR_OF_DAY, 5);
+//        cal.set(Calendar.MINUTE, 34);
+//
+//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()
+//                + 60*100, 1000*60*2, alarmIntent);
     }
 
     protected void onSaveInstanceState(Bundle outState) {

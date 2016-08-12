@@ -13,6 +13,7 @@ import com.rva.mrb.vivify.AlarmApplication;
 import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
 import com.rva.mrb.vivify.Model.Data.Alarm;
+import com.rva.mrb.vivify.Model.Service.AlarmScheduler;
 import com.rva.mrb.vivify.R;
 
 import javax.inject.Inject;
@@ -92,12 +93,14 @@ public class DetailActivity extends BaseActivity implements DetailView {
     @OnClick(R.id.button_add)
     public void onAddClick() {
         detailPresenter.onAddClick(
+                getApplicationContext(),
                 editname.getText().toString(),
                 mEditTime.getText().toString(),
                 mIsSet.isChecked(),
                 mStandardTime.isChecked(),
                 mEditRepeat.getText().toString()
                 );
+        AlarmScheduler.setNextAlarm(getApplicationContext(),0);
         finish();
     }
 

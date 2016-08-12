@@ -1,11 +1,16 @@
 package com.rva.mrb.vivify.Model.Service;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.support.v4.content.WakefulBroadcastReceiver;
+import android.util.Log;
 
 import com.rva.mrb.vivify.AlarmApplication;
 import com.rva.mrb.vivify.ApplicationModule;
+import com.rva.mrb.vivify.Model.Data.Alarm;
 import com.rva.mrb.vivify.Model.RealmHelper.DaggerRealmHelperComponent;
 import com.rva.mrb.vivify.Model.RealmHelper.RealmHelper;
 import com.rva.mrb.vivify.Model.RealmHelper.RealmHelperComponent;
@@ -15,7 +20,8 @@ import javax.inject.Inject;
 
 public class AlarmScheduler extends WakefulBroadcastReceiver{
 
-    @Inject RealmHelper realmHelper;
+    @Inject static RealmHelper realmHelper;
+//    static AlarmManager alarmManager;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -25,32 +31,30 @@ public class AlarmScheduler extends WakefulBroadcastReceiver{
                 .applicationComponent(((AlarmApplication) context.getApplicationContext()).getComponent())
                 .build();
         realmHelperComponent.inject(this);
+
+        Log.d("AlarmScheduler", "On Receive Success!!");
     }
 
 
 
     public static void setNextAlarm(Context context, int alarmId) {
-        /*alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(AlarmActivity.this, AlarmsdfsSetupManager.class);
-        alarmIntent = PendingIntent.getBroadcast(AlarmActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(System.currentTimeMillis());
-        cal.set(Calendar.HOUR_OF_DAY, 5);
-        cal.set(Calendar.MINUTE, 34);
-
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()
-                + 60*100, 1000*60*2, alarmIntent);*/
-       /* AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Log.d("SetNextAlarm", "Called by Detail Presenter");
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Alarm alarm = null; // alarmhelp get alarm
 
-        Intent intent = new Intent(context, AlerteReciever.class);
+        Intent intent = new Intent(context, WakeReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()+
-                1000*30, pendingIntent);*/
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()+
+                100*60, 60*1000, pendingIntent);
+//        Log.d("realm", realmHelper.);
+        Log.d("Manager", "Trigger time: " +alarmManager);
     }
 
     public static void cancelNextAlarm(Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, WakeReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0 , intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        alarmManager.cancel(pendingIntent);
 
     }
 
