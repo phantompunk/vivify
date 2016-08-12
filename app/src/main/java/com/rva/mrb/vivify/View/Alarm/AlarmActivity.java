@@ -7,22 +7,19 @@ import android.content.Intent;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
-import android.util.Log;
+
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import com.rva.mrb.vivify.AlarmApplication;
 import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
-import com.rva.mrb.vivify.Model.Alarm;
+import com.rva.mrb.vivify.Model.Data.Alarm;
+import com.rva.mrb.vivify.Model.Service.WakeReceiver;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.Adapter.AlarmAdapter;
-import com.rva.mrb.vivify.View.AddNewAlarm.AlarmDetailActivity;
-import com.rva.mrb.vivify.View.AlarmSetupManager;
-import com.rva.mrb.vivify.View.Alert.AlertActivity;
-import com.rva.mrb.vivify.View.Alert.AlertReciever;
+import com.rva.mrb.vivify.View.Detail.DetailActivity;
 import com.rva.mrb.vivify.View.Search.SearchActivity;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import javax.inject.Inject;
 import butterknife.BindView;
@@ -60,7 +57,7 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
         mRecyclerView.setAdapter(mAdapter);
 
         alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(AlarmActivity.this, AlarmSetupManager.class);
+        Intent intent = new Intent(AlarmActivity.this, WakeReceiver.class);
         alarmIntent = PendingIntent.getBroadcast(AlarmActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar cal = Calendar.getInstance();
@@ -97,7 +94,7 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
 
     @Override
     public void showAddNewAlarmView() {
-        startActivity(new Intent(this, AlarmDetailActivity.class));
+        startActivity(new Intent(this, DetailActivity.class));
     }
 
     @Override

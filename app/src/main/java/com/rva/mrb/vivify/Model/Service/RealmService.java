@@ -1,9 +1,10 @@
-package com.rva.mrb.vivify.Model;
+package com.rva.mrb.vivify.Model.Service;
 
 import android.util.Log;
 
+import com.rva.mrb.vivify.Model.Data.Alarm;
+
 import io.realm.Realm;
-import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class RealmService {
@@ -20,6 +21,11 @@ public class RealmService {
 
     public Alarm getAlarm(final int alarmId) {
         return mRealm.where(Alarm.class).equalTo("id", alarmId).findFirst();
+    }
+
+    // Return the the newest alarm by pulling the highest alarm id
+    public Alarm getNewestAlarm() {
+        return mRealm.where(Alarm.class).findAll().last();
     }
 
     public void saveAlarm(final int alarmId, final String name, final String time, final boolean isSet, final boolean isStandardTime, final String repeat) {

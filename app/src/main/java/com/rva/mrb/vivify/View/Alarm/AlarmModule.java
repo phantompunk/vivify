@@ -1,6 +1,6 @@
 package com.rva.mrb.vivify.View.Alarm;
 
-import com.rva.mrb.vivify.Model.RealmService;
+import com.rva.mrb.vivify.Model.Service.RealmService;
 
 import dagger.Module;
 import dagger.Provides;

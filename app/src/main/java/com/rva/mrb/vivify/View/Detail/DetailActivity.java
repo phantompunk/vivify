@@ -1,4 +1,4 @@
-package com.rva.mrb.vivify.View.AddNewAlarm;
+package com.rva.mrb.vivify.View.Detail;
 
 import android.app.TimePickerDialog;
 import android.os.Bundle;
@@ -7,15 +7,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TimePicker;
 
 import com.rva.mrb.vivify.AlarmApplication;
 import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
-import com.rva.mrb.vivify.Model.Alarm;
+import com.rva.mrb.vivify.Model.Data.Alarm;
 import com.rva.mrb.vivify.R;
-import com.rva.mrb.vivify.View.Adapter.AlarmAdapter;
 
 import javax.inject.Inject;
 
@@ -23,7 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AlarmDetailActivity extends BaseActivity implements AlarmDetailView {
+public class DetailActivity extends BaseActivity implements DetailView {
 
 //    @BindView(R.id.layout_container)
 //    LinearLayout mLayoutContainer;
@@ -37,18 +35,18 @@ public class AlarmDetailActivity extends BaseActivity implements AlarmDetailView
     @BindView(R.id.button_save) Button savebt;
 
     @Inject
-    AlarmDetailPresenter alarmDetailPresenter;
+    DetailPresenter detailPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_alarm);
-        AlarmDetailComponent alarmDetailComponent = DaggerAlarmDetailComponent.builder()
+        DetailComponent detailComponent = DaggerDetailComponent.builder()
                 .applicationModule(new ApplicationModule((AlarmApplication) getApplication()))
-                .alarmDetailModule(new AlarmDetailModule())
+                .detailModule(new DetailModule())
                 .applicationComponent(((AlarmApplication) getApplication()).getComponent())
                 .build();
-        alarmDetailComponent.inject(this);
+        detailComponent.inject(this);
         ButterKnife.bind(this);
         isNewAlarm();
     }
@@ -63,7 +61,7 @@ public class AlarmDetailActivity extends BaseActivity implements AlarmDetailView
             }
             Log.d("Position", bundle.getInt("Position") + "");
             if (bundle.getInt("Position", -1) >= 0) {
-                Alarm alarm = alarmDetailPresenter.getAlarm(bundle.getInt("Position")+1 );
+                Alarm alarm = detailPresenter.getAlarm(bundle.getInt("Position")+1 );
                 Log.d("EditAlarm", alarm.getmWakeTime());
                 mEditTime.setText(alarm.getmWakeTime());
                 mIsSet.setChecked(alarm.ismIsSet());
@@ -77,23 +75,23 @@ public class AlarmDetailActivity extends BaseActivity implements AlarmDetailView
     @Override
     protected void onStart() {
         super.onStart();
-        alarmDetailPresenter.setView(this);
+        detailPresenter.setView(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        alarmDetailPresenter.clearView();
+        detailPresenter.clearView();
     }
 
     @Override
     protected void closeRealm() {
-        alarmDetailPresenter.closeRealm();
+        detailPresenter.closeRealm();
     }
 
     @OnClick(R.id.button_add)
     public void onAddClick() {
-        alarmDetailPresenter.onAddClick(
+        detailPresenter.onAddClick(
                 editname.getText().toString(),
                 mEditTime.getText().toString(),
                 mIsSet.isChecked(),
@@ -107,7 +105,7 @@ public class AlarmDetailActivity extends BaseActivity implements AlarmDetailView
     public void onDeleteAlarm() {
         Bundle bundle = getIntent().getExtras();
         if (bundle.getInt("Position") >= 0)
-        alarmDetailPresenter.onDeleteAlarm(bundle.getInt("Position")+1);
+        detailPresenter.onDeleteAlarm(bundle.getInt("Position")+1);
         finish();
     }
 
@@ -115,7 +113,7 @@ public class AlarmDetailActivity extends BaseActivity implements AlarmDetailView
     public void onSaveAlarm() {
         Bundle bundle = getIntent().getExtras();
         if (bundle.getInt("Position") >= 0) {
-            alarmDetailPresenter.onSaveAlarm(bundle.getInt("Position") + 1,
+            detailPresenter.onSaveAlarm(bundle.getInt("Position") + 1,
                     editname.getText().toString(),
                     mEditTime.getText().toString(),
                     mIsSet.isChecked(),

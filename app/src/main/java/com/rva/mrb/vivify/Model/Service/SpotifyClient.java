@@ -1,4 +1,4 @@
-package com.rva.mrb.vivify.Model;
+package com.rva.mrb.vivify.Model.Service;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;

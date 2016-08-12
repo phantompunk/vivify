@@ -1,8 +1,0 @@
-package com.rva.mrb.vivify.View.Alert;
-
-/**
- * Created by rigo on 8/6/16.
- */
-public interface AlertView {
-    class EmptypAlarmView implements AlertView {}
-}

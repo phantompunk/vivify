@@ -9,10 +9,8 @@ import android.util.Log;
 import com.rva.mrb.vivify.AlarmApplication;
 import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
-import com.rva.mrb.vivify.Model.Playlist;
-import com.rva.mrb.vivify.Model.SpotifyClient;
-import com.rva.mrb.vivify.Model.SpotifyService;
-import com.rva.mrb.vivify.Model.User;
+import com.rva.mrb.vivify.Model.Data.Playlist;
+import com.rva.mrb.vivify.Model.Service.SpotifyService;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.Adapter.SearchAdapter;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
@@ -23,7 +21,6 @@ import com.spotify.sdk.android.player.ConnectionStateCallback;
 import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.PlayerNotificationCallback;
 import com.spotify.sdk.android.player.PlayerState;
-import com.spotify.sdk.android.player.Spotify;
 
 import javax.inject.Inject;
 

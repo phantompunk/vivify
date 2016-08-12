@@ -1,9 +1,8 @@
 package com.rva.mrb.vivify.View.Alarm;
 
-import com.rva.mrb.vivify.Model.Alarm;
-import com.rva.mrb.vivify.Model.RealmService;
+import com.rva.mrb.vivify.Model.Data.Alarm;
+import com.rva.mrb.vivify.Model.Service.RealmService;
 
-import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class AlarmPresenterImpl implements AlarmsPresenter {

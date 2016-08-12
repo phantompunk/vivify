@@ -1,14 +1,14 @@
-package com.rva.mrb.vivify.View.AddNewAlarm;
+package com.rva.mrb.vivify.View.Detail;
 
-import com.rva.mrb.vivify.Model.Alarm;
-import com.rva.mrb.vivify.Model.RealmService;
+import com.rva.mrb.vivify.Model.Data.Alarm;
+import com.rva.mrb.vivify.Model.Service.RealmService;
 
-public class AlarmDetailPresenterImpl implements AlarmDetailPresenter, RealmService.OnTransactionCallback {
+public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTransactionCallback {
 
     private final RealmService mRealmService;
-    private AlarmDetailView mAlarmDetailView = new AlarmDetailView.EmptyAlarmDetailView();
+    private DetailView mDetailView = new DetailView.EmptyDetailView();
 
-    public AlarmDetailPresenterImpl(RealmService realmService){ mRealmService = realmService; }
+    public DetailPresenterImpl(RealmService realmService){ mRealmService = realmService; }
 
     public Alarm getAlarm(int index) {
         return mRealmService.getAlarm(index);
@@ -37,17 +37,18 @@ public class AlarmDetailPresenterImpl implements AlarmDetailPresenter, RealmServ
     @Override
     public void onAddClick(String name,String time, boolean isSet, boolean isStandardTime, String repeat) {
         mRealmService.addAlarmAsync(name, time, isSet, isStandardTime, repeat);
+        int newestAlarmId = mRealmService.getNewestAlarm().getId(); // getAlarm.last()
         // call static alarmsetupmanager
     }
 
     @Override
-    public void setView(AlarmDetailView view) {
-        mAlarmDetailView = view;
+    public void setView(DetailView view) {
+        mDetailView = view;
     }
 
     @Override
     public void clearView() {
-        mAlarmDetailView = new AlarmDetailView.EmptyAlarmDetailView();
+        mDetailView = new DetailView.EmptyDetailView();
     }
 
     @Override

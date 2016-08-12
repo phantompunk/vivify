@@ -1,9 +1,10 @@
-package com.rva.mrb.vivify.Model;
+package com.rva.mrb.vivify.Model.Service;
 
-import dagger.Provides;
+import com.rva.mrb.vivify.Model.Data.Playlist;
+import com.rva.mrb.vivify.Model.Data.User;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.Path;
 
 /**

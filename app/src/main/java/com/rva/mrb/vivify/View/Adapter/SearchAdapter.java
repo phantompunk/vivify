@@ -7,10 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.rva.mrb.vivify.Model.Playlist;
+import com.rva.mrb.vivify.Model.Data.Playlist;
 import com.rva.mrb.vivify.R;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

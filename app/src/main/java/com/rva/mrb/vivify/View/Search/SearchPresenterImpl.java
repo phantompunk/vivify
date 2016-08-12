@@ -1,6 +1,6 @@
 package com.rva.mrb.vivify.View.Search;
 
-import com.rva.mrb.vivify.Model.RealmService;
+import com.rva.mrb.vivify.Model.Service.RealmService;
 
 public class SearchPresenterImpl implements SearchPresenter{
 
