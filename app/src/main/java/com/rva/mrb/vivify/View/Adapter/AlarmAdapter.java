@@ -9,13 +9,11 @@ import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.rva.mrb.vivify.Model.Alarm;
+import com.rva.mrb.vivify.Model.Data.Alarm;
 import com.rva.mrb.vivify.R;
-import com.rva.mrb.vivify.View.AddNewAlarm.AlarmDetailActivity;
+import com.rva.mrb.vivify.View.Detail.DetailActivity;
 import com.rva.mrb.vivify.View.Alarm.AlarmsPresenter;
 
-
-import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
@@ -52,7 +50,7 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
             @Override
             public void onClick(View view) {
                 Log.d("CardViewOnClick", position+"");
-                Intent intent = new Intent(view.getContext(), AlarmDetailActivity.class);
+                Intent intent = new Intent(view.getContext(), DetailActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("NewAlarm", false);
                 intent.putExtra("Position", position);
@@ -77,7 +75,7 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
 //                @Override
 //                public void onClick(View view) {
 //                    Log.d("CardViewOnClick", (getAdapterPosition()+1)+"");
-//                    Intent intent = new Intent(view.getContext(), AlarmDetailActivity.class);
+//                    Intent intent = new Intent(view.getContext(), AlarmDDetailActivity.class);
 //                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                    intent.putExtra("NewAlarm", false);
 //                    intent.putExtra("Position", getAdapterPosition()+1);

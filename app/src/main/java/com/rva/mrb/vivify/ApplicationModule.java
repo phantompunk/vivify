@@ -1,10 +1,6 @@
 package com.rva.mrb.vivify;
 
-import android.app.Application;
-
-import com.rva.mrb.vivify.Model.RealmService;
-
-import javax.inject.Singleton;
+import com.rva.mrb.vivify.Model.Service.RealmService;
 
 import dagger.Module;
 import dagger.Provides;

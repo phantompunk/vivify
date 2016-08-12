@@ -1,9 +1,8 @@
 package com.rva.mrb.vivify.View.Alarm;
 
 import com.rva.mrb.vivify.BasePresenter;
-import com.rva.mrb.vivify.Model.Alarm;
+import com.rva.mrb.vivify.Model.Data.Alarm;
 
-import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public interface AlarmsPresenter extends BasePresenter<AlarmsView> {

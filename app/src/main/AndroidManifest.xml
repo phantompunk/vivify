@@ -31,22 +31,22 @@
             android:name="com.spotify.sdk.android.authentication.LoginActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
-            android:name=".View.AddNewAlarm.AlarmDetailActivity"
+            android:name=".View.Detail.DetailActivity"
             android:label="NewAlarmActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".View.Search.SearchActivity"
             android:label="SearchActivity"></activity>
         <activity
-            android:name=".View.Alert.AlertActivity"
+            android:name=".View.Wake.WakeActivity"
             android:label="@string/title_activity_alert"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <receiver android:name=".View.Alert.AlertReciever"/>
-        <service android:name=".View.Alert.AlarmService"
+        <receiver android:name=".Model.Service.WakeReceiver"/>
+        <receiver android:name=".Model.Service.AlarmScheduler"/>
+        <service android:name=".Model.Service.WakeService"
             android:enabled="true"
             android:exported="false">
         </service>
-        <receiver android:name=".View.AlarmSetupManager"/>
     </application>
 
 </manifest>

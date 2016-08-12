@@ -2,9 +2,8 @@ package com.rva.mrb.vivify.View.Search;
 
 import android.util.Log;
 
-import com.rva.mrb.vivify.Model.RealmService;
-import com.rva.mrb.vivify.Model.SpotifyClient;
-import com.rva.mrb.vivify.Model.SpotifyService;
+import com.rva.mrb.vivify.Model.Service.RealmService;
+import com.rva.mrb.vivify.Model.Service.SpotifyService;
 
 import java.io.IOException;
 

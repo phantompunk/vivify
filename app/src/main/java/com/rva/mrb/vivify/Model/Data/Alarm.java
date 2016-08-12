@@ -1,4 +1,4 @@
-package com.rva.mrb.vivify.Model;
+package com.rva.mrb.vivify.Model.Data;
 
 import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
 

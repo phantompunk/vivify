@@ -1,6 +1,6 @@
 package com.rva.mrb.vivify.View.Alarm;
 
-import com.rva.mrb.vivify.Model.Alarm;
+import com.rva.mrb.vivify.Model.Data.Alarm;
 
 import io.realm.RealmResults;
 
