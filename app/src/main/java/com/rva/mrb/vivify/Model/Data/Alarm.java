@@ -79,4 +79,5 @@ public class Alarm extends RealmObject {
     public void setTime(Date time) {
         this.time = time;
     }
+
 }

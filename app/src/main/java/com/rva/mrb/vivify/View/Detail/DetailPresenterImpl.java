@@ -1,6 +1,10 @@
 package com.rva.mrb.vivify.View.Detail;
 
+import android.content.Context;
+import android.util.Log;
+
 import com.rva.mrb.vivify.Model.Data.Alarm;
+import com.rva.mrb.vivify.Model.Service.AlarmScheduler;
 import com.rva.mrb.vivify.Model.Service.RealmService;
 
 public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTransactionCallback {
@@ -35,10 +39,11 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
     }
 
     @Override
-    public void onAddClick(String name,String time, boolean isSet, boolean isStandardTime, String repeat) {
+    public void onAddClick(Context context, String name, String time, boolean isSet, boolean isStandardTime, String repeat) {
         mRealmService.addAlarmAsync(name, time, isSet, isStandardTime, repeat);
-        int newestAlarmId = mRealmService.getNewestAlarm().getId(); // getAlarm.last()
-        // call static alarmsetupmanager
+        int newestAlarmId = mRealmService.getAllAlarms().size();
+        Log.d("realm", "Alarm id: " + newestAlarmId);// getAlarm.last()
+//        AlarmScheduler.setNextAlarm(context, newestAlarmId);
     }
 
     @Override
