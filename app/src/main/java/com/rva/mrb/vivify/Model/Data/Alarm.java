@@ -13,7 +13,7 @@ import io.realm.annotations.PrimaryKey;
 public class Alarm extends RealmObject {
 
     @PrimaryKey
-    private int id;
+    private String id;
     private String mAlarmName;
     private boolean mIsSet;
     private boolean mStandardTime;
@@ -24,11 +24,11 @@ public class Alarm extends RealmObject {
 
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

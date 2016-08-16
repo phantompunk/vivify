@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.util.Log;
 
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import com.rva.mrb.vivify.AlarmApplication;
@@ -20,6 +21,7 @@ import com.rva.mrb.vivify.View.Detail.DetailActivity;
 import com.rva.mrb.vivify.View.Search.SearchActivity;
 
 import java.util.Calendar;
+import java.util.UUID;
 
 import javax.inject.Inject;
 import butterknife.BindView;
@@ -56,6 +58,9 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
         mAdapter = new AlarmAdapter(getApplicationContext(), alarmPresenter.getAllAlarms(),true, true);
         mRecyclerView.setAdapter(mAdapter);
 
+        Log.d("UUID", "ID: " + UUID.randomUUID().toString());
+//        Log.d("UUID", "Node: " + UUID.randomUUID().node());
+//        Log.d("UUID", "Variant: " + UUID.randomUUID().variant());
 //        alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
 //        Intent intent = new Intent(AlarmActivity.this, WakeReceiver.class);
 //        alarmIntent = PendingIntent.getBroadcast(AlarmActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

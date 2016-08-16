@@ -43,17 +43,18 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
     @Override
     public void onBindRealmViewHolder(AlarmAdapter.ViewHolder viewHolder, final int position) {
         final Alarm alarm = realmResults.get(position);
+        Log.d("Alarm", "UUDI: " + alarm.getId());
         viewHolder.timeTv.setText(alarm.getmWakeTime());
         viewHolder.nameTv.setText(alarm.getmAlarmName());
         viewHolder.isSet.setChecked(alarm.ismIsSet());
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("CardViewOnClick", position+"");
+                Log.d("CardViewOnClick", "Success!");
                 Intent intent = new Intent(view.getContext(), DetailActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("NewAlarm", false);
-                intent.putExtra("Position", position);
+                intent.putExtra("AlarmID", alarm.getId());
                 view.getContext().startActivity(intent);
             }
         });
