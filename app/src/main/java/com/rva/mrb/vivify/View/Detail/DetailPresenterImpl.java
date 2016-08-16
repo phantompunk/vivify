@@ -14,17 +14,17 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
 
     public DetailPresenterImpl(RealmService realmService){ mRealmService = realmService; }
 
-    public Alarm getAlarm(int index) {
+    public Alarm getAlarm(String index) {
         return mRealmService.getAlarm(index);
     }
 
     @Override
-    public void onDeleteAlarm(int alarmid) {
+    public void onDeleteAlarm(String alarmid) {
         mRealmService.deleteAlarm(alarmid);
     }
 
     @Override
-    public void onSaveAlarm(int alarmid, String name, String time, boolean isSet, boolean isStandardTime, String repeat) {
+    public void onSaveAlarm(String alarmid, String name, String time, boolean isSet, boolean isStandardTime, String repeat) {
         mRealmService.saveAlarm(alarmid, name, time, isSet, isStandardTime, repeat);
     }
 

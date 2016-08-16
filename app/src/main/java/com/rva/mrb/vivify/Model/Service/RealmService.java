@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.rva.mrb.vivify.Model.Data.Alarm;
 
+import java.util.UUID;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -19,7 +21,7 @@ public class RealmService {
         return mRealm.where(Alarm.class).findAll();
     }
 
-    public Alarm getAlarm(final int alarmId) {
+    public Alarm getAlarm(final String alarmId) {
         return mRealm.where(Alarm.class).equalTo("id", alarmId).findFirst();
     }
 
@@ -28,7 +30,7 @@ public class RealmService {
         return mRealm.where(Alarm.class).findAll().last();
     }
 
-    public void saveAlarm(final int alarmId, final String name, final String time, final boolean isSet, final boolean isStandardTime, final String repeat) {
+    public void saveAlarm(final String alarmId, final String name, final String time, final boolean isSet, final boolean isStandardTime, final String repeat) {
         final Realm realm = Realm.getDefaultInstance();
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
@@ -54,7 +56,7 @@ public class RealmService {
         });
     }
 
-    public void deleteAlarm(final int alarmId) {
+    public void deleteAlarm(final String alarmId) {
         final Realm realm = Realm.getDefaultInstance();
 //        Log.d("Realm", realm.toString());
         final RealmResults<Alarm> results = realm.where(Alarm.class).equalTo("id", alarmId).findAll();
@@ -82,7 +84,7 @@ public class RealmService {
             @Override
             public void execute(final Realm realm) {
                 Alarm alarm = realm.createObject(Alarm.class);
-                alarm.setId(realm.where(Alarm.class).findAll().size());
+                alarm.setId(UUID.randomUUID().toString());
                 alarm.setmAlarmName(name);
                 alarm.setmWakeTime(time);
                 alarm.setmIsSet(isSet);
