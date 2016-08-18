@@ -72,6 +72,7 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
 //
 //        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()
 //                + 60*100, 1000*60*2, alarmIntent);
+        Log.d("NextAlarm", "Next wake time is" + alarmPresenter.getNextAlarmTime());
     }
 
     protected void onSaveInstanceState(Bundle outState) {

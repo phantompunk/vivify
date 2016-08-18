@@ -47,6 +47,7 @@ public class WakeActivity extends BaseActivity {
     @OnClick(R.id.dismiss_alarm)
     public void onDismiss() {
         AlarmScheduler.cancelNextAlarm(getApplicationContext());
+        finish();
     }
 
 }

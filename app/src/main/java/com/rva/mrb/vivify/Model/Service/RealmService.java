@@ -25,9 +25,33 @@ public class RealmService {
         return mRealm.where(Alarm.class).equalTo("id", alarmId).findFirst();
     }
 
+    public static void enableAlarm(final String alarmId) {
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Alarm alarm = realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
+                alarm.setEnabled(!alarm.isEnabled());
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Log.d("EditAlarm", "Alarm Enabled: " );
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                Log.d("EditAlarm", "failed: " + error.getMessage());
+            }
+        });
+    }
     // Return the the newest alarm by pulling the highest alarm id
-    public Alarm getNewestAlarm() {
-        return mRealm.where(Alarm.class).findAll().last();
+    public String getNextAlarm() {
+        if (mRealm.where(Alarm.class).equalTo("enabled",true).findAll().size() > 0)
+            return mRealm.where(Alarm.class).equalTo("enabled", true).findAll()
+                .sort("time").first().getmWakeTime();
+        else
+            return "No Alarm set";
     }
 
     public void saveAlarm(final String alarmId, final String name, final String time, final boolean isSet, final boolean isStandardTime, final String repeat) {
@@ -36,10 +60,11 @@ public class RealmService {
             @Override
             public void execute(Realm realm) {
                 Alarm editAlarm = realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
-                editAlarm.setmAlarmName(name);
+                editAlarm.setAlarmLabel(name);
                 editAlarm.setId(alarmId);
                 editAlarm.setmWakeTime(time);
-                editAlarm.setmIsSet(isSet);
+                editAlarm.setTime(time);
+                editAlarm.setEnabled(isSet);
                 editAlarm.setmStandardTime(isStandardTime);
                 editAlarm.setmRepeat(repeat);
             }
@@ -85,12 +110,13 @@ public class RealmService {
             public void execute(final Realm realm) {
                 Alarm alarm = realm.createObject(Alarm.class);
                 alarm.setId(UUID.randomUUID().toString());
-                alarm.setmAlarmName(name);
+                alarm.setAlarmLabel(name);
                 alarm.setmWakeTime(time);
-                alarm.setmIsSet(isSet);
+                alarm.setTime(time);
+                alarm.setEnabled(isSet);
                 alarm.setmStandardTime(isStandardTime);
                 alarm.setmRepeat(repeat);
-
+//                Log.d("Alarm"alarm.getTime();
             }
         }, new Realm.Transaction.OnSuccess() {
 

@@ -9,6 +9,8 @@ public interface AlarmsPresenter extends BasePresenter<AlarmsView> {
     void onAddNewAlarm();
     void onSearch();
     RealmResults<Alarm> getAllAlarms();
+
+    String getNextAlarmTime();
 //    void onAlarmClick(int id);
 //    String getMessage();
 //    String getRSMessage();

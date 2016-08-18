@@ -32,7 +32,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="@string/time"
-            android:text="6:45"
             android:inputType="time"
             android:focusable="false"
             android:clickable="true"

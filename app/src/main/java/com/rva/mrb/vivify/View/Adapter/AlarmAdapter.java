@@ -10,6 +10,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.rva.mrb.vivify.Model.Data.Alarm;
+import com.rva.mrb.vivify.Model.Service.RealmService;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.Detail.DetailActivity;
 import com.rva.mrb.vivify.View.Alarm.AlarmsPresenter;
@@ -45,8 +46,8 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
         final Alarm alarm = realmResults.get(position);
         Log.d("Alarm", "UUDI: " + alarm.getId());
         viewHolder.timeTv.setText(alarm.getmWakeTime());
-        viewHolder.nameTv.setText(alarm.getmAlarmName());
-        viewHolder.isSet.setChecked(alarm.ismIsSet());
+        viewHolder.nameTv.setText(alarm.getAlarmLabel());
+        viewHolder.isSet.setChecked(alarm.isEnabled());
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,6 +57,13 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
                 intent.putExtra("NewAlarm", false);
                 intent.putExtra("AlarmID", alarm.getId());
                 view.getContext().startActivity(intent);
+            }
+        });
+        viewHolder.isSet.setOnClickListener(new Switch.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("toggle", "Enable alarm toggle");
+                RealmService.enableAlarm(alarm.getId());
             }
         });
 //        notifyItemChanged(position);
