@@ -16,6 +16,8 @@ import com.rva.mrb.vivify.Model.Data.Alarm;
 import com.rva.mrb.vivify.Model.Service.AlarmScheduler;
 import com.rva.mrb.vivify.R;
 
+import java.util.Calendar;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -56,19 +58,24 @@ public class DetailActivity extends BaseActivity implements DetailView {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             if (bundle.getBoolean("NewAlarm", true) == false) {
+//                Log.d("DetailTime", detailPresenter.getCurrentTime());
+//                mEditTime.setText(detailPresenter.getCurrentTime());
                 addbt.setVisibility(View.GONE);
                 savebt.setVisibility(View.VISIBLE);
                 deletebt.setVisibility(View.VISIBLE);
             }
             Log.d("Position", bundle.getInt("Position") + "");
-            if (bundle.getInt("AlarmID", -1) >= 0) {
+            if (!bundle.getString("AlarmID").isEmpty()) {
                 Alarm alarm = detailPresenter.getAlarm(bundle.getString("AlarmID"));
                 Log.d("EditAlarm", alarm.getmWakeTime());
                 mEditTime.setText(alarm.getmWakeTime());
-                mIsSet.setChecked(alarm.ismIsSet());
+                mIsSet.setChecked(alarm.isEnabled());
                 mStandardTime.setChecked(alarm.ismStandardTime());
                 mEditRepeat.setText(alarm.getmRepeat());
             }
+        } else {
+            Log.d("DetailTime", detailPresenter.getCurrentTime());
+            mEditTime.setText(detailPresenter.getCurrentTime());
         }
     }
 
@@ -133,16 +140,21 @@ public class DetailActivity extends BaseActivity implements DetailView {
     @OnClick(R.id.edit_time)
     public void onPickTime() {
         Log.d("EditTime", "Click Success");
-        int hour = 8;
-        int minute = 00;
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+//        final Calendar cal = Calendar.getInstance();
+        TimePickerDialog timePickerDialog =
+                new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-                String hrStr = String.valueOf(hour);
-                String minStr = (minute < 10) ? "0" + String.valueOf(minute) : String.valueOf(minute);
-                mEditTime.setText(hrStr + ":" + minStr);
+//                detailPresenter.getTime(hour, minute);
+//                cal.set(Calendar.HOUR, hour);
+//                cal.set(Calendar.MINUTE, minute);
+//                Log.d("Alarm", "Alarm Date: " + cal.getTime());
+//                String hrStr = String.valueOf(hour);
+//                String minStr = (minute < 10) ? "0" + String.valueOf(minute) : String.valueOf(minute);
+                mEditTime.setText(detailPresenter.getTime(hour, minute));
             }
-        }, hour, minute, false);
+                    // Set Alarm time as default if it exists
+        }, detailPresenter.getCurrentHour(), detailPresenter.getCurrentMinute(), false);
         timePickerDialog.show();
     }
 }
