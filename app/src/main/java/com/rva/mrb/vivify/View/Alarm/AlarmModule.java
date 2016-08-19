@@ -14,6 +14,6 @@ public class AlarmModule {
     @Provides
     AlarmsPresenter providesAlarmPresenterImpl(RealmService realmService){
         return new AlarmPresenterImpl(realmService);
-    };
+    }
 
 }

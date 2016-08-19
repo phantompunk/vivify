@@ -47,9 +47,9 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
     @Override
     public void onAddClick(Context context, String name, String time, boolean isSet, boolean isStandardTime, String repeat) {
         mRealmService.addAlarmAsync(name, time, isSet, isStandardTime, repeat);
-        int newestAlarmId = mRealmService.getAllAlarms().size();
+        String newestAlarmId = mRealmService.getNewestAlarmId();
         Log.d("realm", "Alarm id: " + newestAlarmId); // getAlarm.last()
-//        AlarmScheduler.setNextAlarm(context, newestAlarmId);
+        AlarmScheduler.enableAlarmById(context, newestAlarmId);
     }
 
     public String getCurrentTime() {
@@ -62,7 +62,7 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
     public String getTime(int hour, int minute) {
         Calendar cal = Calendar.getInstance();
         Log.d("Calendar", "Current time " + cal.getTime());
-        cal.set(Calendar.HOUR, hour);
+        cal.set(Calendar.HOUR_OF_DAY, hour);
         Log.d("Calendar", "Hour set " + cal.getTime());
         cal.set(Calendar.MINUTE, minute);
         Log.d("Calendar", "Minute set " + cal.getTime());

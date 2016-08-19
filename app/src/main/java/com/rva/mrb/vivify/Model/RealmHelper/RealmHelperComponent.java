@@ -10,4 +10,5 @@ import dagger.Component;
     dependencies = ApplicationComponent.class)
 public interface RealmHelperComponent {
     void inject(AlarmScheduler alarmScheduler);
+//    RealmHelper getRealmHelper();
 }

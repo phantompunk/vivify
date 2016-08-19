@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import com.rva.mrb.vivify.AlarmApplication;
 import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
 import com.rva.mrb.vivify.Model.Data.Alarm;
+import com.rva.mrb.vivify.Model.Service.RealmService;
 import com.rva.mrb.vivify.Model.Service.WakeReceiver;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.Adapter.AlarmAdapter;
@@ -31,6 +33,7 @@ import io.realm.RealmResults;
 
 public class AlarmActivity extends BaseActivity implements AlarmsView {
 
+    public static final String TAG = AlarmActivity.class.getSimpleName();
     @BindView(R.id.recyclerview) RealmRecyclerView mRecyclerView;
     private AlarmAdapter mAdapter;
 
@@ -58,21 +61,14 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
         mAdapter = new AlarmAdapter(getApplicationContext(), alarmPresenter.getAllAlarms(),true, true);
         mRecyclerView.setAdapter(mAdapter);
 
+        alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         Log.d("UUID", "ID: " + UUID.randomUUID().toString());
-//        Log.d("UUID", "Node: " + UUID.randomUUID().node());
-//        Log.d("UUID", "Variant: " + UUID.randomUUID().variant());
-//        alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-//        Intent intent = new Intent(AlarmActivity.this, WakeReceiver.class);
-//        alarmIntent = PendingIntent.getBroadcast(AlarmActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-//        Calendar cal = Calendar.getInstance();
-//        cal.setTimeInMillis(System.currentTimeMillis());
-//        cal.set(Calendar.HOUR_OF_DAY, 5);
-//        cal.set(Calendar.MINUTE, 34);
-//
-//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()
-//                + 60*100, 1000*60*2, alarmIntent);
-        Log.d("NextAlarm", "Next wake time is" + alarmPresenter.getNextAlarmTime());
+        Log.d(TAG, "Next wake time is " + alarmPresenter.getNextAlarmTime());
+//        Log.d(TAG, "Pending alarm id is " + RealmService.getNextPendingAlarm().getTime());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if(alarmManager.getNextAlarmClock() != null)
+                Log.d(TAG, "Trigger time: " + alarmManager.getNextAlarmClock().getTriggerTime());
+        }
     }
 
     protected void onSaveInstanceState(Bundle outState) {

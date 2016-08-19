@@ -1,15 +1,19 @@
 package com.rva.mrb.vivify.Model.Service;
 
+import android.nfc.Tag;
 import android.util.Log;
 
 import com.rva.mrb.vivify.Model.Data.Alarm;
 
+import java.util.Calendar;
 import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class RealmService {
+
+    public static final String TAG = RealmService.class.getSimpleName();
 
     private final Realm mRealm;
 
@@ -22,34 +26,67 @@ public class RealmService {
     }
 
     public Alarm getAlarm(final String alarmId) {
+        Log.d(TAG, "Alarm id: " + mRealm.where(Alarm.class).equalTo("id", alarmId).findFirst()
+                .getId());
         return mRealm.where(Alarm.class).equalTo("id", alarmId).findFirst();
+    }
+
+    public static Alarm getAlarmById(final String alarmId) {
+        final Realm realm = Realm.getDefaultInstance();
+        Log.d(TAG, "Alarm id: " + realm.where(Alarm.class).equalTo("id", alarmId).findFirst()
+                .getId());
+        Log.d(TAG, "Alarm time: " + realm.where(Alarm.class).equalTo("id", alarmId).findFirst()
+                .getTime());
+        return realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
+    }
+
+    public String getNewestAlarmId() {
+        return mRealm.where(Alarm.class).findAllSorted("createdAt").first().getId();
+    }
+
+    public static Alarm getNextPendingAlarm() {
+        final Realm realm = Realm.getDefaultInstance();
+        Log.d(TAG, "Number of Alarm objects " + realm.where(Alarm.class).findAll().size());
+        Log.d(TAG, "Number of enabled Alarm objects " + realm.where(Alarm.class).equalTo("enabled", true).findAll().size());
+        Log.d(TAG, "Pending alarm date: " + realm.where(Alarm.class).equalTo("enabled", true)
+                .findAllSorted("time").first().getTime());
+        return realm.where(Alarm.class).equalTo("enabled", true)
+                .findAllSorted("time").last();
     }
 
     public static void enableAlarm(final String alarmId) {
         final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransactionAsync(new Realm.Transaction() {
+        realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 Alarm alarm = realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
                 alarm.setEnabled(!alarm.isEnabled());
-            }
-        }, new Realm.Transaction.OnSuccess() {
-            @Override
-            public void onSuccess() {
-                Log.d("EditAlarm", "Alarm Enabled: " );
-            }
-        }, new Realm.Transaction.OnError() {
-            @Override
-            public void onError(Throwable error) {
-                Log.d("EditAlarm", "failed: " + error.getMessage());
+                Log.d(TAG, "Alarm Enabled: " + alarm.isEnabled());
             }
         });
+//        realm.executeTransactionAsync(new Realm.Transaction() {
+//            @Override
+//            public void execute(Realm realm) {
+//                Alarm alarm = realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
+//                alarm.setEnabled(!alarm.isEnabled());
+//            }
+//        }, new Realm.Transaction.OnSuccess() {
+//            @Override
+//            public void onSuccess() {
+//                Log.d(TAG, "Alarm Enabled: " );
+//            }
+//        }, new Realm.Transaction.OnError() {
+//            @Override
+//            public void onError(Throwable error) {
+//                Log.d("EditAlarm", "failed: " + error.getMessage());
+//            }
+//        });
     }
     // Return the the newest alarm by pulling the highest alarm id
     public String getNextAlarm() {
         if (mRealm.where(Alarm.class).equalTo("enabled",true).findAll().size() > 0)
             return mRealm.where(Alarm.class).equalTo("enabled", true).findAll()
-                .sort("time").first().getmWakeTime();
+                .sort("time").last().getTime()+"";
         else
             return "No Alarm set";
     }
@@ -71,7 +108,7 @@ public class RealmService {
         }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
-                Log.d("EditAlarm", "Success");
+                Log.d(TAG, "Save Alarm Success");
             }
         }, new Realm.Transaction.OnError() {
             @Override
@@ -116,6 +153,7 @@ public class RealmService {
                 alarm.setEnabled(isSet);
                 alarm.setmStandardTime(isStandardTime);
                 alarm.setmRepeat(repeat);
+                alarm.setCreatedAt(Calendar.getInstance().getTime());
 //                Log.d("Alarm"alarm.getTime();
             }
         }, new Realm.Transaction.OnSuccess() {
