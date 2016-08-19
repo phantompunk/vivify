@@ -10,6 +10,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.rva.mrb.vivify.Model.Data.Alarm;
+import com.rva.mrb.vivify.Model.Service.AlarmScheduler;
+import com.rva.mrb.vivify.Model.Service.RealmService;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.Detail.DetailActivity;
 import com.rva.mrb.vivify.View.Alarm.AlarmsPresenter;
@@ -25,6 +27,7 @@ import io.realm.RealmViewHolder;
 
 public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdapter.ViewHolder> {
 
+    public static final String TAG = AlarmAdapter.class.getSimpleName();
     @Inject
     AlarmsPresenter alarmsPresenter;
 
@@ -43,18 +46,31 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
     @Override
     public void onBindRealmViewHolder(AlarmAdapter.ViewHolder viewHolder, final int position) {
         final Alarm alarm = realmResults.get(position);
+        Log.d(TAG, "UUDI: " + alarm.getId());
         viewHolder.timeTv.setText(alarm.getmWakeTime());
-        viewHolder.nameTv.setText(alarm.getmAlarmName());
-        viewHolder.isSet.setChecked(alarm.ismIsSet());
+        viewHolder.nameTv.setText(alarm.getAlarmLabel());
+        viewHolder.isSet.setChecked(alarm.isEnabled());
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("CardViewOnClick", position+"");
+                Log.d(TAG, "Success!");
                 Intent intent = new Intent(view.getContext(), DetailActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("NewAlarm", false);
-                intent.putExtra("Position", position);
+                Log.d(TAG, "Alarm id: " + alarm.getId());
+                intent.putExtra("AlarmID", alarm.getId());
                 view.getContext().startActivity(intent);
+            }
+        });
+        viewHolder.isSet.setOnClickListener(new Switch.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                RealmService.enableAlarm(alarm.getId());
+                Log.d(TAG, "Enable alarm");
+                Log.d(TAG, "Alarm id: " + alarm.getId());
+                Log.d(TAG, "Contents: " + v.getContext().getPackageName());
+
+                AlarmScheduler.enableAlarmById(v.getContext(), alarm.getId());
             }
         });
 //        notifyItemChanged(position);
