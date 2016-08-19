@@ -2,6 +2,7 @@ package com.rva.mrb.vivify.View.Detail;
 
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,8 +27,8 @@ import butterknife.OnClick;
 
 public class DetailActivity extends BaseActivity implements DetailView {
 
-//    @BindView(R.id.layout_container)
-//    LinearLayout mLayoutContainer;
+    private static final String TAG = DetailActivity.class.getSimpleName();
+
     @BindView(R.id.edit_name) EditText editname;
     @BindView(R.id.edit_time) EditText mEditTime;
     @BindView(R.id.edit_repeat) EditText mEditRepeat;
@@ -37,8 +38,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
     @BindView(R.id.button_delete) Button deletebt;
     @BindView(R.id.button_save) Button savebt;
 
-    @Inject
-    DetailPresenter detailPresenter;
+    @Inject DetailPresenter detailPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +54,11 @@ public class DetailActivity extends BaseActivity implements DetailView {
         isNewAlarm();
     }
 
+    // Programmatically show add,save, and delete buttons
     private void isNewAlarm() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             if (bundle.getBoolean("NewAlarm", true) == false) {
-//                Log.d("DetailTime", detailPresenter.getCurrentTime());
-//                mEditTime.setText(detailPresenter.getCurrentTime());
                 addbt.setVisibility(View.GONE);
                 savebt.setVisibility(View.VISIBLE);
                 deletebt.setVisibility(View.VISIBLE);
@@ -107,7 +106,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
                 mStandardTime.isChecked(),
                 mEditRepeat.getText().toString()
                 );
-        AlarmScheduler.setNextAlarm(getApplicationContext(),0);
+//        AlarmScheduler.setNextAlarm(getApplicationContext(),0);
         finish();
     }
 
@@ -135,7 +134,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
     }
 
     /**
-     * TODO presenter should handle more of this
+     * TODO show current time or that alarms set time
      */
     @OnClick(R.id.edit_time)
     public void onPickTime() {
@@ -145,12 +144,6 @@ public class DetailActivity extends BaseActivity implements DetailView {
                 new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-//                detailPresenter.getTime(hour, minute);
-//                cal.set(Calendar.HOUR, hour);
-//                cal.set(Calendar.MINUTE, minute);
-//                Log.d("Alarm", "Alarm Date: " + cal.getTime());
-//                String hrStr = String.valueOf(hour);
-//                String minStr = (minute < 10) ? "0" + String.valueOf(minute) : String.valueOf(minute);
                 mEditTime.setText(detailPresenter.getTime(hour, minute));
             }
                     // Set Alarm time as default if it exists

@@ -15,6 +15,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class Alarm extends RealmObject {
 
+    public static final String TAG = Alarm.class.getSimpleName();
     public static final String TIME_FORMAT = "hh:mm a";
 
     @PrimaryKey
@@ -25,8 +26,9 @@ public class Alarm extends RealmObject {
     private String mWakeTime;
     private String mRepeat;
     private Date time;
-    public Alarm() {
+    private Date createdAt;
 
+    public Alarm() {
     }
 
     public String getId() {
@@ -77,15 +79,30 @@ public class Alarm extends RealmObject {
         this.mRepeat = mRepeat;
     }
 
+    public void setTime(Date time) {
+        this.time = time;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public Date getTime() {
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
-        try {
-            cal.setTime(sdf.parse(mWakeTime));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return cal.getTime();
+//        Calendar cal = Calendar.getInstance();
+//        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+//        try {
+//            Log.d(TAG, "Alarm wake time: " + mWakeTime);
+//            cal.setTime(sdf.parse(mWakeTime));
+//            Log.d(TAG, "Parsed time: " + cal.getTime());
+//            Log.d(TAG, "Time set by setTime(): " + time);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+        return time;
     }
 
     public void setTime(String wakeTime) {
@@ -102,7 +119,7 @@ public class Alarm extends RealmObject {
             Log.d("SetTime", "Set time to " + cal.getTime());
 
             Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.HOUR, cal.get(Calendar.HOUR));
+            calendar.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR));
             calendar.set(Calendar.MINUTE, cal.get(Calendar.MINUTE));
             calendar.set(Calendar.AM_PM, cal.get(Calendar.AM_PM));
             Log.d("SetTime", "New time " + calendar.getTime());
