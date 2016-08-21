@@ -1,5 +1,6 @@
 package com.rva.mrb.vivify.View.Detail;
 
+import android.app.AlarmManager;
 import android.content.Context;
 import android.os.SystemClock;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.util.Log;
 import com.rva.mrb.vivify.Model.Data.Alarm;
 import com.rva.mrb.vivify.Model.Service.AlarmScheduler;
 import com.rva.mrb.vivify.Model.Service.RealmService;
+import com.spotify.sdk.android.player.ConnectionStateCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -14,9 +16,11 @@ import java.util.Locale;
 
 public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTransactionCallback {
 
+    public static final String TAG = DetailPresenterImpl.class.getSimpleName();
     private final String TIME_FORMAT = "hh:mm a";
     private final RealmService mRealmService;
     private DetailView mDetailView = new DetailView.EmptyDetailView();
+
 
     public DetailPresenterImpl(RealmService realmService){ mRealmService = realmService; }
 
@@ -30,8 +34,9 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
     }
 
     @Override
-    public void onSaveAlarm(String alarmid, String name, String time, boolean isSet, boolean isStandardTime, String repeat) {
+    public void onSaveAlarm(Context context,String alarmid, String name, String time, boolean isSet, boolean isStandardTime, String repeat) {
         mRealmService.saveAlarm(alarmid, name, time, isSet, isStandardTime, repeat);
+        AlarmScheduler.enableAlarmById(context, alarmid);
     }
 
     @Override
@@ -47,9 +52,19 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
     @Override
     public void onAddClick(Context context, String name, String time, boolean isSet, boolean isStandardTime, String repeat) {
         mRealmService.addAlarmAsync(name, time, isSet, isStandardTime, repeat);
-        String newestAlarmId = mRealmService.getNewestAlarmId();
-        Log.d("realm", "Alarm id: " + newestAlarmId); // getAlarm.last()
-        AlarmScheduler.enableAlarmById(context, newestAlarmId);
+        if (isSet) {
+            String newestAlarmId = null;
+            try {
+                newestAlarmId = mRealmService.getNewestAlarmId();
+            } catch (Exception e) {
+                Log.e(TAG, "Alarm not found, trying againg. " + e.getMessage());
+                newestAlarmId = mRealmService.getNewestAlarmId();
+            }
+            if (newestAlarmId != null) {
+                Log.d("realm", "Alarm id: " + newestAlarmId); // getAlarm.last()
+                AlarmScheduler.enableAlarmById(context, newestAlarmId);
+            }
+        }
     }
 
     public String getCurrentTime() {
@@ -95,6 +110,11 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
     public int getCurrentMinute() {
         Calendar calendar = Calendar.getInstance();
         return calendar.get(Calendar.MINUTE);
+    }
+
+    @Override
+    public String getNewestAlarm() {
+        return mRealmService.getNewestAlarmId();
     }
 
     @Override

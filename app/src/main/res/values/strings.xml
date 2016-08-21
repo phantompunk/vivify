@@ -16,4 +16,5 @@
     <string name="name">Alarm name</string>
     <string name="title_activity_alert">AlertActivity</string>
     <string name="dismiss">dismiss</string>
+    <string name="snooze">Snooze</string>
 </resources>
