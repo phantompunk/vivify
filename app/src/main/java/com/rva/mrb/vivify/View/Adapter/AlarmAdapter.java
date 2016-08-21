@@ -46,7 +46,7 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
     @Override
     public void onBindRealmViewHolder(AlarmAdapter.ViewHolder viewHolder, final int position) {
         final Alarm alarm = realmResults.get(position);
-        Log.d(TAG, "UUDI: " + alarm.getId());
+//        Log.d(TAG, "UUDI: " + alarm.getId());
         viewHolder.timeTv.setText(alarm.getmWakeTime());
         viewHolder.nameTv.setText(alarm.getAlarmLabel());
         viewHolder.isSet.setChecked(alarm.isEnabled());
@@ -66,9 +66,9 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
             @Override
             public void onClick(View v) {
 //                RealmService.enableAlarm(alarm.getId());
-                Log.d(TAG, "Enable alarm");
+//                Log.d(TAG, "Enable alarm");
                 Log.d(TAG, "Alarm id: " + alarm.getId());
-                Log.d(TAG, "Contents: " + v.getContext().getPackageName());
+//                Log.d(TAG, "Contents: " + v.getContext().getPackageName());
 
                 AlarmScheduler.enableAlarmById(v.getContext(), alarm.getId());
             }

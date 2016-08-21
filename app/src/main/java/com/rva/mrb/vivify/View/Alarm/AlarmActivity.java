@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.SystemClock;
+import android.support.annotation.FractionRes;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,8 +23,10 @@ import com.rva.mrb.vivify.View.Adapter.AlarmAdapter;
 import com.rva.mrb.vivify.View.Detail.DetailActivity;
 import com.rva.mrb.vivify.View.Search.SearchActivity;
 
+import java.util.BitSet;
 import java.util.Calendar;
 import java.util.UUID;
+import java.util.logging.Handler;
 
 import javax.inject.Inject;
 import butterknife.BindView;
@@ -62,13 +65,29 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
         mRecyclerView.setAdapter(mAdapter);
 
         alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        Log.d("UUID", "ID: " + UUID.randomUUID().toString());
+//        Log.d("UUID", "ID: " + UUID.randomUUID().toString());
         Log.d(TAG, "Next wake time is " + alarmPresenter.getNextAlarmTime());
 //        Log.d(TAG, "Pending alarm id is " + RealmService.getNextPendingAlarm().getTime());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if(alarmManager.getNextAlarmClock() != null)
                 Log.d(TAG, "Trigger time: " + alarmManager.getNextAlarmClock().getTriggerTime());
         }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 8);
+        for (int days = 1; days <= 7; days++) {
+            calendar.add(Calendar.DAY_OF_WEEK, 1);
+            Log.d("Cal", "Calendar add " + days + " day " + calendar.getTime());
+        }
+//        calendar.add(Calendar.DAY_OF_WEEK, 1);
+//        Log.d("Cal", "Calendar add 1 day " + calendar.getTime());
+//        calendar.add(Calendar.DAY_OF_WEEK, 3);
+//        Log.d("Cal", "Calendar add 3 day " + calendar.getTime());
+//        Calendar cal = Calendar.getInstance();
+//        cal.set(Calendar.HOUR_OF_DAY, 8);
+//        cal.add(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+        Log.d("Cal", "Calendar add friday " + calendar.getTime());
+
     }
 
     protected void onSaveInstanceState(Bundle outState) {
@@ -88,6 +107,7 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, "Next wake time is " + alarmPresenter.getNextAlarmTime());
         mAdapter.notifyDataSetChanged();
     }
 

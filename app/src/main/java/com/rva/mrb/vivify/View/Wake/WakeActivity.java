@@ -18,13 +18,14 @@ import butterknife.OnClick;
 public class WakeActivity extends BaseActivity {
 
     @BindView(R.id.dismiss_alarm) Button dismissBt;
+    @BindView(R.id.snooze_alarm) Button snoozeBt;
     @Inject
     WakePresenter wakePresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_alert);
+        setContentView(R.layout.activity_wake);
         WakeComponent wakeComponent = DaggerWakeComponent.builder()
                 .applicationModule(new ApplicationModule((AlarmApplication) getApplication()))
                 .wakeModule(new WakeModule(this))
@@ -50,4 +51,9 @@ public class WakeActivity extends BaseActivity {
         finish();
     }
 
+    @OnClick(R.id.snooze_alarm)
+    public void onSnooze() {
+        AlarmScheduler.snoozeNextAlarm(getApplicationContext());
+        finish();
+    }
 }

@@ -1,6 +1,5 @@
 package com.rva.mrb.vivify.Model.Service;
 
-import android.nfc.Tag;
 import android.util.Log;
 
 import com.rva.mrb.vivify.Model.Data.Alarm;
@@ -26,30 +25,36 @@ public class RealmService {
     }
 
     public Alarm getAlarm(final String alarmId) {
-        Log.d(TAG, "Alarm id: " + mRealm.where(Alarm.class).equalTo("id", alarmId).findFirst()
-                .getId());
+        Log.d(TAG, "Alarm id: " + mRealm.where(Alarm.class)
+                .equalTo("id", alarmId).findFirst().getId());
         return mRealm.where(Alarm.class).equalTo("id", alarmId).findFirst();
     }
 
     public static Alarm getAlarmById(final String alarmId) {
         final Realm realm = Realm.getDefaultInstance();
-        Log.d(TAG, "Alarm id: " + realm.where(Alarm.class).equalTo("id", alarmId).findFirst()
-                .getId());
-        Log.d(TAG, "Alarm time: " + realm.where(Alarm.class).equalTo("id", alarmId).findFirst()
-                .getTime());
+        Log.d(TAG, "Alarm id: " + realm.where(Alarm.class)
+                .equalTo("id", alarmId).findFirst().getId());
+        Log.d(TAG, "Alarm time: " + realm.where(Alarm.class)
+                .equalTo("id", alarmId).findFirst().getTime());
         return realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
     }
 
     public String getNewestAlarmId() {
         return mRealm.where(Alarm.class).findAllSorted("createdAt").first().getId();
     }
+    public Alarm getNewestAlarm() {
+        return mRealm.where(Alarm.class).findAllSorted("createdAt").first();
+    }
 
     public static Alarm getNextPendingAlarm() {
         final Realm realm = Realm.getDefaultInstance();
-        Log.d(TAG, "Number of Alarm objects " + realm.where(Alarm.class).findAll().size());
-        Log.d(TAG, "Number of enabled Alarm objects " + realm.where(Alarm.class).equalTo("enabled", true).findAll().size());
-        Log.d(TAG, "Pending alarm date: " + realm.where(Alarm.class).equalTo("enabled", true)
-                .findAllSorted("time").first().getTime());
+        Log.d(TAG, "Number of Alarm objects " +
+                realm.where(Alarm.class).findAll().size());
+        Log.d(TAG, "Number of enabled Alarm objects " +
+                realm.where(Alarm.class).equalTo("enabled", true).findAll().size());
+        Log.d(TAG, "Pending alarm date: " +
+                realm.where(Alarm.class).equalTo("enabled", true)
+                    .findAllSorted("time").first().getTime());
         return realm.where(Alarm.class).equalTo("enabled", true)
                 .findAllSorted("time").last();
     }
@@ -60,27 +65,32 @@ public class RealmService {
             @Override
             public void execute(Realm realm) {
                 Alarm alarm = realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
-                alarm.setEnabled(!alarm.isEnabled());
+                if (alarm.isEnabled())
+                    alarm.setEnabled(false);
+                else
+                    alarm.setEnabled(true);
+//                alarm.setEnabled(!alarm.isEnabled());
                 Log.d(TAG, "Alarm Enabled: " + alarm.isEnabled());
             }
         });
-//        realm.executeTransactionAsync(new Realm.Transaction() {
-//            @Override
-//            public void execute(Realm realm) {
-//                Alarm alarm = realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
-//                alarm.setEnabled(!alarm.isEnabled());
-//            }
-//        }, new Realm.Transaction.OnSuccess() {
-//            @Override
-//            public void onSuccess() {
-//                Log.d(TAG, "Alarm Enabled: " );
-//            }
-//        }, new Realm.Transaction.OnError() {
-//            @Override
-//            public void onError(Throwable error) {
-//                Log.d("EditAlarm", "failed: " + error.getMessage());
-//            }
-//        });
+    }
+
+    public static void updateAlarms() {
+        Log.d(TAG, "Updating Alarms");
+        final Realm realm = Realm.getDefaultInstance();
+        // find all enabled alarms whose Times are old
+        RealmResults<Alarm> enabledAlarms = realm.where(Alarm.class).equalTo("enabled", true)
+                .lessThan("time", Calendar.getInstance().getTime()).findAll();
+        Log.d(TAG, "First Alarm Time is: " + enabledAlarms.size());
+        for(final Alarm update : enabledAlarms) {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    update.updateTime();
+                    Log.d(TAG, "Update Alarm Time is: " + update.getTime());
+                }
+            });
+        }
     }
     // Return the the newest alarm by pulling the highest alarm id
     public String getNextAlarm() {
@@ -102,8 +112,8 @@ public class RealmService {
                 editAlarm.setmWakeTime(time);
                 editAlarm.setTime(time);
                 editAlarm.setEnabled(isSet);
-                editAlarm.setmStandardTime(isStandardTime);
-                editAlarm.setmRepeat(repeat);
+                editAlarm.set24hr(isStandardTime);
+                editAlarm.setDaysOfWeek(repeat);
             }
         }, new Realm.Transaction.OnSuccess() {
             @Override
@@ -141,7 +151,9 @@ public class RealmService {
         });
     }
 
-    public void addAlarmAsync(final String name, final String time, final boolean isSet, final boolean isStandardTime, final String repeat) {
+    public void addAlarmAsync(final String name, final String time,
+                              final boolean isSet, final boolean isStandardTime,
+                              final String repeat) {
         mRealm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(final Realm realm) {
@@ -151,10 +163,9 @@ public class RealmService {
                 alarm.setmWakeTime(time);
                 alarm.setTime(time);
                 alarm.setEnabled(isSet);
-                alarm.setmStandardTime(isStandardTime);
-                alarm.setmRepeat(repeat);
+                alarm.set24hr(isStandardTime);
+                alarm.setDaysOfWeek(repeat);
                 alarm.setCreatedAt(Calendar.getInstance().getTime());
-//                Log.d("Alarm"alarm.getTime();
             }
         }, new Realm.Transaction.OnSuccess() {
 
