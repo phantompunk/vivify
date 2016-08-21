@@ -2,7 +2,6 @@ package com.rva.mrb.vivify.View.Detail;
 
 import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +13,6 @@ import com.rva.mrb.vivify.AlarmApplication;
 import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
 import com.rva.mrb.vivify.Model.Data.Alarm;
-import com.rva.mrb.vivify.Model.Service.AlarmScheduler;
 import com.rva.mrb.vivify.R;
 
 import java.util.Calendar;
@@ -37,7 +35,15 @@ public class DetailActivity extends BaseActivity implements DetailView {
     @BindView(R.id.button_add) Button addbt;
     @BindView(R.id.button_delete) Button deletebt;
     @BindView(R.id.button_save) Button savebt;
+    @BindView(R.id.sunday_check) CheckBox sundayCb;
+    @BindView(R.id.monday_check) CheckBox mondayCb;
+    @BindView(R.id.tuesday_check) CheckBox tuesdayCb;
+    @BindView(R.id.wednesday_check) CheckBox wednesdayCb;
+    @BindView(R.id.thursday_check) CheckBox thursdayCb;
+    @BindView(R.id.friday_check) CheckBox fridayCb;
+    @BindView(R.id.saturday_check) CheckBox saturdayCb;
 
+    int repeatDays = 0;
     @Inject DetailPresenter detailPresenter;
 
     @Override
@@ -52,6 +58,25 @@ public class DetailActivity extends BaseActivity implements DetailView {
         detailComponent.inject(this);
         ButterKnife.bind(this);
         isNewAlarm();
+
+
+//        Log.d("Bits", "days: " + days);
+        int sun = 1, mon = 2, tue = 4, wed = 8, thu = 16, fri = 32, sat = 64;
+        int days = Alarm.MONDAY | Alarm.SATURDAY | Alarm.TUESDAY;
+        Log.d("Bits", "days MWF: " + days);
+        Calendar cal = Calendar.getInstance();
+        int currentDay = cal.get(Calendar.DAY_OF_WEEK);
+        if((Alarm.SUNDAY & days) == Alarm.SUNDAY)
+            Log.d("Bits", "Days contains today's day");
+        else
+            Log.d("Bits", "Days does not contain todays day");
+
+//        sundayCb.setChecked(true);
+//        mondayCb.setChecked(true);
+//        wednesdayCb.setChecked(true);
+//        fridayCb.setChecked(true);
+//        saturdayCb.setChecked(true);
+        onSetRepeat();
     }
 
     // Programmatically show add,save, and delete buttons
@@ -69,13 +94,31 @@ public class DetailActivity extends BaseActivity implements DetailView {
                 Log.d("EditAlarm", alarm.getmWakeTime());
                 mEditTime.setText(alarm.getmWakeTime());
                 mIsSet.setChecked(alarm.isEnabled());
-                mStandardTime.setChecked(alarm.ismStandardTime());
-                mEditRepeat.setText(alarm.getmRepeat());
+                mStandardTime.setChecked(alarm.is24hr());
+                setRepeatCheckBoxes(alarm.getDecDaysOfWeek());
+//                mEditRepeat.setText(alarm.getmcRepeat());
             }
         } else {
             Log.d("DetailTime", detailPresenter.getCurrentTime());
             mEditTime.setText(detailPresenter.getCurrentTime());
         }
+    }
+
+    private void setRepeatCheckBoxes(int daysOfWeek) {
+        if ((daysOfWeek & Alarm.SUNDAY) == Alarm.SUNDAY)
+            sundayCb.setChecked(true);
+        if ((daysOfWeek & Alarm.MONDAY) == Alarm.MONDAY)
+            mondayCb.setChecked(true);
+        if ((daysOfWeek & Alarm.TUESDAY) == Alarm.TUESDAY)
+            tuesdayCb.setChecked(true);
+        if ((daysOfWeek & Alarm.WEDNESDAY) == Alarm.WEDNESDAY)
+            wednesdayCb.setChecked(true);
+        if ((daysOfWeek & Alarm.THURSDAY) == Alarm.THURSDAY)
+            thursdayCb.setChecked(true);
+        if ((daysOfWeek & Alarm.FRIDAY) == Alarm.FRIDAY)
+            fridayCb.setChecked(true);
+        if ((daysOfWeek & Alarm.SATURDAY) == Alarm.SATURDAY)
+            saturdayCb.setChecked(true);
     }
 
 
@@ -98,15 +141,15 @@ public class DetailActivity extends BaseActivity implements DetailView {
 
     @OnClick(R.id.button_add)
     public void onAddClick() {
+        onSetRepeat();
         detailPresenter.onAddClick(
                 getApplicationContext(),
                 editname.getText().toString(),
                 mEditTime.getText().toString(),
                 mIsSet.isChecked(),
                 mStandardTime.isChecked(),
-                mEditRepeat.getText().toString()
+                Integer.toBinaryString(repeatDays)
                 );
-//        AlarmScheduler.setNextAlarm(getApplicationContext(),0);
         finish();
     }
 
@@ -120,14 +163,17 @@ public class DetailActivity extends BaseActivity implements DetailView {
 
     @OnClick(R.id.button_save)
     public void onSaveAlarm() {
+        onSetRepeat();
         Bundle bundle = getIntent().getExtras();
         if (bundle.getInt("Position") >= 0) {
-            detailPresenter.onSaveAlarm(bundle.getString("AlarmID"),
+            detailPresenter.onSaveAlarm(
+                    getApplicationContext(),
+                    bundle.getString("AlarmID"),
                     editname.getText().toString(),
                     mEditTime.getText().toString(),
                     mIsSet.isChecked(),
                     mStandardTime.isChecked(),
-                    mEditRepeat.getText().toString()
+                    Integer.toBinaryString(repeatDays)
             );
         }
         finish();
@@ -149,5 +195,29 @@ public class DetailActivity extends BaseActivity implements DetailView {
                     // Set Alarm time as default if it exists
         }, detailPresenter.getCurrentHour(), detailPresenter.getCurrentMinute(), false);
         timePickerDialog.show();
+    }
+
+    public void onSetRepeat() {
+        // using bit wise operations to keep track of days
+        // binary represenation of an alarm repeating
+        // on Sunday and Saturday is 1000001
+
+        // Should all CB's be passed to presenter?
+        if (sundayCb.isChecked())
+            repeatDays = repeatDays | Alarm.SUNDAY;
+        if (mondayCb.isChecked())
+            repeatDays = repeatDays | Alarm.MONDAY;
+        if (tuesdayCb.isChecked())
+            repeatDays = repeatDays | Alarm.TUESDAY;
+        if (wednesdayCb.isChecked())
+            repeatDays = repeatDays | Alarm.WEDNESDAY;
+        if (thursdayCb.isChecked())
+            repeatDays = repeatDays | Alarm.THURSDAY;
+        if (fridayCb.isChecked())
+            repeatDays = repeatDays | Alarm.FRIDAY;
+        if (saturdayCb.isChecked())
+            repeatDays = repeatDays | Alarm.SATURDAY;
+
+        Log.d(TAG, "Repeat Days: " + Integer.toBinaryString(repeatDays));
     }
 }
