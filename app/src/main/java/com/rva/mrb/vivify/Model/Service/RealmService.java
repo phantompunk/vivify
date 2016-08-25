@@ -65,12 +65,11 @@ public class RealmService {
             @Override
             public void execute(Realm realm) {
                 Alarm alarm = realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
-                if (alarm.isEnabled())
-                    alarm.setEnabled(false);
-                else
-                    alarm.setEnabled(true);
-//                alarm.setEnabled(!alarm.isEnabled());
-                Log.d(TAG, "Alarm Enabled: " + alarm.isEnabled());
+                Log.d(TAG, "Alarm is: " + alarm.isEnabled());
+                alarm.setEnabled(!alarm.isEnabled());
+                Log.d(TAG, "Alarm Enabled: " + alarm.isEnabled() +
+                "\nalarm time is" + alarm.getTime() +
+                "\nalarm wake time is" + alarm.getmWakeTime());
             }
         });
     }
@@ -78,11 +77,19 @@ public class RealmService {
     public static void updateAlarms() {
         Log.d(TAG, "Updating Alarms");
         final Realm realm = Realm.getDefaultInstance();
+        RealmResults<Alarm> enabledAlarms = realm.where(Alarm.class).equalTo("enabled", true).findAll();
+        Log.d(TAG, "Number of enabled Alarms " + enabledAlarms.size());
+
+        Log.d(TAG, "Current Date:" + Calendar.getInstance().getTime());
+        RealmResults<Alarm> enabledOldAlarms = realm.where(Alarm.class).equalTo("enabled", true)
+                .lessThan("time", Calendar.getInstance().getTime()).findAll();
+        Log.d(TAG, "Number of enabled old Alarms " + enabledAlarms.size());
+
         // find all enabled alarms whose Times are old
-        RealmResults<Alarm> enabledAlarms = realm.where(Alarm.class).equalTo("enabled", true)
+        RealmResults<Alarm> oldAlarms = realm.where(Alarm.class).equalTo("enabled", true)
                 .lessThan("time", Calendar.getInstance().getTime()).findAll();
         Log.d(TAG, "First Alarm Time is: " + enabledAlarms.size());
-        for(final Alarm update : enabledAlarms) {
+        for(final Alarm update : oldAlarms) {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
@@ -103,29 +110,30 @@ public class RealmService {
 
     public void saveAlarm(final String alarmId, final String name, final String time, final boolean isSet, final boolean isStandardTime, final String repeat) {
         final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransactionAsync(new Realm.Transaction() {
+        realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 Alarm editAlarm = realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
                 editAlarm.setAlarmLabel(name);
-                editAlarm.setId(alarmId);
+//                editAlarm.setId(alarmId);
                 editAlarm.setmWakeTime(time);
                 editAlarm.setTime(time);
                 editAlarm.setEnabled(isSet);
                 editAlarm.set24hr(isStandardTime);
                 editAlarm.setDaysOfWeek(repeat);
             }
-        }, new Realm.Transaction.OnSuccess() {
-            @Override
-            public void onSuccess() {
-                Log.d(TAG, "Save Alarm Success");
-            }
-        }, new Realm.Transaction.OnError() {
-            @Override
-            public void onError(Throwable error) {
-                Log.d("EditAlarm", "failed: " + error.getMessage());
-            }
         });
+//                , new Realm.Transaction.OnSuccess() {
+//            @Override
+//            public void onSuccess() {
+//                Log.d(TAG, "Save Alarm Success");
+//            }
+//        }, new Realm.Transaction.OnError() {
+//            @Override
+//            public void onError(Throwable error) {
+//                Log.d("EditAlarm", "failed: " + error.getMessage());
+//            }
+//        });
     }
 
     public void deleteAlarm(final String alarmId) {
@@ -138,23 +146,23 @@ public class RealmService {
             public void execute(Realm realm) {
                 realm.where(Alarm.class).equalTo("id", alarmId).findAll().deleteAllFromRealm();
             }
-        }, new Realm.Transaction.OnSuccess() {
-            @Override
-            public void onSuccess() {
-                Log.d("Successful", "Alarm deleted");
-            }
-        }, new Realm.Transaction.OnError() {
-            @Override
-            public void onError(Throwable error) {
-                Log.d("Error", error.getMessage());
-            }
+//                , new Realm.Transaction.OnSuccess() {
+//            @Override
+//            public void onSuccess() {
+//                Log.d("Successful", "Alarm deleted");
+//            }
+//        }, new Realm.Transaction.OnError() {
+//            @Override
+//            public void onError(Throwable error) {
+//                Log.d("Error", error.getMessage());
+//            }
         });
     }
 
-    public void addAlarmAsync(final String name, final String time,
-                              final boolean isSet, final boolean isStandardTime,
-                              final String repeat) {
-        mRealm.executeTransactionAsync(new Realm.Transaction() {
+    public void addAlarm(final String name, final String time,
+                         final boolean isSet, final boolean isStandardTime,
+                         final String repeat) {
+        mRealm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(final Realm realm) {
                 Alarm alarm = realm.createObject(Alarm.class);
@@ -167,19 +175,20 @@ public class RealmService {
                 alarm.setDaysOfWeek(repeat);
                 alarm.setCreatedAt(Calendar.getInstance().getTime());
             }
-        }, new Realm.Transaction.OnSuccess() {
-
-            @Override
-            public void onSuccess() {
-                Log.d("successful", "Successful transaction!");
-            }
-        }, new Realm.Transaction.OnError(){
-
-            @Override
-            public void onError(Throwable error) {
-                Log.d("error", error.getMessage());
-            }
         });
+//                ,
+//                new Realm.Transaction.OnSuccess() {
+//
+//            @Override
+//            public void onSuccess() {
+//                Log.d("successful", "Successful transaction!");
+//            }
+//        }, new Realm.Transaction.OnError(){
+//
+//            @Override
+//            public void onError(Throwable error) {
+//                Log.d("error", error.getMessage());
+//            }
     }
 
     public String getMessage(){

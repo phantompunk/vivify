@@ -32,6 +32,10 @@ public class AlarmPresenterImpl implements AlarmsPresenter {
         return mRealmService.getNextAlarm();
     }
 
+    public String getTimeTillPendingAlarm(String notice) {
+        return null;
+    }
+
     public String getMessage(){
         return "SUCESSFULL!!!";
     }
@@ -44,10 +48,6 @@ public class AlarmPresenterImpl implements AlarmsPresenter {
     @Override
     public void onAddNewAlarm() {
         mAlarmsView.showAddNewAlarmView();
-    }
-
-    public void onSearch() {
-        mAlarmsView.showSearchView();
     }
 
     @Override

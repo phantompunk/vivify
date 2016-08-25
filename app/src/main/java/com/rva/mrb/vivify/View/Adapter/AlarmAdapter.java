@@ -25,15 +25,20 @@ import io.realm.RealmBasedRecyclerViewAdapter;
 import io.realm.RealmResults;
 import io.realm.RealmViewHolder;
 
-public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdapter.ViewHolder> {
+public class AlarmAdapter extends
+        RealmBasedRecyclerViewAdapter<Alarm, AlarmAdapter.ViewHolder> {
 
     public static final String TAG = AlarmAdapter.class.getSimpleName();
-    @Inject
-    AlarmsPresenter alarmsPresenter;
+
+    // lets the Alarm activity know when an alarm is pressed
+    public OnAlarmToggleListener alarmToggleListener;
+    @Inject AlarmsPresenter alarmsPresenter;
 
     public AlarmAdapter(Context context, RealmResults<Alarm> realmResults,
-            boolean automaticUpdate, boolean animateResults) {
+            OnAlarmToggleListener listener, boolean automaticUpdate,
+                boolean animateResults) {
         super(context, realmResults, automaticUpdate, animateResults);
+        this.alarmToggleListener = listener;
     }
 
     @Override
@@ -44,7 +49,9 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
     }
 
     @Override
-    public void onBindRealmViewHolder(AlarmAdapter.ViewHolder viewHolder, final int position) {
+    public void onBindRealmViewHolder(
+            AlarmAdapter.ViewHolder viewHolder, final int position) {
+
         final Alarm alarm = realmResults.get(position);
 //        Log.d(TAG, "UUDI: " + alarm.getId());
         viewHolder.timeTv.setText(alarm.getmWakeTime());
@@ -53,11 +60,11 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "Success!");
+//                Log.d(TAG, "Success!");
+                Log.d(TAG, "Opening Detail activity on id: " + alarm.getId());
                 Intent intent = new Intent(view.getContext(), DetailActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("NewAlarm", false);
-                Log.d(TAG, "Alarm id: " + alarm.getId());
                 intent.putExtra("AlarmID", alarm.getId());
                 view.getContext().startActivity(intent);
             }
@@ -65,12 +72,9 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
         viewHolder.isSet.setOnClickListener(new Switch.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                RealmService.enableAlarm(alarm.getId());
-//                Log.d(TAG, "Enable alarm");
-                Log.d(TAG, "Alarm id: " + alarm.getId());
-//                Log.d(TAG, "Contents: " + v.getContext().getPackageName());
-
+                Log.d(TAG, "Toggle alarm id: " + alarm.getId());
                 AlarmScheduler.enableAlarmById(v.getContext(), alarm.getId());
+                alarmToggleListener.onAlarmToggle();
             }
         });
 //        notifyItemChanged(position);
@@ -99,6 +103,10 @@ public class AlarmAdapter extends RealmBasedRecyclerViewAdapter<Alarm, AlarmAdap
 //                }
 //            });
         }
+    }
+
+    public interface OnAlarmToggleListener {
+        void onAlarmToggle();
     }
 }
 

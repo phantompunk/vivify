@@ -7,10 +7,10 @@ import io.realm.RealmResults;
 
 public interface AlarmsPresenter extends BasePresenter<AlarmsView> {
     void onAddNewAlarm();
-    void onSearch();
     RealmResults<Alarm> getAllAlarms();
 
     String getNextAlarmTime();
+    String getTimeTillPendingAlarm(String notice);
 //    void onAlarmClick(int id);
 //    String getMessage();
 //    String getRSMessage();

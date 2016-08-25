@@ -65,6 +65,9 @@ public class Alarm extends RealmObject {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+        if (isEnabled()) {
+            updateTime();
+        }
     }
 
     public boolean is24hr() {
@@ -142,40 +145,49 @@ public class Alarm extends RealmObject {
     }
 
     public void setTime(String wakeTime) {
-        Log.d("SetTime", "Method Start");
-        Calendar cal = Calendar.getInstance();
-        Log.d("SetTime", "Current Time:" + cal.getTime());
+        Calendar timeHolder = Calendar.getInstance();
+        Calendar timeUpdate = Calendar.getInstance();
+//        Log.d(TAG, "Current Time:" + cal.getTime());
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
         try {
             time = sdf.parse(wakeTime);
-            cal.setTime(time);
-            Log.d("SetTime", "Hour: " + cal.get(Calendar.HOUR));
-            Log.d("SetTime", "Minute: " + cal.get(Calendar.MINUTE));
-            Log.d("SetTime", "AMPM: " + cal.get(Calendar.AM_PM));
-            Log.d("SetTime", "Set time to " + cal.getTime());
+            timeHolder.setTime(time);
+//            Log.d("SetTime", "Hour: " + timeHolder.get(Calendar.HOUR));
+//            Log.d("SetTime", "Minute: " + cal.get(Calendar.MINUTE));
+//            Log.d("SetTime", "AMPM: " + cal.get(Calendar.AM_PM));
+//            Log.d("SetTime", "Set time to " + cal.getTime());
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR));
-            setHour(cal.get(Calendar.HOUR));
-            calendar.set(Calendar.MINUTE, cal.get(Calendar.MINUTE));
-            setMinute(cal.get(Calendar.MINUTE));
-            calendar.set(Calendar.AM_PM, cal.get(Calendar.AM_PM));
-            setAm_pm(cal.get(Calendar.AM_PM));
-            Log.d("SetTime", "New time " + calendar.getTime());
-            Calendar currentTime = Calendar.getInstance();
-            if (calendar.before(currentTime))
-                calendar.add(Calendar.DAY_OF_YEAR, 1);
-            time = calendar.getTime();
+            // update the time from the parsed time string
+            timeUpdate.set(Calendar.HOUR, timeHolder.get(Calendar.HOUR));
+            timeUpdate.set(Calendar.MINUTE, timeHolder.get(Calendar.MINUTE));
+            timeUpdate.set(Calendar.AM_PM, timeHolder.get(Calendar.AM_PM));
+            timeUpdate.set(Calendar.SECOND, 0);
+
+            // while were at it save the values
+            setHour(timeHolder.get(Calendar.HOUR));
+            setMinute(timeHolder.get(Calendar.MINUTE));
+            setAm_pm(timeHolder.get(Calendar.AM_PM));
+
+            Log.d(TAG, "New time " + timeUpdate.getTime());
+            time = timeUpdate.getTime();
+            // update the time if necessary
+
+////            Calendar currentTime = Calendar.getInstance();
+//            if (timeUpdate.before(Calendar.getInstance()))
+//                timeUpdate.add(Calendar.DAY_OF_YEAR, 1);
+
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
 
     public Date updateTime() {
-        Calendar calendar = Calendar.getInstance();
+//        Calendar calendar = Calendar.getInstance();
+        // update alarm time if necessary
         if(time.before(Calendar.getInstance().getTime())) {
             Calendar update = Calendar.getInstance();
-            int day = mapToAlarmDays(calendar.get(Calendar.DAY_OF_WEEK));
+//            int day = mapToAlarmDays(calendar.get(Calendar.DAY_OF_WEEK));
 
 //            update.add(Calendar.DAY_OF_WEEK, getNextDayEnabled(day));
             // parse days of week and set on next day available
@@ -190,8 +202,10 @@ public class Alarm extends RealmObject {
             update.set(Calendar.HOUR_OF_DAY, hour);
             update.set(Calendar.MINUTE, minute);
             update.set(Calendar.AM_PM, am_pm);
+            update.set(Calendar.SECOND, 0);
             update.add(Calendar.DAY_OF_YEAR, getNextDayEnabled());
 //            update.add(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+            Log.d(TAG, "Alarm time: " + update.getTime());
             time = update.getTime();
         }
         return time;
@@ -205,6 +219,7 @@ public class Alarm extends RealmObject {
         Calendar next = Calendar.getInstance();
 
         int todaysDay = mapToAlarmDays(next.get(Calendar.DAY_OF_WEEK));
+        Log.d("Day", "Binary day: " + todaysDay);
         int daysFromNow = 0;
         if (getDecDaysOfWeek()==0)
             daysFromNow = 1;
@@ -281,7 +296,7 @@ public class Alarm extends RealmObject {
     }
 
     public int getDecDaysOfWeek() {
-        return Integer.parseInt(daysOfWeek, 2);
+        return (daysOfWeek != null) ? Integer.parseInt(daysOfWeek, 2) : 0;
     }
 
 }

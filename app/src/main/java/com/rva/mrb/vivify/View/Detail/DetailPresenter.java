@@ -18,4 +18,6 @@ public interface DetailPresenter extends BasePresenter<DetailView>{
     int getCurrentMinute();
 
     String getNewestAlarm();
+
+    int getAMPM(int hour);
 }

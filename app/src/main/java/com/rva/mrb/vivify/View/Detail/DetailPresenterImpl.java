@@ -1,14 +1,11 @@
 package com.rva.mrb.vivify.View.Detail;
 
-import android.app.AlarmManager;
 import android.content.Context;
-import android.os.SystemClock;
 import android.util.Log;
 
 import com.rva.mrb.vivify.Model.Data.Alarm;
 import com.rva.mrb.vivify.Model.Service.AlarmScheduler;
 import com.rva.mrb.vivify.Model.Service.RealmService;
-import com.spotify.sdk.android.player.ConnectionStateCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -34,9 +31,15 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
     }
 
     @Override
-    public void onSaveAlarm(Context context,String alarmid, String name, String time, boolean isSet, boolean isStandardTime, String repeat) {
+    public void onSaveAlarm(Context context,String alarmid, String name, String time,
+                            boolean isSet, boolean isStandardTime, String repeat) {
         mRealmService.saveAlarm(alarmid, name, time, isSet, isStandardTime, repeat);
-        AlarmScheduler.enableAlarmById(context, alarmid);
+//        AlarmScheduler.enableAlarmById(context, alarmid);
+    }
+
+    @Override
+    public int getAMPM(int hour) {
+        return (hour > 12) ? 0 : 1;
     }
 
     @Override
@@ -50,19 +53,21 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
     }
 
     @Override
-    public void onAddClick(Context context, String name, String time, boolean isSet, boolean isStandardTime, String repeat) {
-        mRealmService.addAlarmAsync(name, time, isSet, isStandardTime, repeat);
+    public void onAddClick(Context context, String name, String time, boolean isSet,
+                           boolean isStandardTime, String repeat) {
+        mRealmService.addAlarm(name, time, isSet, isStandardTime, repeat);
         if (isSet) {
-            String newestAlarmId = null;
+            String newestAlarmId;
             try {
                 newestAlarmId = mRealmService.getNewestAlarmId();
+                Log.d("New", "Alarm id is: " + newestAlarmId);
             } catch (Exception e) {
                 Log.e(TAG, "Alarm not found, trying againg. " + e.getMessage());
                 newestAlarmId = mRealmService.getNewestAlarmId();
             }
             if (newestAlarmId != null) {
                 Log.d("realm", "Alarm id: " + newestAlarmId); // getAlarm.last()
-                AlarmScheduler.enableAlarmById(context, newestAlarmId);
+//                AlarmScheduler.enableAlarmById(context, newestAlarmId);
             }
         }
     }
@@ -71,17 +76,17 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(TIME_FORMAT, Locale.US);
         String time = simpleDateFormat.format(cal.getTime());
-        Log.d("Alarm", "Wake Time: " + cal.getTime());
+        Log.d(TAG, "Current time: " + cal.getTime());
         return (time.indexOf("0")==0) ? time.substring(1): time;
     }
     public String getTime(int hour, int minute) {
         Calendar cal = Calendar.getInstance();
-        Log.d("Calendar", "Current time " + cal.getTime());
+//        Log.d("Calendar", "Current time " + cal.getTime());
         cal.set(Calendar.HOUR_OF_DAY, hour);
-        Log.d("Calendar", "Hour set " + cal.getTime());
+//        Log.d("Calendar", "Hour set " + cal.getTime());
         cal.set(Calendar.MINUTE, minute);
-        Log.d("Calendar", "Minute set " + cal.getTime());
-        Log.d("Alarm", "Literal Time " + cal.getTime());
+//        Log.d("Calendar", "Minute set " + cal.getTime());
+//        Log.d("Alarm", "Literal Time " + cal.getTime());
         Calendar currentTime = Calendar.getInstance();
         if (cal.before(currentTime))
             cal.add(Calendar.DAY_OF_YEAR,1);
@@ -96,7 +101,7 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
         SimpleDateFormat simpleDateFormat =
                 new SimpleDateFormat(TIME_FORMAT, Locale.US);
         String time = simpleDateFormat.format(cal.getTime());
-        Log.d("Alarm", "Wake Time: " + cal.getTime());
+        Log.d(TAG, "Wake Time: " + cal.getTime());
         return (time.indexOf("0")==0) ? time.substring(1) : time;
     }
 
