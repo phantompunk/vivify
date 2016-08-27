@@ -135,7 +135,7 @@ public class AlarmScheduler extends WakefulBroadcastReceiver{
 //        Alarm alarm = RealmService.getAlarmById(id);
 
         // reset the alarm manager and set the next enabled alarm
-//        setNextAlarm(context);
+        setNextAlarm(context);
     }
 
     private static void updateAlarm(String id) {

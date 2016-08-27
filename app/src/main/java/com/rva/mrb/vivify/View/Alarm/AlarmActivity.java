@@ -87,6 +87,15 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
                 alarmPresenter.getAllAlarms(), listener, true, true);
         mRecyclerView.setAdapter(mAdapter);
 
+
+//        Log.d(TAG, "Sunday: " + Calendar.SUNDAY);
+//        Log.d(TAG, "Monday: " + Calendar.MONDAY);
+//        Log.d(TAG, "Tuesday: " + Calendar.TUESDAY);
+//        Log.d(TAG, "Wednesday: " + Calendar.WEDNESDAY);
+//        Log.d(TAG, "Thursday: " + Calendar.THURSDAY);
+//        Log.d(TAG, "Friday: " + Calendar.FRIDAY);
+//        Log.d(TAG, "Saturday: " + Calendar.SATURDAY);
+//        Log.d(TAG, "Today: " + Calendar.DAY_OF_WEEK);
     }
 
     protected void onSaveInstanceState(Bundle outState) {

@@ -56,7 +56,7 @@ public class RealmService {
                 realm.where(Alarm.class).equalTo("enabled", true)
                     .findAllSorted("time").first().getTime());
         return realm.where(Alarm.class).equalTo("enabled", true)
-                .findAllSorted("time").last();
+                .findAllSorted("time").first();
     }
 
     public static void enableAlarm(final String alarmId) {
@@ -103,7 +103,7 @@ public class RealmService {
     public String getNextAlarm() {
         if (mRealm.where(Alarm.class).equalTo("enabled",true).findAll().size() > 0)
             return mRealm.where(Alarm.class).equalTo("enabled", true).findAll()
-                .sort("time").last().getTime()+"";
+                .sort("time").first().getTime()+"";
         else
             return "No Alarm set";
     }

@@ -171,16 +171,13 @@ public class DetailActivity extends BaseActivity implements DetailView {
                     Integer.toBinaryString(repeatDays));
             Log.d(TAG, "Alarm saved to realm");
         }
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra("enabled", true);
-        Log.d(TAG, "Extra " + returnIntent.getBooleanExtra("enabled", mIsSet.isChecked()));
-        setResult(Activity.RESULT_OK, returnIntent);
+//        Intent returnIntent = new Intent();
+//        returnIntent.putExtra("enabled", true);
+//        Log.d(TAG, "Extra " + returnIntent.getBooleanExtra("enabled", mIsSet.isChecked()));
+//        setResult(Activity.RESULT_OK, returnIntent);
         finish();
     }
 
-    /**
-     * TODO show current time or that alarms set time
-     */
     @OnClick(R.id.edit_time)
     public void onPickTime() {
 //        Log.d("EditTime", "Click Success");
