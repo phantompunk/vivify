@@ -39,6 +39,10 @@ public class Alarm extends RealmObject {
     private String daysOfWeek;
     private Date time;
     private Date createdAt;
+    private String trackName;
+    private String artist;
+    private String trackId;
+    private String trackImage;
 
     public Alarm() {
     }
@@ -126,6 +130,7 @@ public class Alarm extends RealmObject {
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
+
 
     public Date getTime() {
 //        Calendar cal = Calendar.getInstance();
@@ -284,4 +289,35 @@ public class Alarm extends RealmObject {
         return Integer.parseInt(daysOfWeek, 2);
     }
 
+    public String getTrackName() {
+        return trackName;
+    }
+
+    public void setTrackName(String trackName) {
+        this.trackName = trackName;
+    }
+
+    public String getArtistName() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public String getTrackId() {
+        return trackId;
+    }
+
+    public void setTrackId(String trackId) {
+        this.trackId = trackId;
+    }
+
+    public String getTrackImage() {
+        return trackImage;
+    }
+
+    public void setTrackImage(String trackImage) {
+        this.trackImage = trackImage;
+    }
 }

@@ -1,9 +1,6 @@
-package com.rva.mrb.vivify;
+package com.rva.mrb.vivify.Spotify;
 
 import android.util.Log;
-
-import com.rva.mrb.vivify.Model.Service.RealmService;
-import com.rva.mrb.vivify.Spotify.SpotifyService;
 
 import java.io.IOException;
 
@@ -11,7 +8,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import io.realm.Realm;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -20,30 +16,16 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by Bao on 6/24/16.
+ * Created by Bao on 8/22/16.
  */
 @Module
-public class ApplicationModule {
-
-    private AlarmApplication mApp;
+public class SpotifyModule {
     final String SPOTIFY_URL = "https://api.spotify.com/v1/";
     String accessToken;
 
     public void setAccessToken(String token) {
         this.accessToken = token;
     }
-
-    public ApplicationModule(AlarmApplication app) {
-        mApp = app;
-    }
-
-    @Provides
-    Realm provideRealm() {
-        return Realm.getDefaultInstance();
-    }
-
-    @Provides
-    RealmService provideRealmService(final Realm realm) { return new RealmService(realm); }
 
     @Provides
     @Singleton
@@ -74,5 +56,4 @@ public class ApplicationModule {
                 .build();
         return retrofit.create(SpotifyService.class);
     }
-
 }

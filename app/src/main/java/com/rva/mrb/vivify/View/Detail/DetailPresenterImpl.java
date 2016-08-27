@@ -34,8 +34,8 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
     }
 
     @Override
-    public void onSaveAlarm(Context context,String alarmid, String name, String time, boolean isSet, boolean isStandardTime, String repeat) {
-        mRealmService.saveAlarm(alarmid, name, time, isSet, isStandardTime, repeat);
+    public void onSaveAlarm(Context context,String alarmid, String name, String time, boolean isSet, boolean isStandardTime, String repeat, String trackName, String artist, String trackId, String trackImage) {
+        mRealmService.saveAlarm(alarmid, name, time, isSet, isStandardTime, repeat, trackName, artist, trackId, trackImage);
         AlarmScheduler.enableAlarmById(context, alarmid);
     }
 
@@ -50,8 +50,8 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
     }
 
     @Override
-    public void onAddClick(Context context, String name, String time, boolean isSet, boolean isStandardTime, String repeat) {
-        mRealmService.addAlarmAsync(name, time, isSet, isStandardTime, repeat);
+    public void onAddClick(Context context, String name, String time, boolean isSet, boolean isStandardTime, String repeat, String trackName, String artist, String trackId, String trackImage) {
+        mRealmService.addAlarmAsync(name, time, isSet, isStandardTime, repeat, trackName, artist, trackId, trackImage);
         if (isSet) {
             String newestAlarmId = null;
             try {

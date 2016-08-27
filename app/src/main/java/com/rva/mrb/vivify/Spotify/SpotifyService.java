@@ -1,11 +1,13 @@
-package com.rva.mrb.vivify.Model.Service;
+package com.rva.mrb.vivify.Spotify;
 
 import com.rva.mrb.vivify.Model.Data.Playlist;
+import com.rva.mrb.vivify.Model.Data.SimpleTrack;
 import com.rva.mrb.vivify.Model.Data.User;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Created by rigo on 7/8/16.
@@ -65,4 +67,12 @@ public interface SpotifyService {
 
     @GET("users/{user_id}")
     Call<User> getUser(@Path("user_id") String userId);
+
+    /***********
+     * User
+     ***********/
+
+    @GET("search?type=track")
+    Call<SimpleTrack> getSearchResults(@Query("q") String searchQuery);
+
 }

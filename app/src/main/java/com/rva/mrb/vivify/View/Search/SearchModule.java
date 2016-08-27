@@ -3,7 +3,7 @@ package com.rva.mrb.vivify.View.Search;
 import android.util.Log;
 
 import com.rva.mrb.vivify.Model.Service.RealmService;
-import com.rva.mrb.vivify.Model.Service.SpotifyService;
+import com.rva.mrb.vivify.Spotify.SpotifyService;
 
 import java.io.IOException;
 
@@ -29,33 +29,33 @@ public class SearchModule {
         this.activity = activity;
     }
 
-    public void setAccessToken(String token) {
-        this.accessToken = token;
-    }
+//    public void setAccessToken(String token) {
+//        this.accessToken = token;
+//    }
 
     @Provides
     SearchPresenter providesNewAlarmPresenterImpl(RealmService realmService) {
         return new SearchPresenterImpl(realmService);
     }
 
-    @Provides
-    @Singleton
-    OkHttpClient provideOkHttpClient() {
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.addInterceptor(new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                Request original = chain.request();
-                Request request = original.newBuilder()
-                        .addHeader("Authorization", "Bearer " + accessToken)
-                        .build();
-                Log.d("Request", request.headers()+"");
-                return chain.proceed(request);
-            }
-        });
-        OkHttpClient client = builder.build();
-        return client;
-    }
+//    @Provides
+//    @Singleton
+//    OkHttpClient provideOkHttpClient() {
+//        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+//        builder.addInterceptor(new Interceptor() {
+//            @Override
+//            public Response intercept(Chain chain) throws IOException {
+//                Request original = chain.request();
+//                Request request = original.newBuilder()
+//                        .addHeader("Authorization", "Bearer " + accessToken)
+//                        .build();
+//                Log.d("Request", request.headers()+"");
+//                return chain.proceed(request);
+//            }
+//        });
+//        OkHttpClient client = builder.build();
+//        return client;
+//    }
 //    @Provides
 //    public SpotifyClient providesSpotifyClient() {
 //        return new SpotifyClient();
@@ -86,14 +86,14 @@ public class SearchModule {
 //        return retrofit.create(SpotifyService.class);
 //    }
 
-    @Provides
-    @Singleton
-    public SpotifyService getSpotifyService(OkHttpClient client){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(SPOTIFY_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build();
-        return retrofit.create(SpotifyService.class);
-    }
+//    @Provides
+//    @Singleton
+//    public SpotifyService getSpotifyService(OkHttpClient client){
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(SPOTIFY_URL)
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .client(client)
+//                .build();
+//        return retrofit.create(SpotifyService.class);
+//    }
 }

@@ -64,6 +64,8 @@ public class AlarmScheduler extends WakefulBroadcastReceiver{
         if (alarm != null) {
 
             Intent intent = new Intent(context, WakeReceiver.class);
+            intent.putExtra("trackId", alarm.getTrackId());
+            intent.putExtra("trackImage", alarm.getTrackImage());
             PendingIntent pendingIntent =
                     PendingIntent.getBroadcast(context, Alarm.FLAG_NEXT_ALARM,
                             intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -94,12 +96,14 @@ public class AlarmScheduler extends WakefulBroadcastReceiver{
 
     }
 
-    public static void snoozeNextAlarm(Context context) {
+    public static void snoozeNextAlarm(Context context, String trackId, String trackImage) {
         cancelNextAlarm(context);
         Log.d(TAG, "Snoozing Alarm");
         AlarmManager alarmManager = (AlarmManager)
                 context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, WakeReceiver.class);
+        intent.putExtra("trackId", trackId);
+        intent.putExtra("trackImage", trackImage);
         PendingIntent snoozedIntent = PendingIntent.getBroadcast(context,
                 Alarm.FLAG_NEXT_ALARM , intent, PendingIntent.FLAG_UPDATE_CURRENT);
         // update

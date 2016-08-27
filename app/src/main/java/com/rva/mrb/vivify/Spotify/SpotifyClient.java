@@ -1,4 +1,4 @@
-package com.rva.mrb.vivify.Model.Service;
+package com.rva.mrb.vivify.Spotify;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
