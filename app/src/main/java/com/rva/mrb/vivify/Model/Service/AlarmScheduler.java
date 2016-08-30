@@ -58,6 +58,7 @@ public class AlarmScheduler extends WakefulBroadcastReceiver{
         Alarm alarm = null;
         try {
             alarm = getNextAlarm();
+            Log.d("setNextAlarm", "Alarm time: " + alarm.getTime());
         } catch (Exception e) {
             Log.e(TAG, "No alarms are set. " + e.getMessage());
         }
@@ -119,23 +120,23 @@ public class AlarmScheduler extends WakefulBroadcastReceiver{
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
                 Alarm.FLAG_NEXT_ALARM, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.cancel(pendingIntent);
-        RealmService.updateAlarms();
+//        RealmService.updateAlarms();
     }
 
     public static void enableAlarmById(Context context, String id) {
 
-        Log.d(TAG, "Toggle alarm id: " + id);
-        AlarmManager alarmManager = (AlarmManager)
-                context.getSystemService(Context.ALARM_SERVICE);
+//        Log.d(TAG, "Toggle alarm id: " + id);
+//        AlarmManager alarmManager = (AlarmManager)
+//                context.getSystemService(Context.ALARM_SERVICE);
 
-        // enable or disable alarm in database
+        // toggle alarm in database
         RealmService.enableAlarm(id);
 
         // check alarm date and update as needed
-//        updateAlarm(id);
+//        RealmService.updateAlarms();
 
         // if the alarm id is corresponds to an alarm return it
-        Alarm alarm = RealmService.getAlarmById(id);
+//        Alarm alarm = RealmService.getAlarmById(id);
 
         // reset the alarm manager and set the next enabled alarm
         setNextAlarm(context);

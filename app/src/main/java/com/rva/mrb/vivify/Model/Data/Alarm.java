@@ -9,6 +9,7 @@ import java.util.Date;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import io.realm.internal.Keep;
 
 public class Alarm extends RealmObject {
 
@@ -69,6 +70,16 @@ public class Alarm extends RealmObject {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+        if (isEnabled()) {
+            updateTime();
+        }
+//        else {
+//            clearTime();
+//        }
+    }
+
+    private void clearTime() {
+        setTime(new Date());
     }
 
     public boolean is24hr() {
@@ -147,56 +158,57 @@ public class Alarm extends RealmObject {
     }
 
     public void setTime(String wakeTime) {
-        Log.d("SetTime", "Method Start");
-        Calendar cal = Calendar.getInstance();
-        Log.d("SetTime", "Current Time:" + cal.getTime());
+        Calendar timeHolder = Calendar.getInstance();
+        Calendar timeUpdate = Calendar.getInstance();
+//        Log.d(TAG, "Current Time:" + cal.getTime());
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
         try {
             time = sdf.parse(wakeTime);
-            cal.setTime(time);
-            Log.d("SetTime", "Hour: " + cal.get(Calendar.HOUR));
-            Log.d("SetTime", "Minute: " + cal.get(Calendar.MINUTE));
-            Log.d("SetTime", "AMPM: " + cal.get(Calendar.AM_PM));
-            Log.d("SetTime", "Set time to " + cal.getTime());
+            timeHolder.setTime(time);
+//            Log.d("SetTime", "Hour: " + timeHolder.get(Calendar.HOUR));
+//            Log.d("SetTime", "Minute: " + cal.get(Calendar.MINUTE));
+//            Log.d("SetTime", "AMPM: " + cal.get(Calendar.AM_PM));
+//            Log.d("SetTime", "Set time to " + cal.getTime());
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR));
-            setHour(cal.get(Calendar.HOUR));
-            calendar.set(Calendar.MINUTE, cal.get(Calendar.MINUTE));
-            setMinute(cal.get(Calendar.MINUTE));
-            calendar.set(Calendar.AM_PM, cal.get(Calendar.AM_PM));
-            setAm_pm(cal.get(Calendar.AM_PM));
-            Log.d("SetTime", "New time " + calendar.getTime());
-            Calendar currentTime = Calendar.getInstance();
-            if (calendar.before(currentTime))
-                calendar.add(Calendar.DAY_OF_YEAR, 1);
-            time = calendar.getTime();
+            // update the time from the parsed time string
+            timeUpdate.set(Calendar.HOUR, timeHolder.get(Calendar.HOUR));
+            timeUpdate.set(Calendar.MINUTE, timeHolder.get(Calendar.MINUTE));
+            timeUpdate.set(Calendar.AM_PM, timeHolder.get(Calendar.AM_PM));
+            timeUpdate.set(Calendar.SECOND, 0);
+
+            // while were at it save the values
+            setHour(timeHolder.get(Calendar.HOUR));
+            setMinute(timeHolder.get(Calendar.MINUTE));
+            setAm_pm(timeHolder.get(Calendar.AM_PM));
+
+            Log.d(TAG, "New time " + timeUpdate.getTime());
+            time = timeUpdate.getTime();
+            // update the time if necessary
+
+////            Calendar currentTime = Calendar.getInstance();
+//            if (timeUpdate.before(Calendar.getInstance()))
+//                timeUpdate.add(Calendar.DAY_OF_YEAR, 1);
+
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
 
     public Date updateTime() {
-        Calendar calendar = Calendar.getInstance();
+        // update alarm time if necessary
         if(time.before(Calendar.getInstance().getTime())) {
+
+            // holds new date
             Calendar update = Calendar.getInstance();
-            int day = mapToAlarmDays(calendar.get(Calendar.DAY_OF_WEEK));
-
-//            update.add(Calendar.DAY_OF_WEEK, getNextDayEnabled(day));
-            // parse days of week and set on next day available
-            // if days of week = 0 then set for next day
-//            if (getDecDaysOfWeek()==0)
-//                update.add(Calendar.DAY_OF_WEEK, 1);
-//            else if ((getDecDaysOfWeek() & SUNDAY) == SUNDAY)
-//                update.add(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-//            else if ((getDecDaysOfWeek() & MONDAY) == MONDAY)
-//                update.add(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-
-            update.set(Calendar.HOUR_OF_DAY, hour);
+            update.set(Calendar.HOUR, hour);
             update.set(Calendar.MINUTE, minute);
             update.set(Calendar.AM_PM, am_pm);
+            update.set(Calendar.SECOND, 0);
+
+            // checks to find the next available day
             update.add(Calendar.DAY_OF_YEAR, getNextDayEnabled());
-//            update.add(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+            Log.d(TAG, "Alarm time: " + update.getTime());
             time = update.getTime();
         }
         return time;
@@ -207,42 +219,56 @@ public class Alarm extends RealmObject {
     }
 
     public int getNextDayEnabled() {
+        // this method only gets called if the alarm is old
+        // meaning we can roll the date ahead one day
+        // right off the bat and then begin checking
         Calendar next = Calendar.getInstance();
+        next.add(Calendar.DAY_OF_YEAR, 1);
 
+        // convert the Calendar day to a value we can use
         int todaysDay = mapToAlarmDays(next.get(Calendar.DAY_OF_WEEK));
+        Log.d("Day", "Binary day: " + todaysDay);
+
+        // roll the calendar this many days forward
         int daysFromNow = 0;
+
+        // we are using bitwise operations to store multiple values in a
+        // single column since Realm does not support an array of primitive
+        // data types. We are storing a string of up to 7 binary digits.We
+        // can think of this as a row of switches each with an on/off button
+        // corresponding to each day.
         if (getDecDaysOfWeek()==0)
             daysFromNow = 1;
         else
             for (int days = 1; days <= 7; days++) {
+                // In this case we are checking to see if today is contained
+                // in our binary repeat days value. This is done by utilizing the
+                // & operation, remember that is will only flip the bit of the
+                // digit corresponding to this day. If thats true then it must equal
+                // the binary value of today
                 if ((getDecDaysOfWeek() & todaysDay) == todaysDay) {
+                    Log.d(TAG, "Fire when");
                     daysFromNow = days;
                     break;
                 }
+                // If today is not contained within the binary string then
+                // roll the date foreword one day
                 next.add(Calendar.DAY_OF_YEAR, 1);
                 todaysDay = mapToAlarmDays(next.get(Calendar.DAY_OF_WEEK));
-
+                Log.d(TAG, "Next days is " + todaysDay);
+                daysFromNow = days;
             }
-        //                switch ((getDecDaysOfWeek() & todaysDay)) {
-//                    case SUNDAY:
-//                        day =1;
-//                        break;
-//                    default:
-//                        break;
-//                }
-//        else if ((getDecDaysOfWeek() & SUNDAY) == SUNDAY)
-//            update.add(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-//        else if ((getDecDaysOfWeek() & MONDAY) == MONDAY)
-//            update.add(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
-        // map calendar days to alarm days
-//        if (getDecDaysOfWeek() == 0)
-//            return Calendar
-//        if ((SUNDAY & daysOfWeek))
         Log.d(TAG, "Next alarm occurence is in " + daysFromNow + " days");
         return daysFromNow;
     }
 
+    /**
+     * Match any Calendar.Day_Of_Week value to the corresponding int value in
+     * Alarm so we can decipher our days enabled binary string
+     * @param calendarDay any Calendar.Day_Of_Week (ex. Sunday = 1, Saturday = 7)
+     * @return a binary value of that day
+     */
     public int mapToAlarmDays(int calendarDay) {
         switch (calendarDay) {
             case 1:
@@ -286,7 +312,7 @@ public class Alarm extends RealmObject {
     }
 
     public int getDecDaysOfWeek() {
-        return Integer.parseInt(daysOfWeek, 2);
+        return (daysOfWeek != null) ? Integer.parseInt(daysOfWeek, 2) : 0;
     }
 
     public String getTrackName() {
