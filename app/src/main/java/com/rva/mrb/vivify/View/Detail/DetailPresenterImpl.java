@@ -1,11 +1,14 @@
 package com.rva.mrb.vivify.View.Detail;
 
+import android.app.AlarmManager;
 import android.content.Context;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.rva.mrb.vivify.Model.Data.Alarm;
 import com.rva.mrb.vivify.Model.Service.AlarmScheduler;
 import com.rva.mrb.vivify.Model.Service.RealmService;
+import com.spotify.sdk.android.player.ConnectionStateCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -31,15 +34,9 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
     }
 
     @Override
-    public void onSaveAlarm(Context context,String alarmid, String name, String time,
-                            boolean isSet, boolean isStandardTime, String repeat) {
-        mRealmService.saveAlarm(alarmid, name, time, isSet, isStandardTime, repeat);
+    public void onSaveAlarm(Context context,String alarmid, String name, String time, boolean isSet, boolean isStandardTime, String repeat, String trackName, String artist, String trackId, String trackImage) {
+        mRealmService.saveAlarm(alarmid, name, time, isSet, isStandardTime, repeat, trackName, artist, trackId, trackImage);
 //        AlarmScheduler.enableAlarmById(context, alarmid);
-    }
-
-    @Override
-    public int getAMPM(int hour) {
-        return (hour > 12) ? 0 : 1;
     }
 
     @Override
@@ -54,8 +51,8 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
 
     @Override
     public void onAddClick(Context context, String name, String time, boolean isSet,
-                           boolean isStandardTime, String repeat) {
-        mRealmService.addAlarm(name, time, isSet, isStandardTime, repeat);
+                           boolean isStandardTime, String repeat, String trackName, String artist, String trackId, String trackImage) {
+        mRealmService.addAlarm(name, time, isSet, isStandardTime, repeat, trackName, artist, trackId, trackImage);
         if (isSet) {
             String newestAlarmId;
             try {

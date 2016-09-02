@@ -9,14 +9,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.rva.mrb.vivify.AlarmApplication;
 import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
 import com.rva.mrb.vivify.Model.Data.Alarm;
+import com.rva.mrb.vivify.Model.Data.SimpleTrack;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.Adapter.AlarmAdapter;
+import com.rva.mrb.vivify.View.Search.SearchActivity;
+
 
 import java.util.Calendar;
 
@@ -32,13 +36,13 @@ public class DetailActivity extends BaseActivity implements DetailView {
 
     @BindView(R.id.edit_name) EditText editname;
     @BindView(R.id.edit_time) EditText mEditTime;
+//    @BindView(R.id.edit_repeat) EditText mEditRepeat;
+    @BindView(R.id.track_tv) TextView mTrackTv;
     @BindView(R.id.isSet) CheckBox mIsSet;
     @BindView(R.id.standard_time) CheckBox mStandardTime;
-
     @BindView(R.id.button_add) Button addbt;
     @BindView(R.id.button_delete) Button deletebt;
     @BindView(R.id.button_save) Button savebt;
-
     @BindView(R.id.sunday_check) CheckBox sundayCb;
     @BindView(R.id.monday_check) CheckBox mondayCb;
     @BindView(R.id.tuesday_check) CheckBox tuesdayCb;
@@ -46,6 +50,11 @@ public class DetailActivity extends BaseActivity implements DetailView {
     @BindView(R.id.thursday_check) CheckBox thursdayCb;
     @BindView(R.id.friday_check) CheckBox fridayCb;
     @BindView(R.id.saturday_check) CheckBox saturdayCb;
+    private String trackName;
+    private String artistName;
+    private String trackId;
+    private String trackImage;
+    final private int requestCode = 1;
 
     // used to create a binary representation of days an alarm is enabled
     private int repeatDays = 0;
@@ -88,6 +97,13 @@ public class DetailActivity extends BaseActivity implements DetailView {
                 mIsSet.setChecked(alarm.isEnabled());
                 mStandardTime.setChecked(alarm.is24hr());
                 setRepeatCheckBoxes(alarm.getDecDaysOfWeek());
+//                mEditRepeat.setText(alarm.getmcRepeat());
+                trackName = alarm.getTrackName();
+                artistName = alarm.getArtistName();
+                trackId = alarm.getTrackId();
+                trackImage = alarm.getTrackImage();
+                Log.d("trackImageDA", "track image url: " + trackImage);
+                setTrackTv();
             }
         } else {
 //            Log.d("DetailTime", detailPresenter.getCurrentTime());
@@ -139,7 +155,11 @@ public class DetailActivity extends BaseActivity implements DetailView {
                 mEditTime.getText().toString(),
                 mIsSet.isChecked(),
                 mStandardTime.isChecked(),
-                Integer.toBinaryString(repeatDays)
+                Integer.toBinaryString(repeatDays),
+                trackName,
+                artistName,
+                trackId,
+                trackImage
                 );
         Intent returnIntent = new Intent();
         returnIntent.putExtra("enabled", true);
@@ -168,8 +188,12 @@ public class DetailActivity extends BaseActivity implements DetailView {
                     mEditTime.getText().toString(),
                     mIsSet.isChecked(),
                     mStandardTime.isChecked(),
-                    Integer.toBinaryString(repeatDays));
-            Log.d(TAG, "Alarm saved to realm");
+                    Integer.toBinaryString(repeatDays),
+                    trackName,
+                    artistName,
+                    trackId,
+                    trackImage
+            );
         }
 //        Intent returnIntent = new Intent();
 //        returnIntent.putExtra("enabled", true);
@@ -221,4 +245,32 @@ public class DetailActivity extends BaseActivity implements DetailView {
 
         Log.d(TAG, "Repeat Days: " + Integer.toBinaryString(repeatDays));
     }
+
+    @OnClick(R.id.spotify_search)
+    public void onSearchClick() {
+
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivityForResult(intent, requestCode);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK){
+                Bundle extras = data.getExtras();
+                SimpleTrack.Item track = (SimpleTrack.Item) extras.get("track");
+                Log.d("onActivityResult", track.getName());
+                trackName = track.getName();
+                artistName = track.getArtists().get(0).getName();
+                trackId = track.getId();
+                trackImage = track.getAlbum().getImages().get(1).getUrl();
+                setTrackTv();
+            }
+        }
+    }
+
+    public void setTrackTv() {
+        mTrackTv.setText(trackName + " by " + artistName);
+    }
+
 }

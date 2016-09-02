@@ -108,7 +108,10 @@ public class RealmService {
             return "No Alarm set";
     }
 
-    public void saveAlarm(final String alarmId, final String name, final String time, final boolean isSet, final boolean isStandardTime, final String repeat) {
+    public void saveAlarm(final String alarmId, final String name, final String time,
+                          final boolean isSet, final boolean isStandardTime, final String repeat,
+                          final String trackName, final String artist, final String trackId,
+                          final String trackImage) {
         final Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -121,6 +124,10 @@ public class RealmService {
                 editAlarm.setEnabled(isSet);
                 editAlarm.set24hr(isStandardTime);
                 editAlarm.setDaysOfWeek(repeat);
+                editAlarm.setTrackName(trackName);
+                editAlarm.setArtist(artist);
+                editAlarm.setTrackId(trackId);
+                editAlarm.setTrackImage(trackImage);
             }
         });
 //                , new Realm.Transaction.OnSuccess() {
@@ -161,7 +168,8 @@ public class RealmService {
 
     public void addAlarm(final String name, final String time,
                          final boolean isSet, final boolean isStandardTime,
-                         final String repeat) {
+                         final String repeat, final String trackName, final String artist,
+                         final String trackId, final String trackImage) {
         mRealm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(final Realm realm) {
@@ -174,6 +182,10 @@ public class RealmService {
                 alarm.set24hr(isStandardTime);
                 alarm.setDaysOfWeek(repeat);
                 alarm.setCreatedAt(Calendar.getInstance().getTime());
+                alarm.setTrackName(trackName);
+                alarm.setArtist(artist);
+                alarm.setTrackId(trackId);
+                alarm.setTrackImage(trackImage);
             }
         });
 //                ,
