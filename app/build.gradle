@@ -14,8 +14,10 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    sourceSets.main {
-        jniLibs.srcDirs = ['jni'] // copy folder that includes *.so to package
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['jni'] // copy folder that includes *.so to package
+        }
     }
     buildTypes {
         release {
@@ -23,6 +25,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     lintOptions {
         abortOnError false
     }

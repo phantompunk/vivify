@@ -33,6 +33,7 @@ public class WakeService extends Service {
         super.onStartCommand(intent, flag, startId);
         Log.d("Service", "Starting Service");
 //        Intent intent1 = new Intent(getApplicationContext(), sdfAlertActivity.class);
+
         Bundle extras = intent.getExtras();
         String trackId = (String) extras.get("trackId");
         String trackImage = (String) extras.get("trackImage");
