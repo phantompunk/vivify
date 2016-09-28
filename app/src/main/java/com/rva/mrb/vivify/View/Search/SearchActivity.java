@@ -13,6 +13,8 @@ import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
 import com.rva.mrb.vivify.Model.Data.Playlist;
 import com.rva.mrb.vivify.Model.Data.SimpleTrack;
+import com.rva.mrb.vivify.Model.Data.Tokens;
+import com.rva.mrb.vivify.Spotify.NodeService;
 import com.rva.mrb.vivify.Spotify.SpotifyModule;
 import com.rva.mrb.vivify.Spotify.SpotifyService;
 import com.rva.mrb.vivify.R;
@@ -23,8 +25,6 @@ import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.ConnectionStateCallback;
 import com.spotify.sdk.android.player.Player;
-import com.spotify.sdk.android.player.PlayerNotificationCallback;
-import com.spotify.sdk.android.player.PlayerState;
 
 import javax.inject.Inject;
 
@@ -36,15 +36,18 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SearchActivity extends BaseActivity implements SearchView,
-        ConnectionStateCallback, PlayerNotificationCallback, SearchInterface {
+        ConnectionStateCallback, SearchInterface {
 
     @Inject
     SearchPresenter searchPresenter;
-
+    @Inject
+    NodeService nodeService;
     @Inject
     SpotifyService spotifyService;
-    @BindView(R.id.search_recyclerview) RecyclerView recyclerview;
-    @BindView(R.id.search_edittext) TextView searchEditText;
+    @BindView(R.id.search_recyclerview)
+    RecyclerView recyclerview;
+    @BindView(R.id.search_edittext)
+    TextView searchEditText;
     private SearchAdapter searchAdapter;
     private Playlist playlist;
 
@@ -81,13 +84,25 @@ public class SearchActivity extends BaseActivity implements SearchView,
     }
 
 
-    public void setInterface(){
+    public void setInterface() {
         searchAdapter.setSearchInterface(this);
     }
 
     private void initSpotify() {
+//        nodeService.getTokens().enqueue(new Callback<Tokens>() {
+//            @Override
+//            public void onResponse(Call<Tokens> call, Response<Tokens> response) {
+//                Tokens tokens=response.body();
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Tokens> call, Throwable t) {
+//
+//            }
+//        });
+
         AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID,
-                AuthenticationResponse.Type.TOKEN, REDIRECT_URI);
+                AuthenticationResponse.Type.CODE, REDIRECT_URI);
 
         builder.setScopes(new String[]{"streaming"});
         AuthenticationRequest request = builder.build();
@@ -101,24 +116,43 @@ public class SearchActivity extends BaseActivity implements SearchView,
 
         // Check if result comes from the correct activity
         if (requestCode == REQUEST_CODE) {
-            if (requestCode == REQUEST_CODE) {
-                AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
-                switch (response.getType()) {
-                    case TOKEN:
-                        Log.d("Spotify", "Response Token: " + response.getAccessToken());
-                        applicationModule.setAccessToken(response.getAccessToken());
-                        playerConfig = new Config(this, response.getAccessToken(), CLIENT_ID);
-                        break;
-                    case ERROR:
-                        break;
-                    default:
-                }
+            AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
+            switch (response.getType()) {
+                case CODE:
+
+                    Log.d("Spotify", "Response Code: " + response.getCode());
+                    // applicationModule.setAccessToken(response.getAccessToken());
+                    nodeService.getTokens(response.getCode()).enqueue(new Callback<Tokens>() {
+                        @Override
+                        public void onResponse(Call<Tokens> call, Response<Tokens> response) {
+                            Log.d("Node", "Response Message: " + response.message());
+                            Tokens results = response.body();
+                            Log.d("Node", "Response Body: " + response.body().toString());
+                            Log.d("Node", "Code: " + response.code());
+                            Log.d("Node", "AccessToken: " + results.getAccessToken());
+                            Log.d("Node", "Refresh Token: " + results.getRefreshToken());
+
+                            applicationModule.setAccessToken(results.getAccessToken());
+                            applicationModule.setRefreshToken(results.getRefreshToken());
+                        }
+
+                        @Override
+                        public void onFailure(Call<Tokens> call, Throwable t) {
+                            Log.d("Node", "Call failed: " + t.getMessage());
+                            t.printStackTrace();
+                        }
+                    });
+                    Log.d("Node", "Made call to node");
+                    break;
+                case ERROR:
+                    break;
+                default:
             }
         }
     }
 
     @OnClick(R.id.fab3)
-    public void onSearchClick(){
+    public void onSearchClick() {
         Log.d("MyApp", "Fab Click");
         String searchQuery = searchEditText.getText().toString();
         spotifyService.getSearchResults(searchQuery).enqueue(new Callback<SimpleTrack>() {
@@ -166,8 +200,6 @@ public class SearchActivity extends BaseActivity implements SearchView,
 //                public void onFailure(Call<Playlist> call, Throwable t) {
 //                }
 //            });
-
-
 
 
 //        spotifyService.getSearchResults(searchQuery).enqueue(new Callback<Playlist.Tracks>() {
@@ -278,7 +310,7 @@ public class SearchActivity extends BaseActivity implements SearchView,
     }
 
     @Override
-    public void onLoginFailed(Throwable throwable) {
+    public void onLoginFailed(int i) {
         Log.d("Spotify", "Login failed");
 
     }
@@ -296,19 +328,7 @@ public class SearchActivity extends BaseActivity implements SearchView,
     }
 
     @Override
-    public void onPlaybackEvent(EventType eventType, PlayerState playerState) {
-        Log.d("Spotify", "Playback event received: " + eventType.name());
-
-    }
-
-    @Override
-    public void onPlaybackError(ErrorType errorType, String s) {
-        Log.d("Spotify", "Playback error received: " + errorType.name());
-
-    }
-
-    @Override
-    public void onTrackSelected(SimpleTrack.Item track){
+    public void onTrackSelected(SimpleTrack.Item track) {
         Log.d("Search Activity", "At onTrackSelected");
 
         Intent intent = new Intent();

@@ -3,9 +3,11 @@ package com.rva.mrb.vivify;
 import android.util.Log;
 
 import com.rva.mrb.vivify.Model.Service.RealmService;
+import com.rva.mrb.vivify.Spotify.NodeService;
 import com.rva.mrb.vivify.Spotify.SpotifyService;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.inject.Singleton;
 
@@ -27,12 +29,17 @@ public class ApplicationModule {
 
     private AlarmApplication mApp;
     final String SPOTIFY_URL = "https://api.spotify.com/v1/";
+    final String NODE_URL = "http://192.168.1.136:3000/";
     String accessToken;
+    String refreshToken;
 
     public void setAccessToken(String token) {
         this.accessToken = token;
     }
 
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
     public ApplicationModule(AlarmApplication app) {
         mApp = app;
     }
@@ -64,6 +71,23 @@ public class ApplicationModule {
         return client;
     }
 
+//    @Provides
+//    @Singleton
+//    public OkHttpClient getHttpForNode() {
+//        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+//        builder.addInterceptor(new Interceptor() {
+//            @Override
+//            public Response intercept(Chain chain) throws IOException {
+//                Request original = chain.request();
+//                Request request = original.newBuilder()
+//                        .build();
+//                return chain.proceed(request);
+//            }
+//        });
+//        OkHttpClient client = builder.build();
+//        return client;
+//    }
+
     @Provides
     @Singleton
     public SpotifyService getSpotifyService(OkHttpClient client){
@@ -75,4 +99,13 @@ public class ApplicationModule {
         return retrofit.create(SpotifyService.class);
     }
 
+    @Provides
+    @Singleton
+    public NodeService getNodeService(){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(NODE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        return retrofit.create(NodeService.class);
+    }
 }

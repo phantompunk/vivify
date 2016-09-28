@@ -13,6 +13,9 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
     }
     sourceSets {
         main {
@@ -67,8 +70,8 @@ dependencies {
     // Stetho Realm Browser for linux/Windows
     
     testCompile 'junit:junit:4.12'
-    compile 'com.spotify.sdk:spotify-auth:1.0.0-beta12@aar'
-    compile 'com.spotify.sdk:spotify-player:1.0.0-beta12@aar'
+    compile 'com.spotify.sdk:spotify-auth-beta21-noconnect-2.18c@aar'
+    compile 'com.spotify.sdk:spotify-player-beta21-noconnect-2.18c@aar'
     compile 'com.bignerdranch.android:expandablerecyclerview:2.1.1'
     compile 'com.android.support:recyclerview-v7:23.4.0'
     compile 'com.android.support:design:23.4.0'

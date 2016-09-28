@@ -1,7 +1,10 @@
 package com.rva.mrb.vivify.View.Wake;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
@@ -17,20 +20,14 @@ import com.rva.mrb.vivify.R;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
-import com.spotify.sdk.android.player.Config;
-import com.spotify.sdk.android.player.ConnectionStateCallback;
-import com.spotify.sdk.android.player.Player;
-import com.spotify.sdk.android.player.PlayerNotificationCallback;
-import com.spotify.sdk.android.player.PlayerState;
-import com.spotify.sdk.android.player.Spotify;
+import com.spotify.sdk.android.player.*;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class WakeActivity extends BaseActivity implements ConnectionStateCallback,
-        PlayerNotificationCallback {
+public class WakeActivity extends BaseActivity implements ConnectionStateCallback, Player.NotificationCallback {
 
     @BindView(R.id.dismiss_tv) TextView dismissTv;
     @BindView(R.id.snooze_tv) TextView snoozeTv;
@@ -43,7 +40,7 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
     private static final String CLIENT_ID = "c07baf896d3a4b4b99c09fa61592eb1d";
     private static final int REQUEST_CODE = 5123;
     private static final String REDIRECT_URI = "vivify://callback";
-    private Player mPlayer;
+    private SpotifyPlayer mPlayer;
     private Config playerConfig;
     private ApplicationModule applicationModule = new ApplicationModule((AlarmApplication) getApplication());
     private String trackId;
@@ -89,6 +86,17 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
 
     }
 
+    private Connectivity getNetworkConnectivity(Context context) {
+        ConnectivityManager connectivityManager;
+        connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+        if (activeNetwork != null && activeNetwork.isConnected()) {
+            return Connectivity.fromNetworkType(activeNetwork.getType());
+        } else {
+            return Connectivity.OFFLINE;
+        }
+    }
+
 //    @Override
 //    protected void onResume() {}
 
@@ -124,15 +132,13 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(seekBar.getProgress() > 85) {
+                if (seekBar.getProgress() > 85) {
                     dismissTv.setTextSize(30);
                     dismissTv.setTypeface(null, Typeface.BOLD);
-                }
-                else if(seekBar.getProgress() < 15) {
+                } else if (seekBar.getProgress() < 15) {
                     snoozeTv.setTextSize(30);
                     snoozeTv.setTypeface(null, Typeface.BOLD);
-                }
-                else{
+                } else {
                     dismissTv.setTextSize(20);
                     snoozeTv.setTextSize(20);
                 }
@@ -145,13 +151,11 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                if(seekBar.getProgress() > 85) {
+                if (seekBar.getProgress() > 85) {
                     onDismiss();
-                }
-                else if(seekBar.getProgress() < 15) {
+                } else if (seekBar.getProgress() < 15) {
                     onSnooze();
-                }
-                else {
+                } else {
                     seekBar.setProgress(50);
                 }
             }
@@ -182,19 +186,20 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
                     //Initialize Spotify player
                     playerConfig = new Config(this, response.getAccessToken(), CLIENT_ID);
                     mPlayer = Spotify.getPlayer(playerConfig, this,
-                            new Player.InitializationObserver() {
-                        @Override
-                        public void onInitialized(Player player) {
-                            mPlayer.addConnectionStateCallback(WakeActivity.this);
-                            mPlayer.addPlayerNotificationCallback(WakeActivity.this);
-                            mPlayer.play("spotify:track:" + trackId);
-                        }
+                            new SpotifyPlayer.InitializationObserver() {
+                                @Override
+                                public void onInitialized(SpotifyPlayer player) {
+                                    mPlayer.setConnectivityStatus(getNetworkConnectivity(WakeActivity.this));
+                                    mPlayer.addConnectionStateCallback(WakeActivity.this);
+                                    mPlayer.addNotificationCallback(WakeActivity.this);
+                                    mPlayer.play("spotify:track:" + trackId, 0, 0);
+                                }
 
-                        @Override
-                        public void onError(Throwable throwable) {
-                            Log.e("MainActivity", "Could not initialize player: " + throwable.getMessage());
-                        }
-                    });
+                                @Override
+                                public void onError(Throwable throwable) {
+                                    Log.e("MainActivity", "Could not initialize player: " + throwable.getMessage());
+                                }
+                            });
                     break;
                 case ERROR:
                     break;
@@ -215,7 +220,7 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
     }
 
     @Override
-    public void onLoginFailed(Throwable throwable) {
+    public void onLoginFailed(int i) {
 
     }
 
@@ -229,20 +234,31 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
 
     }
 
-    @Override
-    public void onPlaybackEvent(EventType eventType, PlayerState playerState) {
-
-    }
-
-    @Override
-    public void onPlaybackError(ErrorType errorType, String s) {
-
-    }
+//    @Override
+//    public void onPlaybackEvent(EventType eventType, PlayerState playerState) {
+//
+//    }
+//
+//    @Override
+//    public void onPlaybackError(ErrorType errorType, String s) {
+//
+//    }
 
     @Override
     protected void onDestroy() {
         // VERY IMPORTANT! This must always be called or else you will leak resources
         Spotify.destroyPlayer(this);
         super.onDestroy();
+    }
+
+    @Override
+    public void onPlaybackEvent(PlayerEvent event) {
+
+    }
+
+
+    @Override
+    public void onPlaybackError(com.spotify.sdk.android.player.Error error) {
+
     }
 }
