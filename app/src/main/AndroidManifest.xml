@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".View.Alarm.AlarmActivity">
+        <activity android:name=".View.Login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -41,6 +41,9 @@
             android:name=".View.Wake.WakeActivity"
             android:label="@string/title_activity_alert"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".View.Alarm.AlarmActivity"
+            android:label="AlarmActivity"></activity>
         <receiver android:name=".Model.Service.WakeReceiver"/>
         <receiver android:name=".Model.Service.AlarmScheduler"/>
         <service android:name=".Model.Service.WakeService"

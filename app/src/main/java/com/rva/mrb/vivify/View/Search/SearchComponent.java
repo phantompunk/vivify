@@ -3,8 +3,6 @@ package com.rva.mrb.vivify.View.Search;
 
 import com.rva.mrb.vivify.ApplicationComponent;
 import com.rva.mrb.vivify.ApplicationModule;
-import com.rva.mrb.vivify.Spotify.NodeModule;
-import com.rva.mrb.vivify.Spotify.SpotifyModule;
 
 import javax.inject.Singleton;
 

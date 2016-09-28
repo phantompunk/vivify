@@ -36,7 +36,7 @@ public class ApplicationModule {
     public void setAccessToken(String token) {
         this.accessToken = token;
     }
-
+    public String getAccessToken() { return this.accessToken; }
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
@@ -70,23 +70,6 @@ public class ApplicationModule {
         OkHttpClient client = builder.build();
         return client;
     }
-
-//    @Provides
-//    @Singleton
-//    public OkHttpClient getHttpForNode() {
-//        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-//        builder.addInterceptor(new Interceptor() {
-//            @Override
-//            public Response intercept(Chain chain) throws IOException {
-//                Request original = chain.request();
-//                Request request = original.newBuilder()
-//                        .build();
-//                return chain.proceed(request);
-//            }
-//        });
-//        OkHttpClient client = builder.build();
-//        return client;
-//    }
 
     @Provides
     @Singleton
