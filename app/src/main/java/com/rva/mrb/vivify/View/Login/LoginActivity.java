@@ -47,8 +47,8 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkLoginStatus();
         setContentView(R.layout.activity_login);
+        //inject dagger and butterknife dependencies
         LoginComponent loginComponent = DaggerLoginComponent.builder()
                 .applicationModule(applicationModule)
                 .applicationComponent(((AlarmApplication) getApplication()).getComponent())
@@ -58,18 +58,10 @@ public class LoginActivity extends BaseActivity {
 
     }
 
-    public void checkLoginStatus(){
-        Log.d("Login", "Checking login status");
-        SharedPreferences sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
-        String refreshToken = sharedPreferences.getString("refresh_token", null);
-        if(refreshToken == null || refreshToken.equals("-1")) {
-        }
-        else{
-            Intent intent = new Intent(this, AlarmActivity.class);
-            startActivity(intent);
-        }
-    }
-
+    /**
+     * OnClick for the login button. This method will launch the Spotify Android SDK to allow user
+     * to login and retrieve authorization code for authorization-code-flow.
+     */
     @OnClick(R.id.login_button)
     public void onLoginButtonClick() {
         AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID,
@@ -81,6 +73,14 @@ public class LoginActivity extends BaseActivity {
         AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
     }
 
+    /**
+     * This method is called as a result of Spotify Android SDK authentication. If response is good,
+     * then a call to the node.js backend will be made exchange authorization code for access and
+     * refresh tokens.This method will then start a new AlarmActivity
+     * @param requestCode code sent with spotify call to verify app
+     * @param resultCode
+     * @param intent
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -92,27 +92,28 @@ public class LoginActivity extends BaseActivity {
                 case CODE:
 
                     Log.d("Spotify", "Response Code: " + response.getCode());
-                    // applicationModule.setAccessToken(response.getAccessToken());
+                    //Make retrofit call to node.js server
                     nodeService.getTokens(response.getCode()).enqueue(new Callback<Tokens>() {
                         @Override
                         public void onResponse(Call<Tokens> call, Response<Tokens> response) {
                             Log.d("Node", "Response Message: " + response.message());
+                            //get the response body
                             Tokens results = response.body();
                             Log.d("Node", "Response Body: " + response.body().toString());
                             Log.d("Node", "Code: " + response.code());
                             Log.d("Node", "AccessToken: " + results.getAccessToken());
                             Log.d("Node", "Refresh Token: " + results.getRefreshToken());
 
+                            //save the access token and refesh token in Shared Preferences
                             SharedPreferences sharedPref = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putString("access_token", results.getAccessToken());
                             editor.putString("refresh_token", results.getRefreshToken());
+                            editor.putBoolean("isLoggedIn", true);
                             editor.commit();
 
-                            applicationModule.setAccessToken(results.getAccessToken());
-                            applicationModule.setRefreshToken(results.getRefreshToken());
-                            checkLoginStatus();
-
+                            //Start alarm activity
+                            startAlarmActivity();
                         }
 
                         @Override
@@ -128,6 +129,14 @@ public class LoginActivity extends BaseActivity {
                 default:
             }
         }
+    }
+
+    /**
+     * This method starts the alarm activity class
+     */
+    public void startAlarmActivity() {
+        Intent intent = new Intent(this, AlarmActivity.class);
+        startActivity(intent);
     }
 
     @Override

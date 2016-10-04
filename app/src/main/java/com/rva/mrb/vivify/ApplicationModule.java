@@ -29,7 +29,7 @@ public class ApplicationModule {
 
     private AlarmApplication mApp;
     final String SPOTIFY_URL = "https://api.spotify.com/v1/";
-    final String NODE_URL = "http://192.168.1.136:3000/";
+    final String NODE_URL = "https://vivify-backend.herokuapp.com/";
     String accessToken;
     String refreshToken;
 

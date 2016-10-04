@@ -206,7 +206,7 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
     @Override
     public void onLoggedIn() {
         mPlayer.playUri("spotify:track:" + trackId, 0, 0);
-
+        mPlayer.setRepeat(true);
     }
 
     @Override
