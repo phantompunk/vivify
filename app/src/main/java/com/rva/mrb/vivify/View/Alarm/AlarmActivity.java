@@ -140,7 +140,7 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
     public void checkLoginStatus(){
         Log.d("Login", "Checking login status");
         SharedPreferences sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
-        if(!sharedPreferences.getBoolean("isLoggedIn", true)) {
+        if(!sharedPreferences.getBoolean("isLoggedIn", false)) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
