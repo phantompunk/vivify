@@ -41,6 +41,12 @@
             android:name=".View.Wake.WakeActivity"
             android:label="@string/title_activity_alert"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".View.Login.LoginActivity"
+            android:label="LoginActivity"></activity>
+        <activity
+            android:name=".View.Settings.SettingsActivity"
+            android:label="SettingsActivity"></activity>
         <receiver android:name=".Model.Service.WakeReceiver"/>
         <receiver android:name=".Model.Service.AlarmScheduler"/>
         <service android:name=".Model.Service.WakeService"

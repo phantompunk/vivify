@@ -1,7 +1,9 @@
 package com.rva.mrb.vivify.View.Search;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,20 +13,16 @@ import android.widget.TextView;
 import com.rva.mrb.vivify.AlarmApplication;
 import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
+import com.rva.mrb.vivify.Model.Data.AccessToken;
 import com.rva.mrb.vivify.Model.Data.Playlist;
 import com.rva.mrb.vivify.Model.Data.SimpleTrack;
-import com.rva.mrb.vivify.Spotify.SpotifyModule;
+import com.rva.mrb.vivify.Spotify.NodeService;
 import com.rva.mrb.vivify.Spotify.SpotifyService;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.Adapter.SearchAdapter;
-import com.spotify.sdk.android.authentication.AuthenticationClient;
-import com.spotify.sdk.android.authentication.AuthenticationRequest;
-import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.ConnectionStateCallback;
 import com.spotify.sdk.android.player.Player;
-import com.spotify.sdk.android.player.PlayerNotificationCallback;
-import com.spotify.sdk.android.player.PlayerState;
 
 import javax.inject.Inject;
 
@@ -35,16 +33,22 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * This class allows user to search spotify
+ */
 public class SearchActivity extends BaseActivity implements SearchView,
-        ConnectionStateCallback, PlayerNotificationCallback, SearchInterface {
+        ConnectionStateCallback, SearchInterface {
 
     @Inject
     SearchPresenter searchPresenter;
-
+    @Inject
+    NodeService nodeService;
     @Inject
     SpotifyService spotifyService;
-    @BindView(R.id.search_recyclerview) RecyclerView recyclerview;
-    @BindView(R.id.search_edittext) TextView searchEditText;
+    @BindView(R.id.search_recyclerview)
+    RecyclerView recyclerview;
+    @BindView(R.id.search_edittext)
+    TextView searchEditText;
     private SearchAdapter searchAdapter;
     private Playlist playlist;
 
@@ -61,6 +65,8 @@ public class SearchActivity extends BaseActivity implements SearchView,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        //Inject dagger and butterknife dependencies
         SearchComponent searchComponent = DaggerSearchComponent.builder()
                 .applicationModule(applicationModule)
                 .searchModule(searchModule)
@@ -69,10 +75,14 @@ public class SearchActivity extends BaseActivity implements SearchView,
         searchComponent.inject(this);
         ButterKnife.bind(this);
 
+        //Inititialize view and retrieve a fresh access token
         initView();
-        initSpotify();
+        refreshToken();
     }
 
+    /**
+     * This method initializes the view
+     */
     private void initView() {
 //        recyclerview.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
@@ -80,45 +90,43 @@ public class SearchActivity extends BaseActivity implements SearchView,
 
     }
 
-
-    public void setInterface(){
+    /**
+     * This method sets the search interface to communicate with searchAdapter
+     */
+    public void setInterface() {
         searchAdapter.setSearchInterface(this);
     }
 
-    private void initSpotify() {
-        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID,
-                AuthenticationResponse.Type.TOKEN, REDIRECT_URI);
+    /**
+     * This method retrieves a new access token from the backend server.
+     */
+    private void refreshToken() {
+        //Get refreshToken from SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
+        String refreshToken = sharedPreferences.getString("refresh_token", null);
+        Log.d("Node", "sharedpref refresh token: " + refreshToken);
 
-        builder.setScopes(new String[]{"streaming"});
-        AuthenticationRequest request = builder.build();
-
-        AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-
-        // Check if result comes from the correct activity
-        if (requestCode == REQUEST_CODE) {
-            if (requestCode == REQUEST_CODE) {
-                AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
-                switch (response.getType()) {
-                    case TOKEN:
-                        Log.d("Spotify", "Response Token: " + response.getAccessToken());
-                        applicationModule.setAccessToken(response.getAccessToken());
-                        playerConfig = new Config(this, response.getAccessToken(), CLIENT_ID);
-                        break;
-                    case ERROR:
-                        break;
-                    default:
-                }
+        //Make call to node.js server to obtain a fresh access token
+        nodeService.refreshToken(refreshToken).enqueue(new Callback<AccessToken>() {
+            @Override
+            public void onResponse(Call<AccessToken> call, Response<AccessToken> response) {
+                AccessToken results = response.body();
+                applicationModule.setAccessToken(results.getAccessToken());
             }
-        }
+
+            @Override
+            public void onFailure(Call<AccessToken> call, Throwable t) {
+                Log.d("Node", "error: " + t.getMessage());
+            }
+        });
     }
 
+    /**
+     * Search button was clicked. This method makes a retrofit call to Spotify API with the string in
+     * searchEditText to search for music.
+     */
     @OnClick(R.id.fab3)
-    public void onSearchClick(){
+    public void onSearchClick() {
         Log.d("MyApp", "Fab Click");
         String searchQuery = searchEditText.getText().toString();
         spotifyService.getSearchResults(searchQuery).enqueue(new Callback<SimpleTrack>() {
@@ -166,8 +174,6 @@ public class SearchActivity extends BaseActivity implements SearchView,
 //                public void onFailure(Call<Playlist> call, Throwable t) {
 //                }
 //            });
-
-
 
 
 //        spotifyService.getSearchResults(searchQuery).enqueue(new Callback<Playlist.Tracks>() {
@@ -278,8 +284,8 @@ public class SearchActivity extends BaseActivity implements SearchView,
     }
 
     @Override
-    public void onLoginFailed(Throwable throwable) {
-        Log.d("Spotify", "Login failed");
+    public void onLoginFailed(int i) {
+        Log.d("Spotify", "LoginActivity failed");
 
     }
 
@@ -295,20 +301,12 @@ public class SearchActivity extends BaseActivity implements SearchView,
 
     }
 
+    /**
+     * This method is called when a track has been selected and returns the track.
+     * @param track The track that is selected
+     */
     @Override
-    public void onPlaybackEvent(EventType eventType, PlayerState playerState) {
-        Log.d("Spotify", "Playback event received: " + eventType.name());
-
-    }
-
-    @Override
-    public void onPlaybackError(ErrorType errorType, String s) {
-        Log.d("Spotify", "Playback error received: " + errorType.name());
-
-    }
-
-    @Override
-    public void onTrackSelected(SimpleTrack.Item track){
+    public void onTrackSelected(SimpleTrack.Item track) {
         Log.d("Search Activity", "At onTrackSelected");
 
         Intent intent = new Intent();

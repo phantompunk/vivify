@@ -9,14 +9,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.rva.mrb.vivify.AlarmApplication;
 import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
 import com.rva.mrb.vivify.Model.Data.Alarm;
+import com.rva.mrb.vivify.Model.Data.SimpleTrack;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.Adapter.AlarmAdapter;
+import com.rva.mrb.vivify.View.Search.SearchActivity;
+
 
 import java.util.Calendar;
 
@@ -32,13 +36,13 @@ public class DetailActivity extends BaseActivity implements DetailView {
 
     @BindView(R.id.edit_name) EditText editname;
     @BindView(R.id.edit_time) EditText mEditTime;
+//    @BindView(R.id.edit_repeat) EditText mEditRepeat;
+    @BindView(R.id.track_tv) TextView mTrackTv;
     @BindView(R.id.isSet) CheckBox mIsSet;
     @BindView(R.id.standard_time) CheckBox mStandardTime;
-
     @BindView(R.id.button_add) Button addbt;
     @BindView(R.id.button_delete) Button deletebt;
     @BindView(R.id.button_save) Button savebt;
-
     @BindView(R.id.sunday_check) CheckBox sundayCb;
     @BindView(R.id.monday_check) CheckBox mondayCb;
     @BindView(R.id.tuesday_check) CheckBox tuesdayCb;
@@ -46,12 +50,14 @@ public class DetailActivity extends BaseActivity implements DetailView {
     @BindView(R.id.thursday_check) CheckBox thursdayCb;
     @BindView(R.id.friday_check) CheckBox fridayCb;
     @BindView(R.id.saturday_check) CheckBox saturdayCb;
+    private String trackName;
+    private String artistName;
+    private String trackId;
+    private String trackImage;
+    final private int requestCode = 1;
 
     // used to create a binary representation of days an alarm is enabled
     private int repeatDays = 0;
-//    private int alarmHour = 0;
-//    private int alarmMinute = 0;
-//    private int alarmAM_PM = 0;
 
     @Inject DetailPresenter detailPresenter;
     private AlarmAdapter.OnAlarmToggleListener alarmToggleListener;
@@ -61,6 +67,8 @@ public class DetailActivity extends BaseActivity implements DetailView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_alarm);
+
+        //inject dagger and butterknife dependencies
         DetailComponent detailComponent = DaggerDetailComponent.builder()
                 .applicationModule(new ApplicationModule((AlarmApplication) getApplication()))
                 .detailModule(new DetailModule())
@@ -68,11 +76,15 @@ public class DetailActivity extends BaseActivity implements DetailView {
                 .build();
         detailComponent.inject(this);
         ButterKnife.bind(this);
+
+        //check if this is a new alarm
         isNewAlarm();
 //        onSetRepeat();
     }
 
-    // Programmatically show add,save, and delete buttons
+    /**
+     * This method programmatically shows add, save, and delete buttons
+     */
     private void isNewAlarm() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -88,6 +100,13 @@ public class DetailActivity extends BaseActivity implements DetailView {
                 mIsSet.setChecked(alarm.isEnabled());
                 mStandardTime.setChecked(alarm.is24hr());
                 setRepeatCheckBoxes(alarm.getDecDaysOfWeek());
+//                mEditRepeat.setText(alarm.getmcRepeat());
+                trackName = alarm.getTrackName();
+                artistName = alarm.getArtistName();
+                trackId = alarm.getTrackId();
+                trackImage = alarm.getTrackImage();
+                Log.d("trackImageDA", "track image url: " + trackImage);
+                setTrackTv();
             }
         } else {
 //            Log.d("DetailTime", detailPresenter.getCurrentTime());
@@ -130,6 +149,9 @@ public class DetailActivity extends BaseActivity implements DetailView {
         detailPresenter.closeRealm();
     }
 
+    /**
+     * This method passes the alarm object to detailPresenter to add the alarm to realm
+     */
     @OnClick(R.id.button_add)
     public void onAddClick() {
         onSetRepeat();
@@ -139,7 +161,11 @@ public class DetailActivity extends BaseActivity implements DetailView {
                 mEditTime.getText().toString(),
                 mIsSet.isChecked(),
                 mStandardTime.isChecked(),
-                Integer.toBinaryString(repeatDays)
+                Integer.toBinaryString(repeatDays),
+                trackName,
+                artistName,
+                trackId,
+                trackImage
                 );
         Intent returnIntent = new Intent();
         returnIntent.putExtra("enabled", true);
@@ -148,6 +174,9 @@ public class DetailActivity extends BaseActivity implements DetailView {
         finish();
     }
 
+    /**
+     * This method passes the current alarm object to detailPresenter to be deleted
+     */
     @OnClick(R.id.button_delete)
     public void onDeleteAlarm() {
         Bundle bundle = getIntent().getExtras();
@@ -156,6 +185,9 @@ public class DetailActivity extends BaseActivity implements DetailView {
         finish();
     }
 
+    /**
+     * This method passes the current alarm object to detailPresenter to be saved to realm
+     */
     @OnClick(R.id.button_save)
     public void onSaveAlarm() {
         onSetRepeat();
@@ -168,8 +200,12 @@ public class DetailActivity extends BaseActivity implements DetailView {
                     mEditTime.getText().toString(),
                     mIsSet.isChecked(),
                     mStandardTime.isChecked(),
-                    Integer.toBinaryString(repeatDays));
-            Log.d(TAG, "Alarm saved to realm");
+                    Integer.toBinaryString(repeatDays),
+                    trackName,
+                    artistName,
+                    trackId,
+                    trackImage
+            );
         }
 //        Intent returnIntent = new Intent();
 //        returnIntent.putExtra("enabled", true);
@@ -196,6 +232,9 @@ public class DetailActivity extends BaseActivity implements DetailView {
         timePickerDialog.show();
     }
 
+    /**
+     * This method sets the repeating days
+     */
     public void onSetRepeat() {
 
         repeatDays = 0;
@@ -221,4 +260,45 @@ public class DetailActivity extends BaseActivity implements DetailView {
 
         Log.d(TAG, "Repeat Days: " + Integer.toBinaryString(repeatDays));
     }
+
+    /**
+     * This method starts(for result) a new SearchActivity to search for spotify music
+     */
+    @OnClick(R.id.spotify_search)
+    public void onSearchClick() {
+
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivityForResult(intent, requestCode);
+    }
+
+    /**
+     * This method called when the user selects a song in SearchActivity. This method sets music info
+     * to the alarm object
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK){
+                Bundle extras = data.getExtras();
+                SimpleTrack.Item track = (SimpleTrack.Item) extras.get("track");
+                Log.d("onActivityResult", track.getName());
+                trackName = track.getName();
+                artistName = track.getArtists().get(0).getName();
+                trackId = track.getId();
+                trackImage = track.getAlbum().getImages().get(1).getUrl();
+                setTrackTv();
+            }
+        }
+    }
+
+    /**
+     * This method displays the current spotify music assigned to the alarm object
+     */
+    public void setTrackTv() {
+        mTrackTv.setText(trackName + " by " + artistName);
+    }
+
 }

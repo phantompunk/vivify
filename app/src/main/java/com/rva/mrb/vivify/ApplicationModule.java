@@ -3,9 +3,11 @@ package com.rva.mrb.vivify;
 import android.util.Log;
 
 import com.rva.mrb.vivify.Model.Service.RealmService;
+import com.rva.mrb.vivify.Spotify.NodeService;
 import com.rva.mrb.vivify.Spotify.SpotifyService;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.inject.Singleton;
 
@@ -27,12 +29,17 @@ public class ApplicationModule {
 
     private AlarmApplication mApp;
     final String SPOTIFY_URL = "https://api.spotify.com/v1/";
+    final String NODE_URL = "https://vivify-backend.herokuapp.com/";
     String accessToken;
+    String refreshToken;
 
     public void setAccessToken(String token) {
         this.accessToken = token;
     }
-
+    public String getAccessToken() { return this.accessToken; }
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
     public ApplicationModule(AlarmApplication app) {
         mApp = app;
     }
@@ -75,4 +82,13 @@ public class ApplicationModule {
         return retrofit.create(SpotifyService.class);
     }
 
+    @Provides
+    @Singleton
+    public NodeService getNodeService(){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(NODE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        return retrofit.create(NodeService.class);
+    }
 }
