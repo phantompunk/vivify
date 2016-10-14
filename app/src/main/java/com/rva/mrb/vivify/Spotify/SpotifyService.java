@@ -1,6 +1,7 @@
 package com.rva.mrb.vivify.Spotify;
 
 import com.rva.mrb.vivify.Model.Data.Playlist;
+import com.rva.mrb.vivify.Model.Data.Search;
 import com.rva.mrb.vivify.Model.Data.SimpleTrack;
 import com.rva.mrb.vivify.Model.Data.User;
 
@@ -49,7 +50,7 @@ public interface SpotifyService {
     String FIELDS = "fields";
 
     /***********
-     * Tracks
+     * Playlists
      ***********/
 
     @GET("browse/featured-playlists")
@@ -69,10 +70,12 @@ public interface SpotifyService {
     Call<User> getUser(@Path("user_id") String userId);
 
     /***********
-     * User
+     * Search
      ***********/
 
     @GET("search?type=track")
-    Call<SimpleTrack> getSearchResults(@Query("q") String searchQuery);
+    Call<Search> getSearchResults(@Query("q") String searchQuery);
 
+    @GET("search?type=playlist,album,track")
+    Call<Search> getFullSearchResults(@Query("q") String searchQuery);
 }

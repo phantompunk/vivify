@@ -1,12 +1,15 @@
 package com.rva.mrb.vivify.View.Search;
 
 import android.app.Activity;
+import android.app.LauncherActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -14,8 +17,11 @@ import com.rva.mrb.vivify.AlarmApplication;
 import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
 import com.rva.mrb.vivify.Model.Data.AccessToken;
+import com.rva.mrb.vivify.Model.Data.Album;
 import com.rva.mrb.vivify.Model.Data.Playlist;
+import com.rva.mrb.vivify.Model.Data.Search;
 import com.rva.mrb.vivify.Model.Data.SimpleTrack;
+import com.rva.mrb.vivify.Model.Data.Track;
 import com.rva.mrb.vivify.Spotify.NodeService;
 import com.rva.mrb.vivify.Spotify.SpotifyService;
 import com.rva.mrb.vivify.R;
@@ -23,6 +29,11 @@ import com.rva.mrb.vivify.View.Adapter.SearchAdapter;
 import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.ConnectionStateCallback;
 import com.spotify.sdk.android.player.Player;
+
+import org.parceler.Parcels;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -49,6 +60,8 @@ public class SearchActivity extends BaseActivity implements SearchView,
     RecyclerView recyclerview;
     @BindView(R.id.search_edittext)
     TextView searchEditText;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     private SearchAdapter searchAdapter;
     private Playlist playlist;
 
@@ -74,6 +87,9 @@ public class SearchActivity extends BaseActivity implements SearchView,
                 .build();
         searchComponent.inject(this);
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Inititialize view and retrieve a fresh access token
         initView();
@@ -129,24 +145,57 @@ public class SearchActivity extends BaseActivity implements SearchView,
     public void onSearchClick() {
         Log.d("MyApp", "Fab Click");
         String searchQuery = searchEditText.getText().toString();
-        spotifyService.getSearchResults(searchQuery).enqueue(new Callback<SimpleTrack>() {
+        spotifyService.getFullSearchResults(searchQuery).enqueue(new Callback<Search>() {
             @Override
-            public void onResponse(Call<SimpleTrack> call, Response<SimpleTrack> response) {
+            public void onResponse(Call<Search> call, Response<Search> response) {
                 Log.d("Error Message", response.message());
-                SimpleTrack results = response.body();
+                Search results = response.body();
                 Log.d("SpotifyService", "Successful: " + response.isSuccessful());
+//                Log.d("Artist name", results.getTracks().getItems().get(0).getArtists().get(0).getName());
                 Log.d("Track Name", results.getTracks().getItems().get(0).getName());
                 Log.d("Artist name", results.getTracks().getItems().get(0).getArtists().get(0).getName());
-                searchAdapter = new SearchAdapter(results);
+                List<Object> result = new ArrayList<Object>();
+                for (Track t : results.getTracks().getItems())
+                    result.add(t);
+                for (Album a : results.getAlbums().getItems())
+                    result.add(a);
+                Log.d("Items", "Count: " + result.size());
+                Log.d("Test",results.getTracks().getItems().get(15).getName() + results.getTracks().getItems().get(15).getArtists().get(0).getName());
+                searchAdapter = new SearchAdapter(result);
                 setInterface();
+
                 recyclerview.setAdapter(searchAdapter);
             }
 
             @Override
-            public void onFailure(Call<SimpleTrack> call, Throwable t) {
-
+            public void onFailure(Call<Search> call, Throwable t) {
+                Log.d("SpotifyService", "Call failed.");
             }
         });
+//          LATEST
+//        Log.d("MyApp", "Fab Click");
+//        String searchQuery = searchEditText.getText().toString();
+//        spotifyService.getSearchResults(searchQuery).enqueue(new Callback<Search>() {
+//            @Override
+//            public void onResponse(Call<Search> call, Response<Search> response) {
+//                Log.d("Error Message", response.message());
+//                Search results = response.body();
+//                Log.d("SpotifyService", "Successful: " + response.isSuccessful());
+//                Log.d("Track Name", results.getTracks().getItems().get(0).getName());
+////                Log.d("Artist name", results.getTracks().getItems().get(0).getArtists().get(0).getName());
+//                Log.d("Track Name", results.getTracks().getItems().get(0).getName());
+//                Log.d("Artist name", results.getTracks().getItems().get(0).getArtists().get(0).getName());
+//                searchAdapter = new SearchAdapter(results);
+//                setInterface();
+//
+//                recyclerview.setAdapter(searchAdapter);
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Search> call, Throwable t) {
+//                Log.d("SpotifyService", "Call failed.");
+//            }
+//        });
 //            spotifyService.getFeaturedPlaylists().enqueue(new Callback<Playlist>() {
 //                @Override
 //                public void onResponse(Call<Playlist> call, Response<Playlist> response) {
@@ -271,6 +320,10 @@ public class SearchActivity extends BaseActivity implements SearchView,
         searchPresenter.setView(this);
     }
 
+    @Override
+    public void onBackPressed() {
+        this.finish();
+    }
     // Spotify methods
     @Override
     public void onLoggedIn() {
@@ -306,11 +359,13 @@ public class SearchActivity extends BaseActivity implements SearchView,
      * @param track The track that is selected
      */
     @Override
-    public void onTrackSelected(SimpleTrack.Item track) {
+    public void onTrackSelected(Track track) {
         Log.d("Search Activity", "At onTrackSelected");
 
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable("track", Parcel.);
         Intent intent = new Intent();
-        intent.putExtra("track", track);
+        intent.putExtra("track", Parcels.wrap(track));
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
