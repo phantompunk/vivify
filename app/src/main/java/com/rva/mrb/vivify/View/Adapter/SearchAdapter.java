@@ -8,67 +8,154 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.rva.mrb.vivify.Model.Data.Album;
 import com.rva.mrb.vivify.Model.Data.Playlist;
+import com.rva.mrb.vivify.Model.Data.Search;
 import com.rva.mrb.vivify.Model.Data.SimpleTrack;
+import com.rva.mrb.vivify.Model.Data.Track;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.Search.SearchInterface;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
+    private static final String TAG = SearchAdapter.class.getSimpleName();
 
+    private List<Object> items; // List of Track or Album objects
+    private SearchInterface searchInterface; // Listens for selected media
+
+    private Search results;
     private Playlist playlists;
     private SimpleTrack simpleTrack;
-    private SearchInterface searchInterface;
 
+
+    public static final int TRACK = 0;
+    public static final int ALBUM = 1;
+
+    public SearchAdapter(List<Object> item) { this.items = item; }
+    public SearchAdapter(Search results) { this.results = results; }
     public SearchAdapter(Playlist playlists) {
         this.playlists = playlists;
     }
     public SearchAdapter(SimpleTrack simpleTrack) {this.simpleTrack = simpleTrack; }
 
-    public void setSearchInterface(SearchInterface searchInterface) {this.searchInterface = searchInterface; }
+    public void setSearchInterface(SearchInterface searchInterface) {
+        this.searchInterface = searchInterface;
+    }
 
     @Override
     public SearchAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_view, parent, false);
-        return new ViewHolder(view);
+
+        SearchAdapter.ViewHolder viewHolder;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+
+        switch (viewType) {
+            case TRACK:
+                Log.d("onCreateViewHolder", "Type: " + viewType + ", Track inflated");
+                View viewTrack = inflater.inflate(R.layout.track_card, parent, false);
+                viewHolder = new TrackViewHolder(viewTrack);
+                break;
+            default:
+                Log.d("onCreateViewHolder", "Type: " + viewType + ", Album inflated");
+                View viewAlbum = inflater.inflate(R.layout.album_card, parent, false);
+                viewHolder = new AlbumViewHolder(viewAlbum);
+                break;
+        }
+        return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(SearchAdapter.ViewHolder holder, final int position) {
-        holder.playlistName.setText(simpleTrack.getTracks().getItems().get(position).getName()
-                + "\n" + simpleTrack.getTracks().getItems().get(position).getArtists().get(0).getName());
 
-        //holder.artistName.setText(simpleTrack.getTracks().getItems().get(position).getArtists().get(0).getName());
-        //holder.playlistName.setText(playlists.getPlaylists().getItems().get(position).getName());
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("Search cardView", "Successful click");
-                searchInterface.onTrackSelected(simpleTrack.getTracks().getItems().get(position));
-//                Intent intent = new Intent();
-//                intent.putExtra("track", myobj);
-//                setResult(Activity.RESULT_OK, intent);
-//                finish();
-            }
-        });
+        Log.d("onBindViewHolder", "Type: " + holder.getItemViewType());
+
+//      For some reason its not calling our override getItemViewType()
+        switch (holder.getItemViewType()-1) {
+            case TRACK:
+                final Track t  = (Track) items.get(position);
+                Log.d("BindTrack", "Holder viewtyep: " + holder.getItemViewType());
+                TrackViewHolder viewTrackHolder = (TrackViewHolder) holder;
+                viewTrackHolder.trackName.setText(t.getName()
+                        + "\n" + t.getArtists().get(0).getName());
+                viewTrackHolder.cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.d("Search cardView", "Successful click");
+                        searchInterface.onTrackSelected(t);
+                    }
+                });
+                break;
+            default:
+                final Album a = (Album) items.get(position);
+                Log.d("BindAlbum", "Holder viewtyep: " + holder.getItemViewType());
+                AlbumViewHolder viewAlbumHolder;
+                viewAlbumHolder = (AlbumViewHolder) holder;
+                viewAlbumHolder.albumName.setText(a.getName()+ "\n") ;
+                break;
+        }
     }
 
     @Override
     public int getItemCount() {
-        return 10;
-        //return simpleTrack.getNumOfItems();
-        //   return playlists.getPlaylists().getTotal();
+        return items.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.playlist_name) TextView playlistName;
+//        @BindView(R.id.playlist_name) TextView playlistName;
+//        @BindView(R.id.artist_name) TextView artistName;
+//        @BindView(R.id.card_search) CardView cardView;
+        public ViewHolder(View itemView) {
+            super(itemView);
+//            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    public class AlbumViewHolder extends SearchAdapter.ViewHolder {
+        @BindView(R.id.album_name) TextView albumName;
         @BindView(R.id.artist_name) TextView artistName;
         @BindView(R.id.card_search) CardView cardView;
-        public ViewHolder(View itemView) {
+        public AlbumViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+//    public class PlaylistViewHolder extends SearchAdapter.ViewHolder {
+//        @BindView(R.id.playlist_name) TextView playlistName;
+//        @BindView(R.id.artist_name) TextView artistName;
+//        @BindView(R.id.card_search) CardView cardView;
+//        public PlaylistViewHolder(View itemView) {
+//            super(itemView);
+//            ButterKnife.bind(this, itemView);
+//        }
+//    }
+
+    public class TrackViewHolder extends SearchAdapter.ViewHolder {
+        @BindView(R.id.track_name) TextView trackName;
+        @BindView(R.id.artist_name) TextView artistName;
+        @BindView(R.id.card_search) CardView cardView;
+        public TrackViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (items.get(position) instanceof Track) {
+            Log.d("getItemViewType", "Type: 0, Track: ");
+            return TRACK;
+        }
+        else if (items.get(position) instanceof Album) {
+            Log.d("getItemViewType", "Type: 1, Album ");
+            return ALBUM;
+        }
+        else
+            return -1;
     }
 }

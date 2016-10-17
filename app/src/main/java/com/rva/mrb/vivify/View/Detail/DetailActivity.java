@@ -17,10 +17,13 @@ import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
 import com.rva.mrb.vivify.Model.Data.Alarm;
 import com.rva.mrb.vivify.Model.Data.SimpleTrack;
+import com.rva.mrb.vivify.Model.Data.Track;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.Adapter.AlarmAdapter;
 import com.rva.mrb.vivify.View.Search.SearchActivity;
 
+
+import org.parceler.Parcels;
 
 import java.util.Calendar;
 
@@ -282,8 +285,9 @@ public class DetailActivity extends BaseActivity implements DetailView {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if(resultCode == RESULT_OK){
-                Bundle extras = data.getExtras();
-                SimpleTrack.Item track = (SimpleTrack.Item) extras.get("track");
+//                Bundle extras = data.getParcelableExtra().getExtras();
+//                SimpleTrack.Item track = (SimpleTrack.Item) extras.get("track");
+                Track track = Parcels.unwrap(data.getParcelableExtra("track"));
                 Log.d("onActivityResult", track.getName());
                 trackName = track.getName();
                 artistName = track.getArtists().get(0).getName();

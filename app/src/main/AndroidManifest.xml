@@ -36,7 +36,11 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".View.Search.SearchActivity"
-            android:label="SearchActivity"></activity>
+            android:label="SearchActivity">
+
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                       android:value=".View.Detail.DetailActivity"/>
+        </activity>
         <activity
             android:name=".View.Wake.WakeActivity"
             android:label="@string/title_activity_alert"
