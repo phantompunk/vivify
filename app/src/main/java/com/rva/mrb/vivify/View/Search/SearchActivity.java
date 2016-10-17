@@ -26,6 +26,7 @@ import com.rva.mrb.vivify.Spotify.NodeService;
 import com.rva.mrb.vivify.Spotify.SpotifyService;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.Adapter.SearchAdapter;
+import com.rva.mrb.vivify.View.Adapter.SimpleSectionedRecyclerViewAdapter;
 import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.ConnectionStateCallback;
 import com.spotify.sdk.android.player.Player;
@@ -103,7 +104,7 @@ public class SearchActivity extends BaseActivity implements SearchView,
 //        recyclerview.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerview.setLayoutManager(layoutManager);
-
+        recyclerview.setHasFixedSize(true);
     }
 
     /**
@@ -162,9 +163,25 @@ public class SearchActivity extends BaseActivity implements SearchView,
                 Log.d("Items", "Count: " + result.size());
                 Log.d("Test",results.getTracks().getItems().get(15).getName() + results.getTracks().getItems().get(15).getArtists().get(0).getName());
                 searchAdapter = new SearchAdapter(result);
+                List<SimpleSectionedRecyclerViewAdapter.Section> sections =
+                        new ArrayList<SimpleSectionedRecyclerViewAdapter.Section>();
+
+                sections.add(new SimpleSectionedRecyclerViewAdapter.Section(0,"Tracks"));
+                sections.add(new SimpleSectionedRecyclerViewAdapter.Section(results.getTracks().getItems().size(),"Albums"));
+//                sections.add(new SimpleSectionedRecyclerViewAdapter.Section(10,"Section 3"));
+//                sections.add(new SimpleSectionedRecyclerViewAdapter.Section(5,"Section 4"));
+//                sections.add(new SimpleSectionedRecyclerViewAdapter.Section(20,"Section 5"));
                 setInterface();
 
-                recyclerview.setAdapter(searchAdapter);
+                //Add your adapter to the sectionAdapter
+                SimpleSectionedRecyclerViewAdapter.Section[] dummy = new SimpleSectionedRecyclerViewAdapter.Section[sections.size()];
+                SimpleSectionedRecyclerViewAdapter mSectionedAdapter = new
+                        SimpleSectionedRecyclerViewAdapter(getApplicationContext(),R.layout.section,R.id.section_text,searchAdapter);
+                mSectionedAdapter.setSections(sections.toArray(dummy));
+
+                //Apply this adapter to the RecyclerView
+//                mRecyclerView.setAdapter(mSectionedAdapter);
+                recyclerview.setAdapter(mSectionedAdapter);
             }
 
             @Override
