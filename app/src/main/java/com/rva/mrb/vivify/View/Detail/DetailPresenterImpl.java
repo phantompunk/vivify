@@ -34,9 +34,19 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
     }
 
     @Override
+    public void onDeleteAlarm(Alarm alarm) {
+        mRealmService.deleteAlarm(alarm);
+    }
+
+    @Override
     public void onSaveAlarm(Context context,String alarmid, String name, String time, boolean isSet, boolean isStandardTime, String repeat, String trackName, String artist, String trackId, String trackImage) {
         mRealmService.saveAlarm(alarmid, name, time, isSet, isStandardTime, repeat, trackName, artist, trackId, trackImage);
 //        AlarmScheduler.enableAlarmById(context, alarmid);
+    }
+
+    @Override
+    public void onSaveAlarm(Alarm alarm) {
+        mRealmService.saveAlarm(alarm);
     }
 
     @Override
@@ -54,6 +64,26 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
                            boolean isStandardTime, String repeat, String trackName, String artist, String trackId, String trackImage) {
         mRealmService.addAlarm(name, time, isSet, isStandardTime, repeat, trackName, artist, trackId, trackImage);
         if (isSet) {
+            String newestAlarmId;
+            try {
+                newestAlarmId = mRealmService.getNewestAlarmId();
+                Log.d("New", "Alarm id is: " + newestAlarmId);
+            } catch (Exception e) {
+                Log.e(TAG, "Alarm not found, trying againg. " + e.getMessage());
+                newestAlarmId = mRealmService.getNewestAlarmId();
+            }
+            if (newestAlarmId != null) {
+                Log.d("realm", "Alarm id: " + newestAlarmId); // getAlarm.last()
+//                AlarmScheduler.enableAlarmById(context, newestAlarmId);
+            }
+        }
+
+    }
+
+    @Override
+    public void onAddClick(Alarm alarm) {
+        mRealmService.addAlarm(alarm);
+        if (alarm.isEnabled()) {
             String newestAlarmId;
             try {
                 newestAlarmId = mRealmService.getNewestAlarmId();

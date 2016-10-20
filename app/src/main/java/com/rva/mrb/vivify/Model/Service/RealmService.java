@@ -67,9 +67,9 @@ public class RealmService {
                 Alarm alarm = realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
                 Log.d(TAG, "Alarm is: " + alarm.isEnabled());
                 alarm.setEnabled(!alarm.isEnabled());
-                Log.d(TAG, "Alarm Enabled: " + alarm.isEnabled() +
-                "\nalarm time is" + alarm.getTime() +
-                "\nalarm wake time is" + alarm.getmWakeTime());
+//                Log.d(TAG, "Alarm Enabled: " + alarm.isEnabled() +
+//                "\nalarm time is" + alarm.getTime() +
+//                "\nalarm wake time is" + alarm.getmWakeTime());
             }
         });
     }
@@ -119,10 +119,10 @@ public class RealmService {
                 Alarm editAlarm = realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
                 editAlarm.setAlarmLabel(name);
 //                editAlarm.setId(alarmId);
-                editAlarm.setmWakeTime(time);
-                editAlarm.setTime(time);
+//                editAlarm.setmWakeTime(time);
+//                editAlarm.setTime(time);
                 editAlarm.setEnabled(isSet);
-                editAlarm.set24hr(isStandardTime);
+//                editAlarm.set24hr(isStandardTime);
                 editAlarm.setDaysOfWeek(repeat);
                 editAlarm.setTrackName(trackName);
                 editAlarm.setArtist(artist);
@@ -141,6 +141,28 @@ public class RealmService {
 //                Log.d("EditAlarm", "failed: " + error.getMessage());
 //            }
 //        });
+    }
+
+    public void saveAlarm(final Alarm updatedAlarm) {
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Alarm editAlarm = realm.where(Alarm.class).equalTo("id", updatedAlarm.getId()).findFirst();
+                editAlarm.setAlarmLabel(updatedAlarm.getAlarmLabel());
+                editAlarm.setId(updatedAlarm.getId());
+                editAlarm.setmWakeTime(updatedAlarm.getmWakeTime());
+                editAlarm.setTime(updatedAlarm.getTime());
+                editAlarm.setEnabled(updatedAlarm.isEnabled());
+                editAlarm.set24hr(updatedAlarm.is24hr());
+                editAlarm.setDaysOfWeek(updatedAlarm.getDaysOfWeek());
+                editAlarm.setTrackName(updatedAlarm.getTrackName());
+                editAlarm.setArtist(updatedAlarm.getArtistName());
+                editAlarm.setTrackId(updatedAlarm.getTrackId());
+                editAlarm.setTrackImage(updatedAlarm.getTrackImage());
+            }
+        });
+
     }
 
     public void deleteAlarm(final String alarmId) {
@@ -166,6 +188,29 @@ public class RealmService {
         });
     }
 
+    public void deleteAlarm(final Alarm alarm) {
+        final Realm realm = Realm.getDefaultInstance();
+//        Log.d("Realm", realm.toString());
+        final RealmResults<Alarm> results = realm.where(Alarm.class).equalTo("id", alarm.getId()).findAll();
+//        Log.d("realm", results.get(0).getmWakeTime());
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.where(Alarm.class).equalTo("id", alarm.getId()).findAll().deleteAllFromRealm();
+            }
+//                , new Realm.Transaction.OnSuccess() {
+//            @Override
+//            public void onSuccess() {
+//                Log.d("Successful", "Alarm deleted");
+//            }
+//        }, new Realm.Transaction.OnError() {
+//            @Override
+//            public void onError(Throwable error) {
+//                Log.d("Error", error.getMessage());
+//            }
+        });
+    }
+
     public void addAlarm(final String name, final String time,
                          final boolean isSet, final boolean isStandardTime,
                          final String repeat, final String trackName, final String artist,
@@ -176,10 +221,10 @@ public class RealmService {
                 Alarm alarm = realm.createObject(Alarm.class);
                 alarm.setId(UUID.randomUUID().toString());
                 alarm.setAlarmLabel(name);
-                alarm.setmWakeTime(time);
-                alarm.setTime(time);
+//                alarm.setmWakeTime(time);
+//                alarm.setTime(time);
                 alarm.setEnabled(isSet);
-                alarm.set24hr(isStandardTime);
+//                alarm.set24hr(isStandardTime);
                 alarm.setDaysOfWeek(repeat);
                 alarm.setCreatedAt(Calendar.getInstance().getTime());
                 alarm.setTrackName(trackName);
@@ -187,6 +232,44 @@ public class RealmService {
                 alarm.setTrackId(trackId);
                 alarm.setTrackImage(trackImage);
             }
+        });
+//                ,
+//                new Realm.Transaction.OnSuccess() {
+//
+//            @Override
+//            public void onSuccess() {
+//                Log.d("successful", "Successful transaction!");
+//            }
+//        }, new Realm.Transaction.OnError(){
+//
+//            @Override
+//            public void onError(Throwable error) {
+//                Log.d("error", error.getMessage());
+//            }
+    }
+
+    public void addAlarm(final Alarm newalarm) {
+         String id;
+        mRealm.executeTransaction(new Realm.Transaction() {
+            Alarm alarm;
+            @Override
+            public void execute(final Realm realm) {
+                alarm = realm.createObject(Alarm.class);
+                alarm.setId(UUID.randomUUID().toString());
+                alarm.setAlarmLabel(newalarm.getAlarmLabel());
+                alarm.setmWakeTime(newalarm.getmWakeTime());
+                alarm.setTime(newalarm.getTime());
+                alarm.setEnabled(newalarm.isEnabled());
+                alarm.set24hr(newalarm.is24hr());
+                alarm.setDaysOfWeek(newalarm.getDaysOfWeek());
+//                alarm.setCreatedAt(Calendar.getInstance().getTime());
+                alarm.setTrackName(newalarm.getTrackName());
+                alarm.setArtist(newalarm.getArtistName());
+                alarm.setTrackId(newalarm.getTrackId());
+                alarm.setTrackImage(newalarm.getTrackImage());
+//                id = alarm.getId();
+            }
+
         });
 //                ,
 //                new Realm.Transaction.OnSuccess() {

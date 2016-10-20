@@ -57,6 +57,9 @@ public class DetailActivity extends BaseActivity implements DetailView {
     private String artistName;
     private String trackId;
     private String trackImage;
+    private String timeString;
+    private Alarm alarm = new Alarm();
+    private Calendar time = Calendar.getInstance();
     final private int requestCode = 1;
 
     // used to create a binary representation of days an alarm is enabled
@@ -112,7 +115,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
                 setTrackTv();
             }
         } else {
-//            Log.d("DetailTime", detailPresenter.getCurrentTime());
+            Log.d("DetailTime", detailPresenter.getCurrentTime());
             mEditTime.setText(detailPresenter.getCurrentTime());
         }
     }
@@ -158,18 +161,9 @@ public class DetailActivity extends BaseActivity implements DetailView {
     @OnClick(R.id.button_add)
     public void onAddClick() {
         onSetRepeat();
-        detailPresenter.onAddClick(
-                getApplicationContext(),
-                editname.getText().toString(),
-                mEditTime.getText().toString(),
-                mIsSet.isChecked(),
-                mStandardTime.isChecked(),
-                Integer.toBinaryString(repeatDays),
-                trackName,
-                artistName,
-                trackId,
-                trackImage
-                );
+        Log.d("label",editname.getText().toString());
+        setAlarm();
+        detailPresenter.onAddClick(alarm);
         Intent returnIntent = new Intent();
         returnIntent.putExtra("enabled", true);
         Log.d(TAG, "Extra " + returnIntent.getBooleanExtra("enabled", true));
@@ -183,8 +177,13 @@ public class DetailActivity extends BaseActivity implements DetailView {
     @OnClick(R.id.button_delete)
     public void onDeleteAlarm() {
         Bundle bundle = getIntent().getExtras();
-        if (bundle.getInt("Position") >= 0)
-        detailPresenter.onDeleteAlarm(bundle.getString("AlarmID"));
+        if (!bundle.isEmpty()) {
+            Alarm alarm = Parcels.unwrap(getIntent().getParcelableExtra("Alarm"));
+            Log.d("AlarmID", alarm.getId());
+            detailPresenter.onDeleteAlarm(alarm);
+        }
+//        if (bundle.getInt("Position") >= 0)
+//        detailPresenter.onDeleteAlarm(bundle.getString("AlarmID"));
         finish();
     }
 
@@ -196,24 +195,10 @@ public class DetailActivity extends BaseActivity implements DetailView {
         onSetRepeat();
         Bundle bundle = getIntent().getExtras();
         if (!bundle.getString("AlarmID").isEmpty()) {
-            detailPresenter.onSaveAlarm(
-                    getApplicationContext(),
-                    bundle.getString("AlarmID"),
-                    editname.getText().toString(),
-                    mEditTime.getText().toString(),
-                    mIsSet.isChecked(),
-                    mStandardTime.isChecked(),
-                    Integer.toBinaryString(repeatDays),
-                    trackName,
-                    artistName,
-                    trackId,
-                    trackImage
-            );
+            Alarm alarm = Parcels.unwrap(getIntent().getParcelableExtra("Alarm"));
+            updateAlarm(alarm);
+            detailPresenter.onSaveAlarm(alarm);
         }
-//        Intent returnIntent = new Intent();
-//        returnIntent.putExtra("enabled", true);
-//        Log.d(TAG, "Extra " + returnIntent.getBooleanExtra("enabled", mIsSet.isChecked()));
-//        setResult(Activity.RESULT_OK, returnIntent);
         finish();
     }
 
@@ -226,6 +211,11 @@ public class DetailActivity extends BaseActivity implements DetailView {
             @Override
             public void onTimeSet(TimePicker timePicker, int hour, int minute) {
                 mEditTime.setText(detailPresenter.getTime(hour, minute));
+                alarm.setmWakeTime(detailPresenter.getTime(hour, minute));
+                timeString = detailPresenter.getTime(hour, minute);
+                time.set(Calendar.HOUR_OF_DAY, hour);
+                time.set(Calendar.MINUTE, minute);
+                time.set(Calendar.SECOND, Calendar.getInstance().get(Calendar.SECOND));
 //                alarmHour = hour;
 //                alarmHour = minute;
 //                alarmAM_PM = detailPresenter.getAMPM(hour);
@@ -272,6 +262,32 @@ public class DetailActivity extends BaseActivity implements DetailView {
 
         Intent intent = new Intent(this, SearchActivity.class);
         startActivityForResult(intent, requestCode);
+    }
+
+    public void setAlarm() {
+        alarm.setAlarmLabel(editname.getText().toString());
+        alarm.setEnabled(mIsSet.isChecked());
+        alarm.setmWakeTime(timeString);
+        Log.d("Set", "Time: " + time.getTime());
+        alarm.setTime(time.getTime());
+        alarm.setDaysOfWeek(Integer.toBinaryString(repeatDays));
+        alarm.setTrackId(trackId);
+        alarm.setTrackImage(trackImage);
+        alarm.setTrackName(trackName);
+        alarm.setArtist(artistName);
+    }
+
+    public void updateAlarm(Alarm updateAlarm) {
+        updateAlarm.setAlarmLabel(editname.getText().toString());
+        updateAlarm.setEnabled(mIsSet.isChecked());
+        updateAlarm.setmWakeTime(timeString);
+        Log.d("Set", "Time: " + time.getTime());
+        updateAlarm.setTime(time.getTime());
+        updateAlarm.setDaysOfWeek(Integer.toBinaryString(repeatDays));
+        updateAlarm.setTrackId(trackId);
+        updateAlarm.setTrackImage(trackImage);
+        updateAlarm.setTrackName(trackName);
+        updateAlarm.setArtist(artistName);
     }
 
     /**

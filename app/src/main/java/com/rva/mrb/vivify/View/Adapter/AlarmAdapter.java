@@ -17,6 +17,8 @@ import com.rva.mrb.vivify.View.Detail.DetailActivity;
 import com.rva.mrb.vivify.View.Alarm.AlarmsPresenter;
 
 
+import org.parceler.Parcels;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -66,6 +68,7 @@ public class AlarmAdapter extends
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("NewAlarm", false);
                 intent.putExtra("AlarmID", alarm.getId());
+                intent.putExtra("Alarm", Parcels.wrap(alarm));
                 view.getContext().startActivity(intent);
             }
         });
