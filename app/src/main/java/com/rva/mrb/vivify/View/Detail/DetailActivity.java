@@ -266,10 +266,10 @@ public class DetailActivity extends BaseActivity implements DetailView {
 
     public void setAlarm() {
         alarm.setAlarmLabel(editname.getText().toString());
-        alarm.setEnabled(mIsSet.isChecked());
         alarm.setmWakeTime(timeString);
         Log.d("Set", "Time: " + time.getTime());
         alarm.setTime(time.getTime());
+        alarm.setEnabled(mIsSet.isChecked());
         alarm.setDaysOfWeek(Integer.toBinaryString(repeatDays));
         alarm.setTrackId(trackId);
         alarm.setTrackImage(trackImage);
