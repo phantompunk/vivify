@@ -213,13 +213,16 @@ public class Alarm extends RealmObject {
 
     public Date updateTime() {
         // update alarm time if necessary
-        if(getCal().before(Calendar.getInstance())) {
+        if(getDaysOfWeek().equals("0")) {
+            setEnabled(false);
+        }
+        else if(getCal().before(Calendar.getInstance())) {
             // holds new date
             Calendar update = Calendar.getInstance();
             update.set(Calendar.HOUR, getCal().get(Calendar.HOUR_OF_DAY));
             update.set(Calendar.MINUTE, getCal().get(Calendar.MINUTE));
             update.set(Calendar.AM_PM, getCal().get(Calendar.AM_PM));
-            update.set(Calendar.SECOND, getCal().get(Calendar.SECOND));
+            update.set(Calendar.SECOND, 0);
 
             // checks to find the next available day
             update.add(Calendar.DAY_OF_YEAR, getNextDayEnabled());
@@ -360,5 +363,13 @@ public class Alarm extends RealmObject {
 
     public void setTrackImage(String trackImage) {
         this.trackImage = trackImage;
+    }
+
+    public int getHour() {
+        return getCal().get(Calendar.HOUR_OF_DAY);
+    }
+
+    public int getMinute() {
+        return getCal().get(Calendar.MINUTE);
     }
 }

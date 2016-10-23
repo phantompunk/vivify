@@ -12,6 +12,7 @@ import com.spotify.sdk.android.player.ConnectionStateCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTransactionCallback {
@@ -112,6 +113,7 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
         cal.set(Calendar.HOUR_OF_DAY, hour);
 //        Log.d("Calendar", "Hour set " + cal.getTime());
         cal.set(Calendar.MINUTE, minute);
+        cal.set(Calendar.SECOND, 0);
 //        Log.d("Calendar", "Minute set " + cal.getTime());
 //        Log.d("Alarm", "Literal Time " + cal.getTime());
         Calendar currentTime = Calendar.getInstance();
@@ -132,6 +134,34 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
         return (time.indexOf("0")==0) ? time.substring(1) : time;
     }
 
+    public Date getDate(int hour, int minute) {
+        Calendar cal = Calendar.getInstance();
+//        Log.d("Calendar", "Current time " + cal.getTime());
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+//        Log.d("Calendar", "Hour set " + cal.getTime());
+        cal.set(Calendar.MINUTE, minute);
+        cal.set(Calendar.SECOND, 0);
+//        Log.d("Calendar", "Minute set " + cal.getTime());
+//        Log.d("Alarm", "Literal Time " + cal.getTime());
+        Calendar currentTime = Calendar.getInstance();
+        if (cal.before(currentTime))
+            cal.add(Calendar.DAY_OF_YEAR,1);
+
+//        String am_pm = (cal.get(Calendar.AM_PM)==Calendar.AM) ? "AM" : "PM";
+//        String hrString = String.valueOf(hour);
+//        hrString = (hour > 12) ? String.valueOf(hour-12) : hrString;
+//        String minString = String.valueOf(minute);
+//        minString = (minute < 10) ? "0" + minString : minString;
+//        return hrString + ":" + minString + " " + am_pm;
+
+//        SimpleDateFormat simpleDateFormat =
+//                new SimpleDateFormat(TIME_FORMAT, Locale.US);
+//        String time = simpleDateFormat.format(cal.getTime());
+//        Log.d(TAG, "Wake Time: " + cal.getTime());
+//        return (time.indexOf("0")==0) ? time.substring(1) : time;
+        return cal.getTime();
+    }
+
     @Override
     public int getCurrentHour() {
         Calendar calendar = Calendar.getInstance();
@@ -139,9 +169,20 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
     }
 
     @Override
+    public int getHour(Alarm alarm) {
+        return (alarm.getTime() != null) ? alarm.getHour() : getCurrentHour();
+    }
+
+
+    @Override
     public int getCurrentMinute() {
         Calendar calendar = Calendar.getInstance();
         return calendar.get(Calendar.MINUTE);
+    }
+
+    @Override
+    public int getMinute(Alarm alarm) {
+        return (alarm.getTime() != null) ? alarm.getMinute() : getCurrentMinute();
     }
 
     @Override

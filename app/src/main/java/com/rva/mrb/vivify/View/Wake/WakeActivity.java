@@ -16,6 +16,7 @@ import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
 import com.rva.mrb.vivify.Model.Data.AccessToken;
 import com.rva.mrb.vivify.Model.Service.AlarmScheduler;
+import com.rva.mrb.vivify.Model.Service.RealmService;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.Spotify.NodeService;
 import com.spotify.sdk.android.player.*;
@@ -105,6 +106,7 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
     public void onDismiss() {
         AlarmScheduler.cancelNextAlarm(getApplicationContext());
         mPlayer.pause();
+        RealmService.updateAlarms();
         finish();
     }
 
