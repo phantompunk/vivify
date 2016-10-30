@@ -72,6 +72,8 @@ public class RealmService {
 //                "\nalarm wake time is" + alarm.getmWakeTime());
             }
         });
+
+        updateAlarms();
     }
 
     public static void updateAlarms() {
@@ -286,6 +288,27 @@ public class RealmService {
 //            }
     }
 
+    public static void disableAlarmById(final String alarmId) {
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Alarm alarm = realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
+                if (alarm.getDecDaysOfWeek() != 0){
+                    alarm.setEnabled(true);
+                }
+                else {
+                    Log.d(TAG, "Alarm is: " + alarm.isEnabled());
+                    alarm.setEnabled(false);
+                }
+
+                updateAlarms();
+//                Log.d(TAG, "Alarm Enabled: " + alarm.isEnabled() +
+//                "\nalarm time is" + alarm.getTime() +
+//                "\nalarm wake time is" + alarm.getmWakeTime());
+            }
+        });
+    }
     public String getMessage(){
         return "From realmService!!";
     }

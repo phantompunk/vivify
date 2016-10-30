@@ -213,10 +213,10 @@ public class Alarm extends RealmObject {
 
     public Date updateTime() {
         // update alarm time if necessary
-        if(getDaysOfWeek().equals("0")) {
-            setEnabled(false);
-        }
-        else if(getCal().before(Calendar.getInstance())) {
+//        if(getDaysOfWeek().equals("0")) {
+//            setEnabled(false);
+//        }
+        if(getCal().before(Calendar.getInstance())) {
             // holds new date
             Calendar update = Calendar.getInstance();
             update.set(Calendar.HOUR, getCal().get(Calendar.HOUR_OF_DAY));
@@ -241,7 +241,8 @@ public class Alarm extends RealmObject {
         // meaning we can roll the date ahead one day
         // right off the bat and then begin checking
         Calendar next = Calendar.getInstance();
-        next.add(Calendar.DAY_OF_YEAR, 1);
+
+        //next.add(Calendar.DAY_OF_YEAR, 1);
 
         // convert the Calendar day to a value we can use
         int todaysDay = mapToAlarmDays(next.get(Calendar.DAY_OF_WEEK));
@@ -255,9 +256,19 @@ public class Alarm extends RealmObject {
         // data types. We are storing a string of up to 7 binary digits.We
         // can think of this as a row of switches each with an on/off button
         // corresponding to each day.
-        if (getDecDaysOfWeek()==0)
-            daysFromNow = 1;
-        else
+        if ((getDecDaysOfWeek()==0) || ((getDecDaysOfWeek() & todaysDay) == todaysDay)) {
+            Calendar cal = Calendar.getInstance();
+            boolean before = time.before(cal.getTime());
+            Log.d("date", "before current date: " + before);
+            if (time.before(cal.getTime())) {
+                daysFromNow = 1;
+            }
+            else {
+                daysFromNow = 0;
+            }
+        }
+        else {
+            next.add(Calendar.DAY_OF_YEAR, 1);
             for (int days = 1; days <= 7; days++) {
                 // In this case we are checking to see if today is contained
                 // in our binary repeat days value. This is done by utilizing the
@@ -276,7 +287,7 @@ public class Alarm extends RealmObject {
                 Log.d(TAG, "Next days is " + todaysDay);
                 daysFromNow = days;
             }
-
+        }
         Log.d(TAG, "Next alarm occurence is in " + daysFromNow + " days");
         return daysFromNow;
     }

@@ -9,16 +9,16 @@ import java.util.Date;
 
 public interface DetailPresenter extends BasePresenter<DetailView>{
     void onAddClick(Context context, String name, String time, boolean isSet, boolean isStandardTime, String repeat, String trackName, String artist, String trackId, String trackImage);
-    void onAddClick(Alarm alarm);
+    void onAddClick(Alarm alarm, Context applicationContext);
     Alarm getAlarm(String index);
     void onDeleteAlarm(String alarmid);
     void onDeleteAlarm(Alarm alarm);
     void onSaveAlarm(Context applicationContext, String alarmid, String name, String time, boolean isSet, boolean isStandardTime, String repeat, String trackName, String artist, String trackId, String trackImage);
-    void onSaveAlarm(Alarm alarm);
+    void onSaveAlarm(Alarm alarm, Context applicationContext);
 
     String getCurrentTime();
     String getTime(int hour, int minute);
-    Date getDate(int hour, int minute);
+    Date getDate(Alarm alarm, int hour, int minute);
     int getCurrentHour();
     int getHour(Alarm alarm);
     int getCurrentMinute();

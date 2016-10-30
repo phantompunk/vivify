@@ -49,6 +49,7 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
     private ApplicationModule applicationModule = new ApplicationModule((AlarmApplication) getApplication());
     private String trackId;
     private String trackImage;
+    private String alarmId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,7 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
         Bundle extras = getIntent().getExtras();
         trackId = (String) extras.get("trackId");
         trackImage = (String) extras.get("trackImage");
+        alarmId = (String) extras.get("alarmId");
 
         //Use Glide to load image URL
         Glide.with(this)
@@ -106,7 +108,8 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
     public void onDismiss() {
         AlarmScheduler.cancelNextAlarm(getApplicationContext());
         mPlayer.pause();
-        RealmService.updateAlarms();
+        Log.d("Dismiss", "alarm ID: " + alarmId);
+        AlarmScheduler.disableAlarmById(getApplicationContext(), alarmId);
         finish();
     }
 

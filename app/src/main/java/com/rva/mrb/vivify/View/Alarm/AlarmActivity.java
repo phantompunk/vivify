@@ -99,6 +99,8 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
                 alarmPresenter.getAllAlarms(), listener, true, true);
         mRecyclerView.setAdapter(mAdapter);
 
+        updateAlarmNotification();
+
 
 //        Log.d(TAG, "Sunday: " + Calendar.SUNDAY);
 //        Log.d(TAG, "Monday: " + Calendar.MONDAY);
@@ -153,6 +155,7 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
 
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        updateAlarmNotification();
     }
 
     @Override
@@ -166,6 +169,7 @@ public class AlarmActivity extends BaseActivity implements AlarmsView {
         super.onResume();
 //        Log.d(TAG, "Next wake time is " + alarmPresenter.getNextAlarmTime());
         mAdapter.notifyDataSetChanged();
+        updateAlarmNotification();
     }
 
     public void showAlarms(final RealmResults<Alarm> alarms) {

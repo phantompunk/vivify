@@ -25,6 +25,7 @@ import com.rva.mrb.vivify.View.Search.SearchActivity;
 import org.parceler.Parcels;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -179,7 +180,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
     public void onAddClick() {
         Log.d("label",editname.getText().toString());
         setAlarm();
-        detailPresenter.onAddClick(alarm);
+        detailPresenter.onAddClick(alarm, getApplicationContext());
 
         Intent returnIntent = new Intent();
         returnIntent.putExtra("enabled", true);
@@ -203,7 +204,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
     @OnClick(R.id.button_save)
     public void onSaveAlarm() {
         setAlarm();
-        detailPresenter.onSaveAlarm(alarm);
+        detailPresenter.onSaveAlarm(alarm, getApplicationContext());
         finish();
     }
 
@@ -216,7 +217,8 @@ public class DetailActivity extends BaseActivity implements DetailView {
                 mEditTime.setText(detailPresenter.getTime(hour, minute));
 
                 alarm.setmWakeTime(mEditTime.getText().toString());
-                alarm.setTime(detailPresenter.getDate(hour,minute));
+                Date date = detailPresenter.getDate(alarm, hour, minute);
+                alarm.setTime(date);
 
             }
                     // Set Alarm time as default if it exists

@@ -46,8 +46,12 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
     }
 
     @Override
-    public void onSaveAlarm(Alarm alarm) {
+    public void onSaveAlarm(Alarm alarm, Context applicationContext) {
+        Date d = getDate(alarm);
+        alarm.setTime(d);
         mRealmService.saveAlarm(alarm);
+        //mRealmService.updateAlarms();
+        AlarmScheduler.setNextAlarm(applicationContext);
     }
 
     @Override
@@ -82,8 +86,12 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
     }
 
     @Override
-    public void onAddClick(Alarm alarm) {
+    public void onAddClick(Alarm alarm, Context applicationContext) {
+        Date d = getDate(alarm);
+        alarm.setTime(d);
         mRealmService.addAlarm(alarm);
+        mRealmService.updateAlarms();
+        AlarmScheduler.setNextAlarm(applicationContext);
         if (alarm.isEnabled()) {
             String newestAlarmId;
             try {
@@ -134,18 +142,34 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
         return (time.indexOf("0")==0) ? time.substring(1) : time;
     }
 
-    public Date getDate(int hour, int minute) {
+    public Date getDate(Alarm alarm) {
+        Date date = alarm.getTime();
         Calendar cal = Calendar.getInstance();
-//        Log.d("Calendar", "Current time " + cal.getTime());
+        cal.setTime(date);
+        return getDate(alarm, cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE));
+    }
+
+    public Date getDate(Alarm alarm, int hour, int minute) {
+        Calendar cal = Calendar.getInstance();
+
+        //        Log.d("Calendar", "Current time " + cal.getTime());
         cal.set(Calendar.HOUR_OF_DAY, hour);
 //        Log.d("Calendar", "Hour set " + cal.getTime());
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.SECOND, 0);
 //        Log.d("Calendar", "Minute set " + cal.getTime());
 //        Log.d("Alarm", "Literal Time " + cal.getTime());
-        Calendar currentTime = Calendar.getInstance();
-        if (cal.before(currentTime))
-            cal.add(Calendar.DAY_OF_YEAR,1);
+        alarm.setTime(cal.getTime());
+//        Calendar currentTime = Calendar.getInstance();
+//        int todaysDay = alarm.mapToAlarmDays(cal.get(Calendar.DAY_OF_WEEK));
+//        if (((alarm.getDecDaysOfWeek() & todaysDay) == todaysDay) || (alarm.getDecDaysOfWeek() == 0)) {
+//            if (!cal.before(currentTime)) {
+//                return cal.getTime();
+//            }
+//        }
+
+        cal.add(Calendar.DAY_OF_YEAR, alarm.getNextDayEnabled());
+
 
 //        String am_pm = (cal.get(Calendar.AM_PM)==Calendar.AM) ? "AM" : "PM";
 //        String hrString = String.valueOf(hour);
