@@ -38,7 +38,7 @@ public class Alarm extends RealmObject {
     private String id;
     private String alarmLabel;
     private boolean enabled;
-//    private int hour;
+    //    private int hour;
 //    private int minute;
 //    private int am_pm;
     private boolean is24hr;
@@ -216,7 +216,7 @@ public class Alarm extends RealmObject {
 //        if(getDaysOfWeek().equals("0")) {
 //            setEnabled(false);
 //        }
-        if(getCal().before(Calendar.getInstance())) {
+        if (getCal().before(Calendar.getInstance())) {
             // holds new date
             Calendar update = Calendar.getInstance();
             update.set(Calendar.HOUR, getCal().get(Calendar.HOUR_OF_DAY));
@@ -251,43 +251,67 @@ public class Alarm extends RealmObject {
         // roll the calendar this many days forward
         int daysFromNow = 0;
 
+        Log.d("alarm.java", "repeat today: " + ((getDecDaysOfWeek() & todaysDay)==1));
+        Log.d("alarm.java", "getDecDaysOfWeek: " + getDecDaysOfWeek());
+        Log.d("alarm.java", "getDecDaysOfWeek & today: " + (getDecDaysOfWeek() & todaysDay));
+
+
         // we are using bitwise operations to store multiple values in a
         // single column since Realm does not support an array of primitive
         // data types. We are storing a string of up to 7 binary digits.We
         // can think of this as a row of switches each with an on/off button
         // corresponding to each day.
-        if ((getDecDaysOfWeek()==0) || ((getDecDaysOfWeek() & todaysDay) == todaysDay)) {
+        if (getDecDaysOfWeek() == 0) {
             Calendar cal = Calendar.getInstance();
             boolean before = time.before(cal.getTime());
             Log.d("date", "before current date: " + before);
             if (time.before(cal.getTime())) {
                 daysFromNow = 1;
-            }
-            else {
+            } else {
                 daysFromNow = 0;
             }
+            return daysFromNow;
         }
-        else {
+        else if ((getDecDaysOfWeek() & todaysDay) == todaysDay) {
+            Calendar calendar = Calendar.getInstance();
+            Log.d("alarm.java", "time: " + time);
+            Log.d("alarm.java", "current time: " + calendar.getTime());
+            Log.d("alarm.java", "before: " + !time.before(calendar.getTime()));
+
+
+            if (!time.before(calendar.getTime())) {
+                Log.d("alarm object", "before: " + !time.before(calendar.getTime()));
+                daysFromNow = 0;
+                return daysFromNow;
+            }
+
+        }
             next.add(Calendar.DAY_OF_YEAR, 1);
+            Calendar current = Calendar.getInstance();
             for (int days = 1; days <= 7; days++) {
+                todaysDay = mapToAlarmDays(next.get(Calendar.DAY_OF_WEEK));
+                Log.d(TAG, "Next days is " + todaysDay);
+                daysFromNow = days;
+
                 // In this case we are checking to see if today is contained
                 // in our binary repeat days value. This is done by utilizing the
                 // & operation, remember that is will only flip the bit of the
                 // digit corresponding to this day. If thats true then it must equal
                 // the binary value of today
                 if ((getDecDaysOfWeek() & todaysDay) == todaysDay) {
+                    //if (!time.before(current.getTime())) {
                     Log.d(TAG, "Fire when");
                     daysFromNow = days;
                     break;
+                    //}
+
                 }
                 // If today is not contained within the binary string then
                 // roll the date foreword one day
                 next.add(Calendar.DAY_OF_YEAR, 1);
-                todaysDay = mapToAlarmDays(next.get(Calendar.DAY_OF_WEEK));
-                Log.d(TAG, "Next days is " + todaysDay);
-                daysFromNow = days;
             }
-        }
+
+
         Log.d(TAG, "Next alarm occurence is in " + daysFromNow + " days");
         return daysFromNow;
     }

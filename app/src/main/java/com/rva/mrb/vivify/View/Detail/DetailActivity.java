@@ -215,7 +215,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
             @Override
             public void onTimeSet(TimePicker timePicker, int hour, int minute) {
                 mEditTime.setText(detailPresenter.getTime(hour, minute));
-
+                Log.d("timepicker", "hour: " + hour);
                 alarm.setmWakeTime(mEditTime.getText().toString());
                 Date date = detailPresenter.getDate(alarm, hour, minute);
                 alarm.setTime(date);

@@ -49,6 +49,7 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
     public void onSaveAlarm(Alarm alarm, Context applicationContext) {
         Date d = getDate(alarm);
         alarm.setTime(d);
+        Log.d("DetailPresenter", "date: " + alarm.getTime());
         mRealmService.saveAlarm(alarm);
         //mRealmService.updateAlarms();
         AlarmScheduler.setNextAlarm(applicationContext);
@@ -146,7 +147,7 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
         Date date = alarm.getTime();
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        return getDate(alarm, cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE));
+        return getDate(alarm, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
     }
 
     public Date getDate(Alarm alarm, int hour, int minute) {
@@ -167,7 +168,7 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
 //                return cal.getTime();
 //            }
 //        }
-
+        Log.d("DetailPresenter", "getNextDayEnabled: " + alarm.getNextDayEnabled());
         cal.add(Calendar.DAY_OF_YEAR, alarm.getNextDayEnabled());
 
 
