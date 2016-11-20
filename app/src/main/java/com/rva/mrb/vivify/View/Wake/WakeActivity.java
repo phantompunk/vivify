@@ -16,6 +16,7 @@ import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
 import com.rva.mrb.vivify.Model.Data.AccessToken;
 import com.rva.mrb.vivify.Model.Service.AlarmScheduler;
+import com.rva.mrb.vivify.Model.Service.RealmService;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.Spotify.NodeService;
 import com.spotify.sdk.android.player.*;
@@ -48,6 +49,7 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
     private ApplicationModule applicationModule = new ApplicationModule((AlarmApplication) getApplication());
     private String trackId;
     private String trackImage;
+    private String alarmId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,7 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
         Bundle extras = getIntent().getExtras();
         trackId = (String) extras.get("trackId");
         trackImage = (String) extras.get("trackImage");
+        alarmId = (String) extras.get("alarmId");
 
         //Use Glide to load image URL
         Glide.with(this)
@@ -105,6 +108,8 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
     public void onDismiss() {
         AlarmScheduler.cancelNextAlarm(getApplicationContext());
         mPlayer.pause();
+        Log.d("Dismiss", "alarm ID: " + alarmId);
+        AlarmScheduler.disableAlarmById(getApplicationContext(), alarmId);
         finish();
     }
 

@@ -65,6 +65,7 @@ public class AlarmScheduler extends WakefulBroadcastReceiver{
         if (alarm != null) {
 
             Intent intent = new Intent(context, WakeReceiver.class);
+            intent.putExtra("alarmId", alarm.getId());
             intent.putExtra("trackId", alarm.getTrackId());
             intent.putExtra("trackImage", alarm.getTrackImage());
             PendingIntent pendingIntent =
@@ -142,6 +143,10 @@ public class AlarmScheduler extends WakefulBroadcastReceiver{
         setNextAlarm(context);
     }
 
+    public static void disableAlarmById(Context context, String id) {
+        RealmService.disableAlarmById(id);
+        setNextAlarm(context);
+    }
     private static void updateAlarm(String id) {
         Log.d(TAG, "Checking alarm date");
 //        Alarm

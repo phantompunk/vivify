@@ -37,8 +37,10 @@ public class WakeService extends Service {
         Bundle extras = intent.getExtras();
         String trackId = (String) extras.get("trackId");
         String trackImage = (String) extras.get("trackImage");
+        String alarmId = (String) extras.get("alarmId");
         alertIntent.putExtra("trackId", trackId);
         alertIntent.putExtra("trackImage", trackImage);
+        alertIntent.putExtra("alarmId", alarmId);
         alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(alertIntent);
         return START_STICKY;
