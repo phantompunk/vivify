@@ -16,7 +16,6 @@ import com.rva.mrb.vivify.AlarmApplication;
 import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
 import com.rva.mrb.vivify.Model.Data.Alarm;
-import com.rva.mrb.vivify.Model.Data.SimpleTrack;
 import com.rva.mrb.vivify.Model.Data.Track;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.Adapter.AlarmAdapter;
@@ -26,6 +25,7 @@ import com.rva.mrb.vivify.View.Search.SearchActivity;
 import org.parceler.Parcels;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -57,6 +57,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
     private String artistName;
     private String trackId;
     private String trackImage;
+    private Alarm alarm = new Alarm();
     final private int requestCode = 1;
 
     // used to create a binary representation of days an alarm is enabled
@@ -80,9 +81,9 @@ public class DetailActivity extends BaseActivity implements DetailView {
         detailComponent.inject(this);
         ButterKnife.bind(this);
 
+        Log.d("test", "ID: " + alarm.getId());
         //check if this is a new alarm
         isNewAlarm();
-//        onSetRepeat();
     }
 
     /**
@@ -91,13 +92,9 @@ public class DetailActivity extends BaseActivity implements DetailView {
     private void isNewAlarm() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
+            setVisibility();
             if (bundle.getBoolean("NewAlarm", true) == false) {
-                addbt.setVisibility(View.GONE);
-                savebt.setVisibility(View.VISIBLE);
-                deletebt.setVisibility(View.VISIBLE);
-            }
-            if (!bundle.getString("AlarmID").isEmpty()) {
-                Alarm alarm = detailPresenter.getAlarm(bundle.getString("AlarmID"));
+                alarm = Parcels.unwrap(getIntent().getParcelableExtra("Alarm"));
 //                Log.d("EditAlarm", alarm.getmWakeTime());
                 mEditTime.setText(alarm.getmWakeTime());
                 mIsSet.setChecked(alarm.isEnabled());
@@ -111,10 +108,34 @@ public class DetailActivity extends BaseActivity implements DetailView {
                 Log.d("trackImageDA", "track image url: " + trackImage);
                 setTrackTv();
             }
+            // No longer being used
+//            if (!bundle.getString("AlarmID").isEmpty()) {
+//                Alarm alarm = Parcels.unwrap(getIntent().getParcelableExtra("Alarm"));
+////                Log.d("EditAlarm", alarm.getmWakeTime());
+//                mEditTime.setText(alarm.getmWakeTime());
+//                mIsSet.setChecked(alarm.isEnabled());
+//                mStandardTime.setChecked(alarm.is24hr());
+//                setRepeatCheckBoxes(alarm.getDecDaysOfWeek());
+////                mEditRepeat.setText(alarm.getmcRepeat());
+//                trackName = alarm.getTrackName();
+//                artistName = alarm.getArtistName();
+//                trackId = alarm.getTrackId();
+//                trackImage = alarm.getTrackImage();
+//                Log.d("trackImageDA", "track image url: " + trackImage);
+//                setTrackTv();
+//            }
         } else {
-//            Log.d("DetailTime", detailPresenter.getCurrentTime());
+            // TODO fill with default settings for new alarm
+            Log.d("DetailTime", detailPresenter.getCurrentTime());
             mEditTime.setText(detailPresenter.getCurrentTime());
+            alarm.setTime(Calendar.getInstance().getTime());
         }
+    }
+
+    private void setVisibility() {
+        addbt.setVisibility(View.GONE);
+        savebt.setVisibility(View.VISIBLE);
+        deletebt.setVisibility(View.VISIBLE);
     }
 
     private void setRepeatCheckBoxes(int daysOfWeek) {
@@ -157,19 +178,10 @@ public class DetailActivity extends BaseActivity implements DetailView {
      */
     @OnClick(R.id.button_add)
     public void onAddClick() {
-        onSetRepeat();
-        detailPresenter.onAddClick(
-                getApplicationContext(),
-                editname.getText().toString(),
-                mEditTime.getText().toString(),
-                mIsSet.isChecked(),
-                mStandardTime.isChecked(),
-                Integer.toBinaryString(repeatDays),
-                trackName,
-                artistName,
-                trackId,
-                trackImage
-                );
+        Log.d("label",editname.getText().toString());
+        setAlarm();
+        detailPresenter.onAddClick(alarm, getApplicationContext());
+
         Intent returnIntent = new Intent();
         returnIntent.putExtra("enabled", true);
         Log.d(TAG, "Extra " + returnIntent.getBooleanExtra("enabled", true));
@@ -182,9 +194,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
      */
     @OnClick(R.id.button_delete)
     public void onDeleteAlarm() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle.getInt("Position") >= 0)
-        detailPresenter.onDeleteAlarm(bundle.getString("AlarmID"));
+        detailPresenter.onDeleteAlarm(alarm);
         finish();
     }
 
@@ -193,45 +203,26 @@ public class DetailActivity extends BaseActivity implements DetailView {
      */
     @OnClick(R.id.button_save)
     public void onSaveAlarm() {
-        onSetRepeat();
-        Bundle bundle = getIntent().getExtras();
-        if (!bundle.getString("AlarmID").isEmpty()) {
-            detailPresenter.onSaveAlarm(
-                    getApplicationContext(),
-                    bundle.getString("AlarmID"),
-                    editname.getText().toString(),
-                    mEditTime.getText().toString(),
-                    mIsSet.isChecked(),
-                    mStandardTime.isChecked(),
-                    Integer.toBinaryString(repeatDays),
-                    trackName,
-                    artistName,
-                    trackId,
-                    trackImage
-            );
-        }
-//        Intent returnIntent = new Intent();
-//        returnIntent.putExtra("enabled", true);
-//        Log.d(TAG, "Extra " + returnIntent.getBooleanExtra("enabled", mIsSet.isChecked()));
-//        setResult(Activity.RESULT_OK, returnIntent);
+        setAlarm();
+        detailPresenter.onSaveAlarm(alarm, getApplicationContext());
         finish();
     }
 
     @OnClick(R.id.edit_time)
     public void onPickTime() {
-//        Log.d("EditTime", "Click Success");
-//        final Calendar cal = Calendar.getInstance();
         TimePickerDialog timePickerDialog =
                 new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int hour, int minute) {
                 mEditTime.setText(detailPresenter.getTime(hour, minute));
-//                alarmHour = hour;
-//                alarmHour = minute;
-//                alarmAM_PM = detailPresenter.getAMPM(hour);
+                Log.d("timepicker", "hour: " + hour);
+                alarm.setmWakeTime(mEditTime.getText().toString());
+                Date date = detailPresenter.getDate(alarm, hour, minute);
+                alarm.setTime(date);
+
             }
                     // Set Alarm time as default if it exists
-        }, detailPresenter.getCurrentHour(), detailPresenter.getCurrentMinute(), false);
+        }, detailPresenter.getHour(alarm), detailPresenter.getMinute(alarm), false);
         timePickerDialog.show();
     }
 
@@ -241,6 +232,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
     public void onSetRepeat() {
 
         repeatDays = 0;
+        alarm.setDaysOfWeek("0");
         // using bit wise operations to keep track of days
         // binary represenation of an alarm repeating
         // on Sunday and Saturday is 1000001
@@ -261,6 +253,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
         if (saturdayCb.isChecked())
             repeatDays = repeatDays | Alarm.SATURDAY;
 
+        alarm.setDaysOfWeek(Integer.toBinaryString(repeatDays));
         Log.d(TAG, "Repeat Days: " + Integer.toBinaryString(repeatDays));
     }
 
@@ -274,6 +267,33 @@ public class DetailActivity extends BaseActivity implements DetailView {
         startActivityForResult(intent, requestCode);
     }
 
+    public void setAlarm() {
+        onSetRepeat();
+        alarm.setAlarmLabel(editname.getText().toString());
+        alarm.setEnabled(mIsSet.isChecked());
+        alarm.setmWakeTime(mEditTime.getText().toString());
+        Log.d("Set", "Time: " + alarm.getTime());
+        alarm.setDaysOfWeek(Integer.toBinaryString(repeatDays));
+        alarm.setTrackId(trackId);
+        alarm.setTrackImage(trackImage);
+        alarm.setTrackName(trackName);
+        alarm.setArtist(artistName);
+    }
+
+    // Not being used
+//    public void updateAlarm(Alarm updateAlarm) {
+//        updateAlarm.setAlarmLabel(editname.getText().toString());
+//        updateAlarm.setEnabled(mIsSet.isChecked());
+//        updateAlarm.setmWakeTime(mEditTime.getText().toString());
+//        Log.d("Set", "Time: " + mEditTime.getText().toString());
+//        updateAlarm.setTime(time.getTime());
+//        updateAlarm.setDaysOfWeek(Integer.toBinaryString(repeatDays));
+//        updateAlarm.setTrackId(trackId);
+//        updateAlarm.setTrackImage(trackImage);
+//        updateAlarm.setTrackName(trackName);
+//        updateAlarm.setArtist(artistName);
+//    }
+
     /**
      * This method called when the user selects a song in SearchActivity. This method sets music info
      * to the alarm object
@@ -285,8 +305,6 @@ public class DetailActivity extends BaseActivity implements DetailView {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if(resultCode == RESULT_OK){
-//                Bundle extras = data.getParcelableExtra().getExtras();
-//                SimpleTrack.Item track = (SimpleTrack.Item) extras.get("track");
                 Track track = Parcels.unwrap(data.getParcelableExtra("track"));
                 Log.d("onActivityResult", track.getName());
                 trackName = track.getName();

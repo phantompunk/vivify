@@ -26,10 +26,12 @@ public class WakeReceiver extends WakefulBroadcastReceiver {
         Bundle extras = intent.getExtras();
         String trackId = (String) extras.get("trackId");
         String trackImage = (String) extras.get("trackImage");
+        String alarmId = (String) extras.get("alarmId");
 
         Intent alert = new Intent(context, WakeService.class);
         alert.putExtra("trackId", trackId);
         alert.putExtra("trackImage", trackImage);
+        alert.putExtra("alarmId", alarmId);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startService(alert);
     }

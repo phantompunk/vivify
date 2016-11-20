@@ -12,6 +12,7 @@ import com.spotify.sdk.android.player.ConnectionStateCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTransactionCallback {
@@ -34,9 +35,24 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
     }
 
     @Override
+    public void onDeleteAlarm(Alarm alarm) {
+        mRealmService.deleteAlarm(alarm);
+    }
+
+    @Override
     public void onSaveAlarm(Context context,String alarmid, String name, String time, boolean isSet, boolean isStandardTime, String repeat, String trackName, String artist, String trackId, String trackImage) {
         mRealmService.saveAlarm(alarmid, name, time, isSet, isStandardTime, repeat, trackName, artist, trackId, trackImage);
 //        AlarmScheduler.enableAlarmById(context, alarmid);
+    }
+
+    @Override
+    public void onSaveAlarm(Alarm alarm, Context applicationContext) {
+        Date d = getDate(alarm);
+        alarm.setTime(d);
+        Log.d("DetailPresenter", "date: " + alarm.getTime());
+        mRealmService.saveAlarm(alarm);
+        //mRealmService.updateAlarms();
+        AlarmScheduler.setNextAlarm(applicationContext);
     }
 
     @Override
@@ -67,6 +83,30 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
 //                AlarmScheduler.enableAlarmById(context, newestAlarmId);
             }
         }
+
+    }
+
+    @Override
+    public void onAddClick(Alarm alarm, Context applicationContext) {
+        Date d = getDate(alarm);
+        alarm.setTime(d);
+        mRealmService.addAlarm(alarm);
+        mRealmService.updateAlarms();
+        AlarmScheduler.setNextAlarm(applicationContext);
+        if (alarm.isEnabled()) {
+            String newestAlarmId;
+            try {
+                newestAlarmId = mRealmService.getNewestAlarmId();
+                Log.d("New", "Alarm id is: " + newestAlarmId);
+            } catch (Exception e) {
+                Log.e(TAG, "Alarm not found, trying againg. " + e.getMessage());
+                newestAlarmId = mRealmService.getNewestAlarmId();
+            }
+            if (newestAlarmId != null) {
+                Log.d("realm", "Alarm id: " + newestAlarmId); // getAlarm.last()
+//                AlarmScheduler.enableAlarmById(context, newestAlarmId);
+            }
+        }
     }
 
     public String getCurrentTime() {
@@ -82,6 +122,7 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
         cal.set(Calendar.HOUR_OF_DAY, hour);
 //        Log.d("Calendar", "Hour set " + cal.getTime());
         cal.set(Calendar.MINUTE, minute);
+        cal.set(Calendar.SECOND, 0);
 //        Log.d("Calendar", "Minute set " + cal.getTime());
 //        Log.d("Alarm", "Literal Time " + cal.getTime());
         Calendar currentTime = Calendar.getInstance();
@@ -102,6 +143,50 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
         return (time.indexOf("0")==0) ? time.substring(1) : time;
     }
 
+    public Date getDate(Alarm alarm) {
+        Date date = alarm.getTime();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return getDate(alarm, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
+    }
+
+    public Date getDate(Alarm alarm, int hour, int minute) {
+        Calendar cal = Calendar.getInstance();
+
+        //        Log.d("Calendar", "Current time " + cal.getTime());
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+//        Log.d("Calendar", "Hour set " + cal.getTime());
+        cal.set(Calendar.MINUTE, minute);
+        cal.set(Calendar.SECOND, 0);
+//        Log.d("Calendar", "Minute set " + cal.getTime());
+//        Log.d("Alarm", "Literal Time " + cal.getTime());
+        alarm.setTime(cal.getTime());
+//        Calendar currentTime = Calendar.getInstance();
+//        int todaysDay = alarm.mapToAlarmDays(cal.get(Calendar.DAY_OF_WEEK));
+//        if (((alarm.getDecDaysOfWeek() & todaysDay) == todaysDay) || (alarm.getDecDaysOfWeek() == 0)) {
+//            if (!cal.before(currentTime)) {
+//                return cal.getTime();
+//            }
+//        }
+        Log.d("DetailPresenter", "getNextDayEnabled: " + alarm.getNextDayEnabled());
+        cal.add(Calendar.DAY_OF_YEAR, alarm.getNextDayEnabled());
+
+
+//        String am_pm = (cal.get(Calendar.AM_PM)==Calendar.AM) ? "AM" : "PM";
+//        String hrString = String.valueOf(hour);
+//        hrString = (hour > 12) ? String.valueOf(hour-12) : hrString;
+//        String minString = String.valueOf(minute);
+//        minString = (minute < 10) ? "0" + minString : minString;
+//        return hrString + ":" + minString + " " + am_pm;
+
+//        SimpleDateFormat simpleDateFormat =
+//                new SimpleDateFormat(TIME_FORMAT, Locale.US);
+//        String time = simpleDateFormat.format(cal.getTime());
+//        Log.d(TAG, "Wake Time: " + cal.getTime());
+//        return (time.indexOf("0")==0) ? time.substring(1) : time;
+        return cal.getTime();
+    }
+
     @Override
     public int getCurrentHour() {
         Calendar calendar = Calendar.getInstance();
@@ -109,9 +194,20 @@ public class DetailPresenterImpl implements DetailPresenter, RealmService.OnTran
     }
 
     @Override
+    public int getHour(Alarm alarm) {
+        return (alarm.getTime() != null) ? alarm.getHour() : getCurrentHour();
+    }
+
+
+    @Override
     public int getCurrentMinute() {
         Calendar calendar = Calendar.getInstance();
         return calendar.get(Calendar.MINUTE);
+    }
+
+    @Override
+    public int getMinute(Alarm alarm) {
+        return (alarm.getTime() != null) ? alarm.getMinute() : getCurrentMinute();
     }
 
     @Override

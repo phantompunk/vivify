@@ -137,6 +137,7 @@ public class LoginActivity extends BaseActivity {
     public void startAlarmActivity() {
         Intent intent = new Intent(this, AlarmActivity.class);
         startActivity(intent);
+        finish();
     }
 
     @Override
