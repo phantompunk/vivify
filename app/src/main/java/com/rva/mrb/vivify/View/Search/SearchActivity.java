@@ -18,6 +18,7 @@ import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
 import com.rva.mrb.vivify.Model.Data.AccessToken;
 import com.rva.mrb.vivify.Model.Data.Album;
+import com.rva.mrb.vivify.Model.Data.MediaType;
 import com.rva.mrb.vivify.Model.Data.Playlist;
 import com.rva.mrb.vivify.Model.Data.Search;
 import com.rva.mrb.vivify.Model.Data.SimpleTrack;
@@ -156,13 +157,19 @@ public class SearchActivity extends BaseActivity implements SearchView,
                 Log.d("Track Name", results.getTracks().getItems().get(0).getName());
                 Log.d("Artist name", results.getTracks().getItems().get(0).getArtists().get(0).getName());
                 List<Object> result = new ArrayList<Object>();
+                List<MediaType> mediaTypeList = new ArrayList<MediaType>();
                 for (Track t : results.getTracks().getItems())
-                    result.add(t);
+//                    result.add(t);
+                    mediaTypeList.add(new MediaType(t, MediaType.TRACK_TYPE));
                 for (Album a : results.getAlbums().getItems())
-                    result.add(a);
+//                    result.add(a);
+                    mediaTypeList.add(new MediaType(a, MediaType.ALBUM_TYPE));
                 Log.d("Items", "Count: " + result.size());
                 Log.d("Test",results.getTracks().getItems().get(15).getName() + results.getTracks().getItems().get(15).getArtists().get(0).getName());
-                searchAdapter = new SearchAdapter(result);
+//                searchAdapter = new SearchAdapter(result);
+                Log.d("AlbumTest", results.getAlbums().getItems().get(0).getName() + " " +
+                    results.getAlbums().getItems().get(0).getArtists().get(0).getName());
+                searchAdapter = new SearchAdapter(mediaTypeList);
                 List<SimpleSectionedRecyclerViewAdapter.Section> sections =
                         new ArrayList<SimpleSectionedRecyclerViewAdapter.Section>();
 

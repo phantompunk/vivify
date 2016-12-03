@@ -9,6 +9,7 @@ import java.util.Map;
 public class Album {
 
     public String album_type;
+    public List<Artist> artists;
     public List<String> available_markets;
     public Map<String, String> external_urls;
     public String href;
@@ -33,6 +34,10 @@ public class Album {
     public void setAvailable_markets(List<String> available_markets) {
         this.available_markets = available_markets;
     }
+
+    public List<Artist> getArtists() { return artists; }
+
+    public void setArtists(List<Artist> artist) { this.artists = artist; }
 
     public Map<String, String> getExternal_urls() {
         return external_urls;
