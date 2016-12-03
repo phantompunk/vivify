@@ -76,6 +76,6 @@ public interface SpotifyService {
     @GET("search?type=track")
     Call<Search> getSearchResults(@Query("q") String searchQuery);
 
-    @GET("search?type=playlist,album,track")
+    @GET("search?type=playlist,album,track,artist")
     Call<Search> getFullSearchResults(@Query("q") String searchQuery);
 }

@@ -47,6 +47,7 @@ public class MediaType {
     public Album getAlbum() {
         return this.album;
     }
+
     public Artist getArtist() {
         return artist;
     }

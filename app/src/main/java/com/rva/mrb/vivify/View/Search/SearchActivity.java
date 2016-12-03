@@ -18,6 +18,7 @@ import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
 import com.rva.mrb.vivify.Model.Data.AccessToken;
 import com.rva.mrb.vivify.Model.Data.Album;
+import com.rva.mrb.vivify.Model.Data.Artist;
 import com.rva.mrb.vivify.Model.Data.MediaType;
 import com.rva.mrb.vivify.Model.Data.Playlist;
 import com.rva.mrb.vivify.Model.Data.Search;
@@ -159,11 +160,13 @@ public class SearchActivity extends BaseActivity implements SearchView,
                 List<Object> result = new ArrayList<Object>();
                 List<MediaType> mediaTypeList = new ArrayList<MediaType>();
                 for (Track t : results.getTracks().getItems())
-//                    result.add(t);
                     mediaTypeList.add(new MediaType(t, MediaType.TRACK_TYPE));
                 for (Album a : results.getAlbums().getItems())
-//                    result.add(a);
                     mediaTypeList.add(new MediaType(a, MediaType.ALBUM_TYPE));
+                for (Playlist a : results.getPlaylists().getItems())
+                    mediaTypeList.add(new MediaType(a, MediaType.PLAYLIST_TYPE));
+                for (Artist a : results.getArtists().getItems())
+                    mediaTypeList.add(new MediaType(a, MediaType.ARTIST_TYPE));
                 Log.d("Items", "Count: " + result.size());
                 Log.d("Test",results.getTracks().getItems().get(15).getName() + results.getTracks().getItems().get(15).getArtists().get(0).getName());
 //                searchAdapter = new SearchAdapter(result);
@@ -175,6 +178,10 @@ public class SearchActivity extends BaseActivity implements SearchView,
 
                 sections.add(new SimpleSectionedRecyclerViewAdapter.Section(0,"Tracks"));
                 sections.add(new SimpleSectionedRecyclerViewAdapter.Section(results.getTracks().getItems().size(),"Albums"));
+                sections.add(new SimpleSectionedRecyclerViewAdapter.Section(results.getAlbums().getItems().size()+
+                        results.getTracks().getItems().size(),"Playlists"));
+                sections.add(new SimpleSectionedRecyclerViewAdapter.Section(results.getAlbums().getItems().size()+
+                        results.getTracks().getItems().size()+results.getPlaylists().getItems().size(),"Artists"));
 //                sections.add(new SimpleSectionedRecyclerViewAdapter.Section(10,"Section 3"));
 //                sections.add(new SimpleSectionedRecyclerViewAdapter.Section(5,"Section 4"));
 //                sections.add(new SimpleSectionedRecyclerViewAdapter.Section(20,"Section 5"));

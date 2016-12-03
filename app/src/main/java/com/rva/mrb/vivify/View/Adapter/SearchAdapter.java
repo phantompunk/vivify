@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.rva.mrb.vivify.Model.Data.Album;
+import com.rva.mrb.vivify.Model.Data.Artist;
 import com.rva.mrb.vivify.Model.Data.MediaType;
 import com.rva.mrb.vivify.Model.Data.Playlist;
 import com.rva.mrb.vivify.Model.Data.Search;
@@ -68,6 +69,16 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                 View viewAlbum = inflater.inflate(R.layout.album_card, parent, false);
                 viewHolder = new AlbumViewHolder(viewAlbum);
                 break;
+            case MediaType.PLAYLIST_TYPE:
+                Log.d("onCreateViewHolder", "Type: " + viewType + ", Album inflated");
+                View viewPlaylist = inflater.inflate(R.layout.playlist_card, parent, false);
+                viewHolder = new PlaylistViewHolder(viewPlaylist);
+                break;
+            case MediaType.ARTIST_TYPE:
+                Log.d("onCreateViewHolder", "Type: " + viewType + ", Album inflated");
+                View viewArtist = inflater.inflate(R.layout.artist_card, parent, false);
+                viewHolder = new ArtistViewHolder(viewArtist);
+                break;
         }
         return viewHolder;
     }
@@ -99,7 +110,43 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                     Log.d("BindAlbum", "Holder viewtyep: " + holder.getItemViewType());
                     AlbumViewHolder viewAlbumHolder;
                     viewAlbumHolder = (AlbumViewHolder) holder;
-                    viewAlbumHolder.albumName.setText(a.getName()+ "\n" + a.getArtists().get(0).getName()) ;
+                    viewAlbumHolder.albumName.setText(a.getName()+ "\n" + a.getArtists().get(0).getName());
+                    viewAlbumHolder.cardView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.d("Search cardView", "Successful click");
+//                            searchInterface.onTrackSelected(a);
+                        }
+                    });
+                    break;
+                case MediaType.PLAYLIST_TYPE:
+                    final Playlist p = type.getPlaylist();
+                    Log.d("BindPlaylist", "Holder viewtype: " + type.getMediaType());
+                    PlaylistViewHolder viewPlayListHolder;
+                    viewPlayListHolder = (PlaylistViewHolder) holder;
+                    viewPlayListHolder.playlistName.setText(p.getName());
+                    viewPlayListHolder.cardView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.d("Search cardView", "Successful click");
+//                            searchInterface.onTrackSelected(a);
+                        }
+                    });
+                    break;
+
+                case MediaType.ARTIST_TYPE:
+                    final Artist artist = type.getArtist();
+                    Log.d("BindArtist", "Holder viewtype: " + type.getMediaType());
+                    ArtistViewHolder viewArtistHolder;
+                    viewArtistHolder = (ArtistViewHolder) holder;
+                    viewArtistHolder.artistName.setText(artist.getName());
+                    viewArtistHolder.cardView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.d("Search cardView", "Successful click");
+//                            searchInterface.onTrackSelected(a);
+                        }
+                    });
                     break;
             }
         }
@@ -153,21 +200,31 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         }
     }
 
-//    public class PlaylistViewHolder extends SearchAdapter.ViewHolder {
-//        @BindView(R.id.playlist_name) TextView playlistName;
-//        @BindView(R.id.artist_name) TextView artistName;
-//        @BindView(R.id.card_search) CardView cardView;
-//        public PlaylistViewHolder(View itemView) {
-//            super(itemView);
-//            ButterKnife.bind(this, itemView);
-//        }
-//    }
+    public class PlaylistViewHolder extends SearchAdapter.ViewHolder {
+        @BindView(R.id.playlist_name) TextView playlistName;
+        @BindView(R.id.playlist_owner) TextView playlist_owner;
+        @BindView(R.id.card_search) CardView cardView;
+        public PlaylistViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
 
     public class TrackViewHolder extends SearchAdapter.ViewHolder {
         @BindView(R.id.track_name) TextView trackName;
-        @BindView(R.id.artist_name) TextView artistName;
+        @BindView(R.id.track_artist_name) TextView artistName;
         @BindView(R.id.card_search) CardView cardView;
         public TrackViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    public class ArtistViewHolder extends SearchAdapter.ViewHolder {
+        @BindView(R.id.artist_name) TextView artistName;
+        @BindView(R.id.card_search) CardView cardView;
+
+        public ArtistViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
