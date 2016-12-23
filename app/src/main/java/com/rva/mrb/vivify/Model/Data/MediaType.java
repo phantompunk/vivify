@@ -16,24 +16,24 @@ public class MediaType {
     private Artist artist;
     private int type;
 
-    public MediaType(Track track, int type) {
+    public MediaType(Track track) {
         this.track = track;
-        this.type = type;
+        this.type = TRACK_TYPE;
     }
 
-    public MediaType(Album album, int type) {
+    public MediaType(Album album) {
         this.album = album;
-        this.type = type;
+        this.type = ALBUM_TYPE;
     }
 
-    public MediaType(Playlist playlist, int type) {
+    public MediaType(Playlist playlist) {
         this.playlist = playlist;
-        this.type = type;
+        this.type = PLAYLIST_TYPE;
     }
 
-    public MediaType(Artist artist, int type) {
+    public MediaType(Artist artist) {
         this.artist = artist;
-        this.type = type;
+        this.type = ARTIST_TYPE;
     }
 
     public int getMediaType() {

@@ -66,14 +66,14 @@ public class SearchActivity extends BaseActivity implements SearchView,
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     private SearchAdapter searchAdapter;
-    private Playlist playlist;
+//    private Playlist playlist;
 
     // Spotify
-    private static final String CLIENT_ID = "c07baf896d3a4b4b99c09fa61592eb1d";
-    private static final int REQUEST_CODE = 5123;
-    private static final String REDIRECT_URI = "vivify://callback";
-    private Player mPlayer;
-    private Config playerConfig;
+//    private static final String CLIENT_ID = "c07baf896d3a4b4b99c09fa61592eb1d";
+//    private static final int REQUEST_CODE = 5123;
+//    private static final String REDIRECT_URI = "vivify://callback";
+//    private Player mPlayer;
+//    private Config playerConfig;
     private SearchModule searchModule = new SearchModule(this);
     private ApplicationModule applicationModule = new ApplicationModule((AlarmApplication) getApplication());
 
@@ -157,21 +157,16 @@ public class SearchActivity extends BaseActivity implements SearchView,
 //                Log.d("Artist name", results.getTracks().getItems().get(0).getArtists().get(0).getName());
                 Log.d("Track Name", results.getTracks().getItems().get(0).getName());
                 Log.d("Artist name", results.getTracks().getItems().get(0).getArtists().get(0).getName());
-                List<Object> result = new ArrayList<Object>();
                 List<MediaType> mediaTypeList = new ArrayList<MediaType>();
                 for (Track t : results.getTracks().getItems())
-                    mediaTypeList.add(new MediaType(t, MediaType.TRACK_TYPE));
+                    mediaTypeList.add(new MediaType(t));
                 for (Album a : results.getAlbums().getItems())
-                    mediaTypeList.add(new MediaType(a, MediaType.ALBUM_TYPE));
+                    mediaTypeList.add(new MediaType(a));
                 for (Playlist a : results.getPlaylists().getItems())
-                    mediaTypeList.add(new MediaType(a, MediaType.PLAYLIST_TYPE));
+                    mediaTypeList.add(new MediaType(a));
                 for (Artist a : results.getArtists().getItems())
-                    mediaTypeList.add(new MediaType(a, MediaType.ARTIST_TYPE));
-                Log.d("Items", "Count: " + result.size());
-                Log.d("Test",results.getTracks().getItems().get(15).getName() + results.getTracks().getItems().get(15).getArtists().get(0).getName());
-//                searchAdapter = new SearchAdapter(result);
-                Log.d("AlbumTest", results.getAlbums().getItems().get(0).getName() + " " +
-                    results.getAlbums().getItems().get(0).getArtists().get(0).getName());
+                    mediaTypeList.add(new MediaType(a));
+
                 searchAdapter = new SearchAdapter(mediaTypeList);
                 List<SimpleSectionedRecyclerViewAdapter.Section> sections =
                         new ArrayList<SimpleSectionedRecyclerViewAdapter.Section>();
@@ -182,9 +177,6 @@ public class SearchActivity extends BaseActivity implements SearchView,
                         results.getTracks().getItems().size(),"Playlists"));
                 sections.add(new SimpleSectionedRecyclerViewAdapter.Section(results.getAlbums().getItems().size()+
                         results.getTracks().getItems().size()+results.getPlaylists().getItems().size(),"Artists"));
-//                sections.add(new SimpleSectionedRecyclerViewAdapter.Section(10,"Section 3"));
-//                sections.add(new SimpleSectionedRecyclerViewAdapter.Section(5,"Section 4"));
-//                sections.add(new SimpleSectionedRecyclerViewAdapter.Section(20,"Section 5"));
                 setInterface();
 
                 //Add your adapter to the sectionAdapter
