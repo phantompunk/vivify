@@ -70,17 +70,18 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
 
         //Get trackId and image URL from Bundle
         Bundle extras = getIntent().getExtras();
-        trackId = (String) extras.get("trackId");
-        trackImage = (String) extras.get("trackImage");
-        alarmId = (String) extras.get("alarmId");
+        if (extras != null) {
+            trackId = (String) extras.get("trackId");
+            trackImage = (String) extras.get("trackImage");
+            alarmId = (String) extras.get("alarmId");
 
-        //Use Glide to load image URL
-        Glide.with(this)
-                .load(trackImage)
-                .into(trackIV);
-        trackIV.setScaleType(ImageView.ScaleType.FIT_XY);
-        Log.d("trackImage", "Traack Image Url: " + trackImage);
-
+            //Use Glide to load image URL
+            Glide.with(this)
+                    .load(trackImage)
+                    .into(trackIV);
+            trackIV.setScaleType(ImageView.ScaleType.FIT_XY);
+            Log.d("trackImage", "Traack Image Url: " + trackImage);
+        }
         //Set the seekbar that dissmisses/snoozes alarm
         setSeekBar();
 
@@ -108,8 +109,10 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
     public void onDismiss() {
         AlarmScheduler.cancelNextAlarm(getApplicationContext());
         mPlayer.pause();
-        Log.d("Dismiss", "alarm ID: " + alarmId);
-        AlarmScheduler.disableAlarmById(getApplicationContext(), alarmId);
+        if (alarmId != null) {
+            Log.d("Dismiss", "alarm ID: " + alarmId);
+            AlarmScheduler.disableAlarmById(getApplicationContext(), alarmId);
+        }
         finish();
     }
 

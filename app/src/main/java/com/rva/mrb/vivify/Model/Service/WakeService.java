@@ -34,16 +34,22 @@ public class WakeService extends Service {
         Log.d("Service", "Starting Service");
 //        Intent intent1 = new Intent(getApplicationContext(), sdfAlertActivity.class);
 
-        Bundle extras = intent.getExtras();
-        String trackId = (String) extras.get("trackId");
-        String trackImage = (String) extras.get("trackImage");
-        String alarmId = (String) extras.get("alarmId");
-        alertIntent.putExtra("trackId", trackId);
-        alertIntent.putExtra("trackImage", trackImage);
-        alertIntent.putExtra("alarmId", alarmId);
-        alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(alertIntent);
+        if (intent != null) {
+            Bundle extras = intent.getExtras();
+            String trackId = (String) extras.get("trackId");
+            String trackImage = (String) extras.get("trackImage");
+            String alarmId = (String) extras.get("alarmId");
+            alertIntent.putExtra("trackId", trackId);
+            alertIntent.putExtra("trackImage", trackImage);
+            alertIntent.putExtra("alarmId", alarmId);
+            alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(alertIntent);
+        }
+//        else
+//            return START_NOT_STICKY;
         return START_STICKY;
+
+
     }
     public class AlarmBinder extends Binder {
         public WakeService getService() {
