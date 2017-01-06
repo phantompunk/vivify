@@ -15,6 +15,8 @@ import com.rva.mrb.vivify.AlarmApplication;
 import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
 import com.rva.mrb.vivify.Model.Data.AccessToken;
+import com.rva.mrb.vivify.Model.Data.Alarm;
+import com.rva.mrb.vivify.Model.Data.MediaType;
 import com.rva.mrb.vivify.Model.Service.AlarmScheduler;
 import com.rva.mrb.vivify.Model.Service.RealmService;
 import com.rva.mrb.vivify.R;
@@ -25,6 +27,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,6 +53,8 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
     private String trackId;
     private String trackImage;
     private String alarmId;
+    private Alarm alarm;
+    private String playlistID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +79,9 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
             trackId = (String) extras.get("trackId");
             trackImage = (String) extras.get("trackImage");
             alarmId = (String) extras.get("alarmId");
+            Log.d("PlayAlbum", "Alarm created");
+            alarm = RealmService.getAlarmById(alarmId);
+            playlistID = alarm.getArtistName();
 
             //Use Glide to load image URL
             Glide.with(this)
@@ -213,8 +221,24 @@ public class WakeActivity extends BaseActivity implements ConnectionStateCallbac
      */
     @Override
     public void onLoggedIn() {
-        mPlayer.playUri("spotify:track:" + trackId, 0, 0);
-        mPlayer.setRepeat(true);
+        Log.d("PlayAlbum", "Alarm Type: " + alarm.getMediaType());
+        switch (alarm.getMediaType()) {
+            case MediaType.TRACK_TYPE:
+                mPlayer.playUri("spotify:track:" + trackId, 0, 0);
+                mPlayer.setRepeat(true);
+                break;
+            case MediaType.ALBUM_TYPE:
+                Log.d("PlayAlbum", "spotify:album:" + trackId);
+                mPlayer.playUri("spotify:album:" + trackId, 0, 0);
+                mPlayer.setRepeat(true);
+                break;
+            case MediaType.PLAYLIST_TYPE:
+                Log.d("PlayAlbum", "spotify:user:" + playlistID +":playlist:"+ trackId);
+                mPlayer.playUri("spotify:user:"+playlistID+":playlist:"+trackId, 0, 0);
+                mPlayer.setRepeat(true);
+                break;
+        }
+
     }
 
     @Override

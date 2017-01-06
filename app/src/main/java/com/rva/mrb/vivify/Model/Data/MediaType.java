@@ -1,8 +1,11 @@
 package com.rva.mrb.vivify.Model.Data;
 
 
+import org.parceler.Parcel;
+
 import java.nio.channels.AlreadyConnectedException;
 
+@Parcel
 public class MediaType {
 
     public static final int TRACK_TYPE = 0;
@@ -15,6 +18,8 @@ public class MediaType {
     private Playlist playlist;
     private Artist artist;
     private int type;
+
+    public MediaType() { }
 
     public MediaType(Track track) {
         this.track = track;

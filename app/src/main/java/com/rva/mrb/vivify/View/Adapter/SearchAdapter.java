@@ -100,8 +100,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                     viewTrackHolder.cardView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Log.d("Search cardView", "Successful click");
-                            searchInterface.onTrackSelected(t);
+                            Log.d("Search cardView", "Successful track click");
+                            searchInterface.onMediaSelected(new MediaType(t));
                         }
                     });
                     break;
@@ -114,8 +114,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                     viewAlbumHolder.cardView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Log.d("Search cardView", "Successful click");
-//                            searchInterface.onTrackSelected(a);
+                            Log.d("Search cardView", "Successful album click");
+                            searchInterface.onMediaSelected(new MediaType(a));
                         }
                     });
                     break;
@@ -129,7 +129,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                         @Override
                         public void onClick(View view) {
                             Log.d("Search cardView", "Successful click");
-//                            searchInterface.onTrackSelected(a);
+                            searchInterface.onMediaSelected(new MediaType(p));
                         }
                     });
                     break;
@@ -144,7 +144,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                         @Override
                         public void onClick(View view) {
                             Log.d("Search cardView", "Successful click");
-//                            searchInterface.onTrackSelected(a);
+                            searchInterface.onMediaSelected(new MediaType(artist));
                         }
                     });
                     break;

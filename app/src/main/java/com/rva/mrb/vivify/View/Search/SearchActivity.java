@@ -51,7 +51,7 @@ import retrofit2.Response;
  * This class allows user to search spotify
  */
 public class SearchActivity extends BaseActivity implements SearchView,
-        ConnectionStateCallback, SearchInterface {
+        SearchInterface {
 
     @Inject
     SearchPresenter searchPresenter;
@@ -155,8 +155,8 @@ public class SearchActivity extends BaseActivity implements SearchView,
                 Search results = response.body();
                 Log.d("SpotifyService", "Successful: " + response.isSuccessful());
 //                Log.d("Artist name", results.getTracks().getItems().get(0).getArtists().get(0).getName());
-                Log.d("Track Name", results.getTracks().getItems().get(0).getName());
-                Log.d("Artist name", results.getTracks().getItems().get(0).getArtists().get(0).getName());
+//                Log.d("Track Name", results.getTracks().getItems().get(0).getName());
+//                Log.d("Artist name", results.getTracks().getItems().get(0).getArtists().get(0).getName());
                 List<MediaType> mediaTypeList = new ArrayList<MediaType>();
                 for (Track t : results.getTracks().getItems())
                     mediaTypeList.add(new MediaType(t));
@@ -348,47 +348,56 @@ public class SearchActivity extends BaseActivity implements SearchView,
         this.finish();
     }
     // Spotify methods
-    @Override
-    public void onLoggedIn() {
-        Log.d("Spotify", "User logged in");
-    }
+//    @Override
+//    public void onLoggedIn() {
+//        Log.d("Spotify", "User logged in");
+//    }
+//
+//    @Override
+//    public void onLoggedOut() {
+//        Log.d("Spotify", "User logged out");
+//
+//    }
+//
+//    @Override
+//    public void onLoginFailed(int i) {
+//        Log.d("Spotify", "LoginActivity failed");
+//
+//    }
+//
+//    @Override
+//    public void onTemporaryError() {
+//        Log.d("Spotify", "Temporary error occurred");
+//
+//    }
+//
+//    @Override
+//    public void onConnectionMessage(String s) {
+//        Log.d("Spotify", "Received connection message");
+//
+//    }
 
-    @Override
-    public void onLoggedOut() {
-        Log.d("Spotify", "User logged out");
-
-    }
-
-    @Override
-    public void onLoginFailed(int i) {
-        Log.d("Spotify", "LoginActivity failed");
-
-    }
-
-    @Override
-    public void onTemporaryError() {
-        Log.d("Spotify", "Temporary error occurred");
-
-    }
-
-    @Override
-    public void onConnectionMessage(String s) {
-        Log.d("Spotify", "Received connection message");
-
-    }
-
-    /**
-     * This method is called when a track has been selected and returns the track.
-     * @param track The track that is selected
-     */
-    @Override
-    public void onTrackSelected(Track track) {
-        Log.d("Search Activity", "At onTrackSelected");
-
+//    /**
+//     * This method is called when a track has been selected and returns the track.
+//     * @param track The track that is selected
+//     */
+//    @Override
+//    public void onTrackSelected(Track track) {
+//        Log.d("Search Activity", "At onTrackSelected");
+//
 //        Bundle bundle = new Bundle();
 //        bundle.putParcelable("track", Parcel.);
+//        Intent intent = new Intent();
+//        intent.putExtra("track", Parcels.wrap(track));
+//        setResult(Activity.RESULT_OK, intent);
+//        finish();
+//    }
+
+    @Override
+    public void onMediaSelected(MediaType mediaType) {
+        Log.d("Search Activity", "At onMediaSelected");
         Intent intent = new Intent();
-        intent.putExtra("track", Parcels.wrap(track));
+        intent.putExtra("track", Parcels.wrap(mediaType));
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

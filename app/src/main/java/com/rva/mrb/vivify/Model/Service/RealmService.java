@@ -162,6 +162,7 @@ public class RealmService {
                 editAlarm.setArtist(updatedAlarm.getArtistName());
                 editAlarm.setTrackId(updatedAlarm.getTrackId());
                 editAlarm.setTrackImage(updatedAlarm.getTrackImage());
+                editAlarm.setMediaType(updatedAlarm.getMediaType());
             }
         });
 
@@ -269,6 +270,7 @@ public class RealmService {
                 alarm.setArtist(newalarm.getArtistName());
                 alarm.setTrackId(newalarm.getTrackId());
                 alarm.setTrackImage(newalarm.getTrackImage());
+                alarm.setMediaType(newalarm.getMediaType());
 //                id = alarm.getId();
             }
 

@@ -50,6 +50,7 @@ public class Alarm extends RealmObject {
     private String artist;
     private String trackId;
     private String trackImage;
+    private int mediaType;
 
     public Alarm() {
     }
@@ -406,5 +407,13 @@ public class Alarm extends RealmObject {
 
     public int getMinute() {
         return getCal().get(Calendar.MINUTE);
+    }
+
+    public int getMediaType() {
+        return mediaType;
+    }
+
+    public void setMediaType(int mediaType) {
+        this.mediaType = mediaType;
     }
 }

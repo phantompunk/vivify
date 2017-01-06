@@ -35,6 +35,7 @@ public class WakeService extends Service {
 //        Intent intent1 = new Intent(getApplicationContext(), sdfAlertActivity.class);
 
         if (intent != null) {
+            // TODO since were are not doing anything with these now only pass an id
             Bundle extras = intent.getExtras();
             String trackId = (String) extras.get("trackId");
             String trackImage = (String) extras.get("trackImage");

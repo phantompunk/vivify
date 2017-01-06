@@ -67,7 +67,7 @@ public class AlarmAdapter extends
                 Intent intent = new Intent(view.getContext(), DetailActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("NewAlarm", false);
-                intent.putExtra("AlarmID", alarm.getId());
+                intent.putExtra("AlarmArtist", alarm.getArtistName());
                 intent.putExtra("Alarm", Parcels.wrap(alarm));
                 view.getContext().startActivity(intent);
             }

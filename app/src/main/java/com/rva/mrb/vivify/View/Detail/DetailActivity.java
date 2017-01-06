@@ -16,6 +16,10 @@ import com.rva.mrb.vivify.AlarmApplication;
 import com.rva.mrb.vivify.ApplicationModule;
 import com.rva.mrb.vivify.BaseActivity;
 import com.rva.mrb.vivify.Model.Data.Alarm;
+import com.rva.mrb.vivify.Model.Data.Album;
+import com.rva.mrb.vivify.Model.Data.Artist;
+import com.rva.mrb.vivify.Model.Data.MediaType;
+import com.rva.mrb.vivify.Model.Data.Playlist;
 import com.rva.mrb.vivify.Model.Data.Track;
 import com.rva.mrb.vivify.R;
 import com.rva.mrb.vivify.View.Adapter.AlarmAdapter;
@@ -57,6 +61,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
     private String artistName;
     private String trackId;
     private String trackImage;
+    private int mediaType;
     private Alarm alarm = new Alarm();
     final private int requestCode = 1;
 
@@ -102,9 +107,10 @@ public class DetailActivity extends BaseActivity implements DetailView {
                 setRepeatCheckBoxes(alarm.getDecDaysOfWeek());
 //                mEditRepeat.setText(alarm.getmcRepeat());
                 trackName = alarm.getTrackName();
-                artistName = alarm.getArtistName();
+                artistName = bundle.getString("AlarmArtist");
                 trackId = alarm.getTrackId();
                 trackImage = alarm.getTrackImage();
+                mediaType = alarm.getMediaType();
                 Log.d("trackImageDA", "track image url: " + trackImage);
                 setTrackTv();
             }
@@ -278,6 +284,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
         alarm.setTrackImage(trackImage);
         alarm.setTrackName(trackName);
         alarm.setArtist(artistName);
+        alarm.setMediaType(mediaType);
     }
 
     // Not being used
@@ -305,12 +312,45 @@ public class DetailActivity extends BaseActivity implements DetailView {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if(resultCode == RESULT_OK){
-                Track track = Parcels.unwrap(data.getParcelableExtra("track"));
-                Log.d("onActivityResult", track.getName());
-                trackName = track.getName();
-                artistName = track.getArtists().get(0).getName();
-                trackId = track.getId();
-                trackImage = track.getAlbum().getImages().get(1).getUrl();
+                MediaType type = Parcels.unwrap(data.getParcelableExtra("track"));
+                mediaType = type.getMediaType();
+                switch (type.getMediaType()) {
+                    case MediaType.TRACK_TYPE:
+                        Track track = type.getTrack();
+                        Log.d("onActivityResult", track.getName());
+                        trackName = track.getName();
+                        artistName = track.getArtists().get(0).getName();
+                        trackId = track.getId();
+                        trackImage = track.getAlbum().getImages().get(1).getUrl();
+                        break;
+                    case MediaType.ALBUM_TYPE:
+                        Album album = type.getAlbum();
+                        trackName = album.getName();
+                        artistName = album.getArtists().get(0).getName();
+                        trackId = album.getId();
+                        trackImage = album.getImages().get(0).getUrl();
+                        break;
+                    case MediaType.ARTIST_TYPE:
+                        Artist artist = type.getArtist();
+                        trackName = artist.getName();
+                        artistName = artist.getName();
+                        trackId = artist.getId();
+                        trackImage = artist.getImages().get(0).getUrl();
+                        break;
+                    case MediaType.PLAYLIST_TYPE:
+                        Playlist playlist = type.getPlaylist();
+                        trackName = playlist.getName();
+                        artistName = playlist.getOwner().getId();
+                        trackId = playlist.getId();
+                        trackImage = playlist.getImages().get(0).getUrl();
+                        break;
+                }
+//                Track track = Parcels.unwrap(data.getParcelableExtra("track"));
+//                Log.d("onActivityResult", track.getName());
+//                trackName = track.getName();
+//                artistName = track.getArtists().get(0).getName();
+//                trackId = track.getId();
+//                trackImage = track.getAlbum().getImages().get(1).getUrl();
                 setTrackTv();
             }
         }
