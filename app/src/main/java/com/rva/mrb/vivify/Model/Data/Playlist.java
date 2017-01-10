@@ -16,7 +16,7 @@ public class Playlist {
     public String id;
     public List<Image> images = null;
     public String name;
-    private Owner owner;
+    public Owner owner;
 //    public Object _public;
     public String snapshotId;
     //    private Tracks tracks;

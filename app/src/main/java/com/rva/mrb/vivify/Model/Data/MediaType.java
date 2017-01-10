@@ -13,11 +13,11 @@ public class MediaType {
     public static final int PLAYLIST_TYPE = 2;
     public static final int ALBUM_TYPE = 3;
 
-    private Track track;
-    private Album album;
-    private Playlist playlist;
-    private Artist artist;
-    private int type;
+    public Track track;
+    public Album album;
+    public Playlist playlist;
+    public Artist artist;
+    public int type;
 
     public MediaType() { }
 

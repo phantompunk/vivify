@@ -27,9 +27,9 @@
                 <!-- android:scheme="yourcustomprotocol" /> -->
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.spotify.sdk.android.authentication.LoginActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!--<activity-->
+            <!--android:name="com.spotify.sdk.android.authentication.LoginActivity"-->
+            <!--android:theme="@android:style/Theme.Translucent.NoTitleBar" />-->
         <activity
             android:name=".View.Detail.DetailActivity"
             android:label="NewAlarmActivity"
@@ -44,13 +44,16 @@
         <activity
             android:name=".View.Wake.WakeActivity"
             android:label="@string/title_activity_alert"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity
             android:name=".View.Login.LoginActivity"
-            android:label="LoginActivity"></activity>
+            android:label="LoginActivity">
+        </activity>
         <activity
             android:name=".View.Settings.SettingsActivity"
-            android:label="SettingsActivity"></activity>
+            android:label="SettingsActivity">
+        </activity>
         <receiver android:name=".Model.Service.WakeReceiver"/>
         <receiver android:name=".Model.Service.AlarmScheduler"/>
         <service android:name=".Model.Service.WakeService"
