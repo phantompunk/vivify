@@ -114,22 +114,6 @@ public class DetailActivity extends BaseActivity implements DetailView {
                 Log.d("trackImageDA", "track image url: " + trackImage);
                 setTrackTv();
             }
-            // No longer being used
-//            if (!bundle.getString("AlarmID").isEmpty()) {
-//                Alarm alarm = Parcels.unwrap(getIntent().getParcelableExtra("Alarm"));
-////                Log.d("EditAlarm", alarm.getmWakeTime());
-//                mEditTime.setText(alarm.getmWakeTime());
-//                mIsSet.setChecked(alarm.isEnabled());
-//                mStandardTime.setChecked(alarm.is24hr());
-//                setRepeatCheckBoxes(alarm.getDecDaysOfWeek());
-////                mEditRepeat.setText(alarm.getmcRepeat());
-//                trackName = alarm.getTrackName();
-//                artistName = alarm.getArtistName();
-//                trackId = alarm.getTrackId();
-//                trackImage = alarm.getTrackImage();
-//                Log.d("trackImageDA", "track image url: " + trackImage);
-//                setTrackTv();
-//            }
         } else {
             // TODO fill with default settings for new alarm
             Log.d("DetailTime", detailPresenter.getCurrentTime());
